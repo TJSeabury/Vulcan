@@ -23,47 +23,12 @@ window.addEventListener('DIFDesignCoreReady', function main() {
     * Sets the height of elements to the viewport height minus the headers.
     * @use Add class 'difFullHeight' to elements to set their height.
     */
-	if ( D.W > 1023 )
-	{
-		D.heightSetter( '.difFullHeight', 1.0, ['#wpadminbar', '.mk-header'], 666 );
-	}
+	D.heightSetter( '.difFullHeight', 1.0, ['#wpadminbar', '.mk-header'], 666 );
 	
 	
 	let wpadminbar = document.getElementById('wpadminbar');
 	let header = document.querySelector('.mk-header');
 	let rHeader = header.querySelector('.mk-header-holder');
-
-	if ( document.body.classList.contains('home') )
-	{
-		let landingWrapper = document.querySelector('#theme-page .mk-page-section-wrapper');
-		landingWrapper.appendChild( header );
-	}
-
-	rHeader.style.position = 'absolute';
-	rHeader.style.top = 'unset';
-	rHeader.style.bottom = '0';
-
-	window.addEventListener('scroll', () =>
-	{
-		if ( ! wpadminbar )
-		{
-			wpadminbar = document.getElementById('wpadminbar');
-		}
-		let wpbarH = ( wpadminbar ) ? wpadminbar.offsetHeight : 0;
-		let top = header.getBoundingClientRect().top;
-		if ( top - wpbarH <= 0 )
-		{
-			rHeader.style.position = 'fixed';
-			rHeader.style.top = wpbarH + 'px';
-			rHeader.style.bottom = 'unset';
-		}
-		else
-		{
-			rHeader.style.position = 'absolute';
-			rHeader.style.top = 'unset';
-			rHeader.style.bottom = '0';
-		}
-	} );
     
     /* --------------------------------------------------- */
     
