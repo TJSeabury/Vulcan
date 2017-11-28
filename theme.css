@@ -1,0 +1,77 @@
+/*
+* VC Single Image Custom
+*/
+.wpb_single_image.wpb_content_element {
+	position: relative !important;
+}
+.wpb_single_image.wpb_content_element * {
+	width: 100% !important;
+}
+#welcome .wpb_single_image.wpb_content_element .vc_single_image-img:not(.attachment-full) {
+	width: 100% !important;
+	height: 300px !important;
+	object-fit: cover;
+}
+/* with link and hover */
+.wpb_single_image.wpb_content_element .wpb_heading.wpb_singleimage_heading {
+	position: absolute !important;
+	display: flex !important;
+	justify-content: flex-start;
+	align-items: flex-end;
+	top: 0 !important;
+	right: 0 !important;
+	left: 0 !important;
+	bottom: 0 !important;
+	margin: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	padding: 0 0 1rem 1rem !important;
+	background: linear-gradient( 0deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.0) 100% );
+	font-family: var(--primaryNavFont) !important;
+	font-size: 2rem !important;
+	font-weight: 900 !important;
+	letter-spacing: 2px !important;
+	color: white !important;
+	text-transform: uppercase !important;
+	box-sizing: border-box;
+	pointer-events: none !important;
+	z-index: 1010;
+	transition: all 666ms ease;
+	opacity: 0.75;
+}
+.wpb_single_image.wpb_content_element:hover .wpb_heading.wpb_singleimage_heading {
+	opacity: 1;
+}
+.wpb_single_image.wpb_content_element a.vc_single_image-wrapper {
+	position: relative !important;
+	overflow: hidden;
+}
+.wpb_single_image.wpb_content_element a.vc_single_image-wrapper:after {
+	content: "+";
+	position: absolute;
+	display: block;
+	top: 0;
+	left: 0;
+	width: 64px;
+	height: 128px;
+	background: linear-gradient( 
+		116deg, 
+		rgba(var(--themeOrangeRGB),1.0) 0%,
+		rgba(var(--themeOrangeRGB),1.0) 49.5%,
+		rgba(0,0,0,0) 50.5%,
+		rgba(0,0,0,0) 100% 
+	);
+	padding: 0 0 0 12px;
+	font-family: var(--primaryNavFont);
+	font-size: 2rem;
+	font-weight: 900;
+	color: white !important;
+	z-index: 1020;
+	transition: all 666ms ease;
+	transform: translate( -20%, -10% );
+	opacity: 0;
+}
+.wpb_single_image.wpb_content_element:hover a.vc_single_image-wrapper:after {
+	transform: translate( 0%, 0% );
+	opacity: 1;
+}

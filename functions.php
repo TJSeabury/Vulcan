@@ -59,7 +59,8 @@ add_action(
 add_action( 'vc_before_init', 'vc_before_init_actions' );
 function vc_before_init_actions()
 {
-   require_once( __DIR__ . '/vc-elements/vulcan-post-slider.php' );
+	require_once( __DIR__ . '/vc-elements/vulcan-post-slider.php' );
+	require_once( __DIR__ . '/vc-elements/vulcan-events.php' );
 }
 
 add_action( 'wp_enqueue_scripts', 'difDesign_theme_css', 42 );

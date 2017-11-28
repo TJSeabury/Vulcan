@@ -1,9 +1,9 @@
 <?php
+
 /*
 * Vulcan Post Slider.
 * Turns a category of posts into a hero slider.
 */
-
 class vcVulcanPostSlider extends WPBakeryShortCode
 {
     
@@ -118,7 +118,7 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 		}
 		$query_args['order'] = $order;*/
 
-		$html = '';
+		$html = '<div class="vulcan-post-slider">';
 
 		$my_query = new WP_Query( $query_args );
 
@@ -129,20 +129,19 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 			$post_title = the_title( '', '', false );
 			$post_id = $my_query->post->ID;
 
-			$content = apply_filters( 'the_excerpt', get_the_excerpt() );
+			$content = $my_query->post->post_content; /*apply_filters( 'the_excerpt', get_the_excerpt() );*/
 			$post_thumbnail = get_the_post_thumbnail( $post_id, 'thumbnail', array( 'class' => 'slide-thumbnail' ) );
+			$post_image = get_the_post_thumbnail( $post_id, 'full', array( 'class' => 'slide-fullimage' ) );
 
-			$html .= '
-			<div class="vc-infobox-wrap">' .
-
-				$post_thumbnail . '
+			$html .= 				
+				$post_image . '
 			 
-				<h2 class="slide-title">' . $post_title . '</h2>
+				<h2 class="slide-title">' . $post_title . ' ' . $ecv . '</h2>
 				 
-				<div class="slide-content">' . $content . '</div>
-			 
-			</div>'; 
+				<div class="slide-content">' . do_shortcode( $content ) . '</div>';
 		}
+
+		$html .= '</div>';
 
 		wp_reset_query();     
          
