@@ -3,18 +3,15 @@
 * Vulcan Post Slider.
 * Turns a category of posts into a hero slider.
 */
- 
-// Element Class 
+
 class vcVulcanPostSlider extends WPBakeryShortCode
 {
-     
-    // Element Init
+    
     function __construct() {
         add_action( 'init', array( $this, 'vc_vulcanPostSlider_mapping' ) );
         add_shortcode( 'vc_vulcanPostSlider', array( $this, 'vc_vulcanPostSlider_html' ) );
     }
-     
-    // Element Mapping
+    
     public function vc_vulcanPostSlider_mapping()
 	{
          
@@ -34,19 +31,16 @@ class vcVulcanPostSlider extends WPBakeryShortCode
                 'params' => array(   
                          
                     array(
-                        'type' => 'textfield',
-                        'heading' => __( 'Category', 'text-domain' ),
-                        'param_name' => 'category',
-                        'value' => __( '', 'text-domain' ),
-                        'description' => __( 'The category of posts to use.', 'text-domain' ),
-                        'admin_label' => false,
-                        'weight' => 0,
-                    ),
+						'type'        => 'textfield',
+						'heading'     => __( 'Categories', 'mk_framework' ),
+						'param_name'  => 'category',
+						'description' => __( 'Enter specific Categories to be used.', 'mk_framework' ),
+					),
 			
 					array(
 						"type" => "range",
 						"heading" => __("Number of posts", "mk_framework") ,
-						"param_name" => "number_posts",
+						"param_name" => "num_posts",
 						"value" => "3",
 						"min" => "1",
 						"max" => "12",
@@ -54,24 +48,49 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 						"unit" => "slides",
 						"description" => __("Number of posts.", "mk_framework"),
 					),
+
+					array(
+						"type" => "toggle",
+						"heading" => __("Enable Excerpt", "mk_framework"),
+						"param_name" => "enable_excerpt",
+						"value" => "false",
+						"description" => __("", "mk_framework"),
+					),
+
+					 array(
+						"heading" => __("Order", 'mk_framework'),
+						"description" => __("Designates the ascending or descending order of the 'orderby' parameter.", 'mk_framework'),
+						"param_name" => "order",
+						"value" => array(
+							__("DESC (descending order)", 'mk_framework') => "DESC",
+							__("ASC (ascending order)", 'mk_framework') => "ASC"
+			
+						),
+						"type" => "dropdown"
+					),
+
+					array(
+						"type" => "textfield",
+						"heading" => __("Extra class name", "mk_framework"),
+						"param_name" => "el_class",
+						"value" => "",
+						"description" => __("If you wish to style particular content element differently, then use this field to add a class name and then refer to it in Custom CSS Shortcode or Masterkey Custom CSS option.", "mk_framework")
+					)
                         
-                ),
+                )
             )
         );                                
         
     }
-     
-     
-    // Element HTML
+    
     public function vc_vulcanPostSlider_html( $atts )
 	{
-         
-        // Params extraction
+        
         extract(
             shortcode_atts(
                 array(
-                    'category'   => '',
-                    'number_posts' => '3',
+                    'categories'   => '',
+                    'num_posts' => '3',
                 ), 
                 $atts
             )
@@ -81,7 +100,6 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 			'post_status' => 'publish',
 		);
 
-		// Narrow by categories
 		if ( '' !== $categories )
 		{
 			$categories = explode( ',', $categories );
@@ -90,7 +108,6 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 				array_push( $gc, $grid_cat );
 			}
 			$gc = implode( ',', $gc );
-			// http://snipplr.com/view/17434/wordpress-get-category-slug/
 			$query_args['category_name'] = $gc;
 		}
 
@@ -101,92 +118,38 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 		}
 		$query_args['order'] = $order;*/
 
-		// Run query
+		$html = '';
+
 		$my_query = new WP_Query( $query_args );
 
-		$teasers = '';
-		$i = - 1;
-
-		while ( $my_query->have_posts() ) {
-			$i ++;
+		$i = 0;
+		while ( $my_query->have_posts() && $i < $num_posts ) {
+			$i++;
 			$my_query->the_post();
 			$post_title = the_title( '', '', false );
 			$post_id = $my_query->post->ID;
-			if ( in_array( get_the_ID(), $vc_posts_grid_exclude_id ) ) {
-				continue;
-			}
-			if ( 'teaser' === $slides_content ) {
-				$content = apply_filters( 'the_excerpt', get_the_excerpt() );
-			} else {
-				$content = '';
-			}
-			$thumbnail = '';
 
-			// Thumbnail logic
-			$post_thumbnail = $p_img_large = '';
+			$content = apply_filters( 'the_excerpt', get_the_excerpt() );
+			$post_thumbnail = get_the_post_thumbnail( $post_id, 'thumbnail', array( 'class' => 'slide-thumbnail' ) );
 
-			$post_thumbnail = wpb_getImageBySize( array( 'post_id' => $post_id, 'thumb_size' => $thumb_size ) );
-			$thumbnail = $post_thumbnail['thumbnail'];
-			$p_img_large = $post_thumbnail['p_img_large'];
+			$html .= '
+			<div class="vc-infobox-wrap">' .
 
-			// Link logic
-			if ( 'link_no' !== $link ) {
-				if ( 'link_post' === $link ) {
-					$link_image_start = '<a class="link_image" href="' . get_permalink( $post_id ) . '" title="' . sprintf( esc_attr__( 'Permalink to %s', 'js_composer' ), the_title_attribute( 'echo=0' ) ) . '">';
-				} elseif ( 'link_image' === $link ) {
-					$p_video = get_post_meta( $post_id, '_p_video', true );
-					//
-					if ( '' !== $p_video ) {
-						$p_link = $p_video;
-					} else {
-						$p_link = $p_img_large[0];
-					}
-					$link_image_start = '<a class="link_image prettyphoto" href="' . $p_link . '" ' . $pretty_rel_random . ' title="' . the_title_attribute( 'echo=0' ) . '" >';
-				} elseif ( 'custom_link' === $link ) {
-					if ( isset( $custom_links[ $i ] ) ) {
-						$slide_custom_link = $custom_links[ $i ];
-					} else {
-						$slide_custom_link = $custom_links[0];
-					}
-					$link_image_start = '<a class="link_image" href="' . $slide_custom_link . '">';
-				}
+				$post_thumbnail . '
+			 
+				<h2 class="slide-title">' . $post_title . '</h2>
+				 
+				<div class="slide-content">' . $content . '</div>
+			 
+			</div>'; 
+		}
 
-				$link_image_end = '</a>';
-			} else {
-				$link_image_start = '';
-				$link_image_end = '';
-			}
-
-			$description = '';
-			if ( '' !== $slides_content && '' !== $content && ( ' wpb_flexslider flexslider_fade flexslider' === $type || ' wpb_flexslider flexslider_slide flexslider' === $type ) ) {
-				$description = '<div class="flex-caption">';
-				if ( $slides_title ) {
-					$description .= '<h2 class="post-title">' . $link_image_start . $post_title . $link_image_end . '</h2>';
-				}
-				$description .= $content;
-				$description .= '</div>';
-			}
-
-			$teasers .= $el_start . $link_image_start . $thumbnail . $link_image_end . $description . $el_end;
-		} // endwhile loop
-		wp_reset_query();
-         
-        // Fill $html var with data
-        $html = '
-        <div class="vc-infobox-wrap">
-         
-            <h2 class="vc-infobox-title">' . $category . '</h2>
-             
-            <div class="vc-infobox-text">' . $number_posts . '</div>
-         
-        </div>';      
+		wp_reset_query();     
          
         return $html;
          
     }
      
-} // End Element Class
- 
- 
-// Element Class Init
+}
+
 new vcVulcanPostSlider();
