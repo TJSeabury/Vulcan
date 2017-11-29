@@ -34,6 +34,13 @@ class vcVulcanEvents extends WPBakeryShortCode
                 'category' => __('Vulcan', 'text-domain'),
                 'icon' => get_stylesheet_directory_uri() . '/assets/media/vulcan-icon.png',
                 'params' => array(
+			
+					array(
+						'type'        => 'textfield',
+						'heading'     => __( 'Section Title', 'mk_framework' ),
+						'param_name'  => 'heading',
+						'description' => __( '', 'mk_framework' ),
+                    ),
                     
                     array(
 						"type" => "toggle",
@@ -101,6 +108,7 @@ class vcVulcanEvents extends WPBakeryShortCode
         extract(
             shortcode_atts(
                 array(
+					'heading' => '',
 					'enable_cards' => false,
                     'num_cards'   => 2,
                     'num_events' => 8,
@@ -118,22 +126,51 @@ class vcVulcanEvents extends WPBakeryShortCode
 			)
 		);
         
-		$html = '<section class="vulcan-events">';
+		$html = '<section class="vulcan-events" data-num_cards="' . $num_cards . '">';
+		$html .= '<h1 class="vulcan-title">' . $heading . '</h1>';
 		
 		// The result set may be empty
 		if ( ! empty( $events ) )
 		{
 			$i = 0;
-			foreach ( $events as $event ) {
+			foreach ( $events as $post ) {
 				
-				var_dump( get_the_category( $event->ID ) );
+				$url = get_page_link($post->ID);
+				
+				// Filter for categories or just make category list available
+				$terms = wp_get_post_terms( $post->ID, Tribe__Events__Main::TAXONOMY );
+				$categories = array();
+				if ( ! empty( $terms ) )
+				{
+					foreach ( $terms as $term )
+					{
+						if ( $term->taxonomy === 'tribe_events_cat' )
+						{
+							$categories[] = $term->name;
+						}
+					}
+					if ( '' !== $category && ! in_array( $category, $categories ) )
+					{
+						continue;
+					}
+				}
+				else if ( '' !== $category )
+				{
+					continue;
+				}
+
+				// Expose categories as html
+				$categories_html = '';
+				foreach ( $categories as $cat )
+				{
+					$categories_html .= '<span class="event-category">' . $cat . '</span>';
+				}
 			
-				$event_image = get_the_post_thumbnail( $event->ID, 'full', array( 'class' => 'event-fullimage' ) );
-				$event_start_day = self::get_month_day( $event->EventStartDate );
-				$event_end_day = self::get_month_day( $event->EventEndDate );
-				$event_start_time = self::get_hour_minute( $event->EventStartDate );
-				$event_end_time = self::get_hour_minute( $event->EventEndDate );
-				var_dump( $event );
+				$post_image = get_the_post_thumbnail( $post->ID, 'full', array( 'class' => 'event-fullimage' ) );
+				$post_start_day = self::get_month_day( $post->EventStartDate );
+				$post_end_day = self::get_month_day( $post->EventEndDate );
+				$post_start_time = self::get_hour_minute( $post->EventStartDate );
+				$post_end_time = self::get_hour_minute( $post->EventEndDate );
 				
 				
 				$card_class = '';
@@ -146,14 +183,19 @@ class vcVulcanEvents extends WPBakeryShortCode
 						$html .= '<div class="vulcan-cards-wrap">';
 					}
 					$html .=
-					'<figure class="vulcan-event ' . $card_class . '">
-						<div class="event-transform-wrapper">' .
-							$event_image .
-							$event_start_day .
-							'<h1 class="event-title">' . $event->post_title . '</h1>
-							<p class="event-content">' . $event->post_content . '</p>
-						</div>
-					</figure>';
+					'<figure class="vulcan-event ' . $card_class . '">' .
+						'<a href="' . $url . '">' .
+							'<div class="event-transform-wrapper">' .
+								'<div class="aspect-ratio-wrap">' . $post_image . '</div>' .
+								'<div class="event-details">'.
+									$post_start_day .
+									'<div class="event-category">' .$categories_html . '</div>' .
+									'<h2 class="event-title">' . $post->post_title . '</h2>' .
+									'<p class="event-content">' . $post->post_content . '</p>' .
+								'</div>' .
+							'</div>' .
+						'</a>' .
+					'</figure>';
 
 					if ( $num_cards - 1 === $i )
 					{
@@ -164,14 +206,18 @@ class vcVulcanEvents extends WPBakeryShortCode
 				{
 					$card_class = 'vulcan-event-listitem';
 					$html .=
-					'<figure class="vulcan-event ' . $card_class . '">
-						<div class="event-transform-wrapper">' .
-							$event_start_day .
-							'<h1 class="event-title">' . $event->post_title . '</h1>
-							<p class="event-category">' /*. $event->post_content*/ . '</p>
-							<p class="event-timeframe">' . $event_start_time . ' - ' . $event_end_time . '</p>
-						</div>
-					</figure>';
+					'<figure class="vulcan-event ' . $card_class . '">' .
+						'<a href="' . $url . '">' .
+							'<div class="event-transform-wrapper">' .
+								$post_start_day .
+								'<div class="event-details">' .
+									'<h2 class="event-title">' . $post->post_title . '</h2>' .
+									'<div class="event-categories">' .$categories_html . '</div>' .
+									'<div class="event-timeframe">' . $post_start_time . ' - ' . $post_end_time . '</div>' .
+								'</div>' .
+							'</div>' .
+						'</a>' .
+					'</figure>';
 				}
 				
 				$i++;
@@ -183,7 +229,7 @@ class vcVulcanEvents extends WPBakeryShortCode
 			$html .= 'There are no events.';
 		}
 		
-		if ( true === $enable_view_all )
+		if ( true == $enable_view_all )
 		{
 			$html .= '<div class="vulcan-view-all-events">
 						<a href="' . get_site_url() . '/events/">View all events</a>
@@ -251,29 +297,7 @@ class vcVulcanEvents extends WPBakeryShortCode
 	
 	private function get_hour_minute( $date_string )
 	{
-		$date = date_parse( $date_string );
-		
-		$meridiem = '';
-		$hour = $date['hour'];
-		if ( $hour >= 12 )
-		{
-			$meridiem = 'PM';
-		}
-		else
-		{
-			$meridiem = 'AM';
-		}
-		if ( $hour > 12 )
-		{
-			$hour -= 12;
-		}
-		
-		$date_html =
-		'<div class="event-time">
-			<span class="hour">' . $hour . '</span>
-			<span class="minute">' . $date['minute'] . '</span>
-			<span class="meridiem">' . $meridiem . '</span>
-		</div>';
+		return date( 'g:i a', strtotime( $date_string ) );
 	}
      
 }

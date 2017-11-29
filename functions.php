@@ -28,6 +28,9 @@ add_action(
 */
 :root {
 	--mk-skin-color: <?php echo $mko['skin_color']; ?>;
+	--mk-link-color: <?php echo $mko['a_color']; ?>;
+	--mk-link-hover-color: <?php echo $mko['a_color_hover']; ?>;
+	--mk-strong-color: <?php echo $mko['strong_color']; ?>;
 	--mk-grid-width: <?php echo $mko['grid_width']; ?>px;
 	--mk-header-height: <?php echo $mko['header_height']; ?>px;
 	--mk-responsive-header-height: <?php echo $mko['res_header_height']; ?>px;
@@ -48,7 +51,7 @@ add_action(
 					'DIFDesignThemeOptions',
 					$mainCSSPath,
 					array(),
-					difdesign_get_file_version( $mainCSSPath )
+					vulcan_get_file_version( $mainCSSPath )
 				);
 			},
 			32
@@ -63,39 +66,45 @@ function vc_before_init_actions()
 	require_once( __DIR__ . '/vc-elements/vulcan-events.php' );
 }
 
-add_action( 'wp_enqueue_scripts', 'difDesign_theme_css', 42 );
-function difDesign_theme_css() {
-	$mainCSSPath = get_stylesheet_directory_uri() . '/assets/css/vulcan.css';
-	wp_enqueue_style( 'vulcan-css', $mainCSSPath, array(), difdesign_get_file_version($mainCSSPath) );
+add_action( 'wp_enqueue_scripts', 'vulcan_theme_css', 42 );
+function vulcan_theme_css() {
+	$mainCSSPath = get_stylesheet_directory_uri() . '/theme.css';
+	wp_enqueue_style( 'vulcan-theme-css', $mainCSSPath, array(), vulcan_get_file_version($mainCSSPath) );
 }
 
-add_action( 'wp_enqueue_scripts', 'difDesign_core_js', 10 );
-function difDesign_core_js() {
+add_action( 'wp_enqueue_scripts', 'vulcan_components_css', 32 );
+function vulcan_components_css() {
+	$mainCSSPath = get_stylesheet_directory_uri() . '/assets/css/vulcan.css';
+	wp_enqueue_style( 'vulcan-component-css', $mainCSSPath, array(), vulcan_get_file_version($mainCSSPath) );
+}
+
+add_action( 'wp_enqueue_scripts', 'vulcan_core_js', 10 );
+function vulcan_core_js() {
 	$coreJsPath = get_stylesheet_directory_uri() . '/assets/js/utils.js';
 	wp_register_script( 'vulcan-utils-js', $coreJsPath );
 	wp_localize_script( 'vulcan-utils-js', 'wpMeta', array( 'siteURL' => get_option('siteurl') ) );
-	wp_enqueue_script( 'vulcan-utils-js', $coreJsPath, array(), difdesign_get_file_version($coreJsPath), true);
+	wp_enqueue_script( 'vulcan-utils-js', $coreJsPath, array(), vulcan_get_file_version($coreJsPath), true);
 }
 
-add_action( 'wp_enqueue_scripts', 'difDesign_main_js', 9 );
-function difDesign_main_js() {
+add_action( 'wp_enqueue_scripts', 'vulcan_main_js', 9 );
+function vulcan_main_js() {
 	$mainJsPath = get_stylesheet_directory_uri() . '/assets/js/main.js';
-	wp_enqueue_script( 'vulcan-main-js', $mainJsPath, array(), difdesign_get_file_version($mainJsPath), true);
+	wp_enqueue_script( 'vulcan-main-js', $mainJsPath, array(), vulcan_get_file_version($mainJsPath), true);
 }
 
-add_action( 'wp_enqueue_scripts', 'difDesign_snap_js', 10 );
-function difDesign_snap_js() {
+add_action( 'wp_enqueue_scripts', 'vulcan_snap_js', 10 );
+function vulcan_snap_js() {
 	$snapJsPath = get_stylesheet_directory_uri() . '/assets/js/snap.svg-min.js';
-	wp_enqueue_script( 'snap-svg-js', $snapJsPath, array(), difdesign_get_file_version($snapJsPath), true);
+	wp_enqueue_script( 'snap-svg-js', $snapJsPath, array(), vulcan_get_file_version($snapJsPath), true);
 }
 
-add_action( 'wp_enqueue_scripts', 'difDesign_skrollr_js', 10 );
-function difDesign_skrollr_js() {
+add_action( 'wp_enqueue_scripts', 'vulcan_skrollr_js', 10 );
+function vulcan_skrollr_js() {
 	$snapJsPath = get_stylesheet_directory_uri() . '/assets/js/skrollr.js';
-	wp_enqueue_script( 'skrollr-js', $snapJsPath, array(), difdesign_get_file_version($snapJsPath), true);
+	wp_enqueue_script( 'skrollr-js', $snapJsPath, array(), vulcan_get_file_version($snapJsPath), true);
 }
 
-function difdesign_get_file_version( $url ) {
+function vulcan_get_file_version( $url ) {
 	$content_url = content_url();
 	$filepath    = str_replace( $content_url, WP_CONTENT_DIR, $url );
 	$filepath    = explode( '?', $filepath );
