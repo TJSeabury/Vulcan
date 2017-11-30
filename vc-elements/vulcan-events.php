@@ -41,6 +41,14 @@ class vcVulcanEvents extends WPBakeryShortCode
 						'param_name'  => 'heading',
 						'description' => __( '', 'mk_framework' ),
                     ),
+			
+					array(
+						"type" => "toggle",
+						"heading" => __("Enable Minimal View", "mk_framework"),
+						"param_name" => "enable_minimal",
+						"value" => "false",
+						"description" => __("", "mk_framework"),
+                    ),
                     
                     array(
 						"type" => "toggle",
@@ -48,6 +56,12 @@ class vcVulcanEvents extends WPBakeryShortCode
 						"param_name" => "enable_cards",
 						"value" => "false",
 						"description" => __("", "mk_framework"),
+						"dependency" => array(
+							'element' => "enable_minimal",
+							'value' => array(
+								'false'
+							)
+						)
                     ),
 
                     array(
@@ -60,11 +74,17 @@ class vcVulcanEvents extends WPBakeryShortCode
 						"step" => "1",
 						"unit" => "cards",
 						"description" => __("", "mk_framework"),
+						"dependency" => array(
+							'element' => "enable_cards",
+							'value' => array(
+								'true'
+							)
+						)
 					),
 
                     array(
 						"type" => "range",
-						"heading" => __("Total nubmer of events", "mk_framework") ,
+						"heading" => __("Total number of events", "mk_framework") ,
 						"param_name" => "num_events",
 						"value" => "8",
 						"min" => "-1",
@@ -80,6 +100,12 @@ class vcVulcanEvents extends WPBakeryShortCode
 						"param_name" => "enable_view_all",
 						"value" => "false",
 						"description" => __("", "mk_framework"),
+						"dependency" => array(
+							'element' => "enable_minimal",
+							'value' => array(
+								'false'
+							)
+						)
 					),
                     
                     array(
@@ -109,6 +135,7 @@ class vcVulcanEvents extends WPBakeryShortCode
             shortcode_atts(
                 array(
 					'heading' => '',
+					'enable_minimal' => false,
 					'enable_cards' => false,
                     'num_cards'   => 2,
                     'num_events' => 8,
@@ -125,8 +152,13 @@ class vcVulcanEvents extends WPBakeryShortCode
 				'posts_per_page' => $num_events,
 			)
 		);
+		
+		if ( $enable_minimal )
+		{
+			$minimal_view_class .= ' vulcan-minimal-list';
+		}
         
-		$html = '<section class="vulcan-events" data-num_cards="' . $num_cards . '">';
+		$html = '<section class="vulcan-events' . $minimal_view_class . '" data-num_cards="' . $num_cards . '">';
 		$html .= '<h1 class="vulcan-title">' . $heading . '</h1>';
 		
 		// The result set may be empty
@@ -175,7 +207,7 @@ class vcVulcanEvents extends WPBakeryShortCode
 				
 				$card_class = '';
 				
-				if ( true === (bool)$enable_cards && $i < $num_cards )
+				if ( false === (bool)$enable_minimal && true === (bool)$enable_cards && $i < $num_cards )
 				{
 					$card_class = 'vulcan-event-card';
 					if ( 0 === $i )
@@ -202,7 +234,7 @@ class vcVulcanEvents extends WPBakeryShortCode
 						$html .= '</div>';
 					}
 				}
-				else
+				else if ( false === (bool)$enable_minimal )
 				{
 					$card_class = 'vulcan-event-listitem';
 					$html .=
@@ -213,6 +245,22 @@ class vcVulcanEvents extends WPBakeryShortCode
 								'<div class="event-details">' .
 									'<h2 class="event-title">' . $post->post_title . '</h2>' .
 									'<div class="event-categories">' .$categories_html . '</div>' .
+									'<div class="event-timeframe">' . $post_start_time . ' - ' . $post_end_time . '</div>' .
+								'</div>' .
+							'</div>' .
+						'</a>' .
+					'</figure>';
+				}
+				else
+				{
+					$card_class = 'vulcan-event-listitem';
+					$html .=
+					'<figure class="vulcan-event ' . $card_class . '">' .
+						'<a href="' . $url . '">' .
+							'<div class="event-transform-wrapper">' .
+								'<h2 class="event-title">' . $post->post_title . '</h2>' .
+								'<div class="event-details">' .
+									$post_start_day .
 									'<div class="event-timeframe">' . $post_start_time . ' - ' . $post_end_time . '</div>' .
 								'</div>' .
 							'</div>' .

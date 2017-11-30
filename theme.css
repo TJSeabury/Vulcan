@@ -20,6 +20,7 @@
 }
 
 
+
 h1, h2, h3 {
 	font-family: var(--headingFont) !important;
 }
@@ -112,13 +113,34 @@ h1, h2, h3 {
 
 
 
-
-
-
-
-
-
-
+/*
+* Side bar
+*/
+.side-bar .wpb_row.vc_inner.vc_row .vc_column_container .vc_column-inner {
+	padding: 32px 24px;
+}
+.side-bar .wpb_row.vc_inner.vc_row .vc_column_container .vc_column-inner p {
+	color: white;
+}
+.side-bar .mk-text-block a,
+.side-bar .mk-contactinfo-shortcode a {
+	color: white;
+	transition: all 200ms ease;
+}
+.side-bar .mk-text-block a:hover,
+.side-bar .mk-contactinfo-shortcode a:hover {
+	color: var(--mk-skin-color);
+}
+.side-bar .widget_contact_info.mk-contactinfo-shortcode .shortcode-heading.mk-fancy-title.pattern-style {
+	background: none !important;
+}
+.side-bar .widget_contact_info.mk-contactinfo-shortcode .shortcode-heading.mk-fancy-title.pattern-style span {
+	background: transparent !important;
+	color: white !important;
+}
+.side-bar .widget_contact_info.mk-contactinfo-shortcode svg {
+	fill: white !important;
+}
 
 
 
