@@ -9,6 +9,11 @@ class vcVulcanPostSlider extends WPBakeryShortCode
     
     function __construct() {
         add_action( 'init', array( $this, 'vc_vulcanPostSlider_mapping' ) );
+		add_action( 'wp_enqueue_scripts', 'vulcan_post_slider_js', 10 );
+		function vulcan_post_slider_js() {
+			$path = get_stylesheet_directory_uri() . '/assets/js/vulcan-post-slider.js';
+			wp_enqueue_script( 'vulcan-post-slider-js', $path, array(), vulcan_get_file_version($path), true);
+		}
         add_shortcode( 'vc_vulcanPostSlider', array( $this, 'vc_vulcanPostSlider_html' ) );
     }
     
@@ -91,6 +96,7 @@ class vcVulcanPostSlider extends WPBakeryShortCode
                 array(
                     'categories'   => '',
                     'num_posts' => '3',
+					'order' => ''
                 ), 
                 $atts
             )
@@ -115,10 +121,15 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 		/*if ( null !== $orderby )
 		{
 			$query_args['orderby'] = $orderby;
-		}
-		$query_args['order'] = $order;*/
+		}*/
+		
+		$query_args['order'] = $order;
+		
+		$controls = array();
 
-		$html = '<div class="vulcan-post-slider">';
+		$html = '<div id="Vulcan_Post_Slider" class="vulcan-post-slider">';
+		
+		$html .= '<div class="vulcan-slides-wrapper">';
 
 		$my_query = new WP_Query( $query_args );
 
@@ -129,17 +140,40 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 			$post_title = the_title( '', '', false );
 			$post_id = $my_query->post->ID;
 
-			$content = $my_query->post->post_content; /*apply_filters( 'the_excerpt', get_the_excerpt() );*/
+			//$content = $my_query->post->post_content;
 			$post_thumbnail = get_the_post_thumbnail( $post_id, 'thumbnail', array( 'class' => 'slide-thumbnail' ) );
 			$post_image = get_the_post_thumbnail( $post_id, 'full', array( 'class' => 'slide-fullimage' ) );
+			
+			$thumbControl = '<button class="slide-control" data-slide-index="' . $i . '"><div class="thumbnail-transform-wrapper">' . $post_thumbnail . '</div></button>';
+			$controls[] = $thumbControl;
 
-			$html .= 				
-				$post_image . '
-			 
-				<h2 class="slide-title">' . $post_title . ' ' . $ecv . '</h2>
-				 
-				<div class="slide-content">' . do_shortcode( $content ) . '</div>';
+			$html .= 
+				'<figure class="slide">' .
+					'<div class="image-wrapper">' .
+						$post_image .
+						'<div class="image-shader"></div>' .
+					'</div>' .
+				 	'<figcaption class="slide-content">' .
+						'<div class="slide-flex-wrapper">' .
+							'<h2 class="slide-title">' . $post_title . ' ' . $ecv . '</h2>' .
+							'<div class="slide-details">
+								<div class="slide-postlink"><a href="' . get_permalink( $my_query->post->ID ) . '">FIND OUT MORE</a></div>
+							</div>' .
+						'</div>' .
+					'</figure>' .
+				'</figure>';
 		}
+		
+		$html .= '</div>';
+		
+		$html .= '<nav class="slide-controls">';
+		
+		foreach ( $controls as $control )
+		{
+			$html .= (string)$control;
+		}
+		
+		$html .= '</nav>';
 
 		$html .= '</div>';
 

@@ -19,10 +19,29 @@
 	--bodyFont: 'Open Sans';
 }
 
-
+.blue-bar-top:after,
+.blue-bar-bottom:after {
+	content: "";
+	position: absolute;
+	left: 0;
+	width: 25vw;
+	height: 16px;
+	background: var(--mk-skin-color);
+	z-index: 100010;
+}
+.blue-bar-top:after {
+	top: 0;
+}
+.blue-bar-bottom:after {
+	bottom: 0;
+}
+.teal-bar-bottom {
+	border-bottom: 16px solid var(--mk-link-hover-color);
+}
 
 h1, h2, h3 {
 	font-family: var(--headingFont) !important;
+	font-weight: 900 !important;
 }
 
 
@@ -91,6 +110,65 @@ h1, h2, h3 {
 
 
 /*
+* Header / Nav
+*/
+body.home .mk-header {
+	position: absolute;
+	background: transparent;
+	border-bottom: 1px solid transparent;
+	transition: all 333ms ease;
+}
+/* Set home colors */
+body.home .mk-header .mk-header-holder {
+	transition: all 80ms ease !important;
+}
+body.home .mk-header:not(.a-sticky) .mk-header-holder {
+	padding-top: 42px;
+	transition: all 333ms 222ms ease !important;
+}
+body.home .mk-header .mk-header-inner {
+	transition: all 333ms ease;
+}
+body.home .mk-header:not(.a-sticky) .mk-header-inner {
+	border-bottom: 10px solid transparent;
+}
+body.home .mk-header .mk-header-bg {
+	transition: all 333ms ease;
+}
+body.home .mk-header:not(.a-sticky) .mk-header-bg {
+	background-color: transparent;
+}
+body.home .mk-header .mk-responsive-wrap {
+	transition: all 333ms ease;
+}
+body.home .mk-header:not(.a-sticky) .mk-responsive-wrap {
+	background-color: transparent;
+}
+body.home .mk-header:not(.a-sticky) .main-navigation-ul > li.menu-item > a.menu-item-link {
+	color: white;
+	font-size: 18px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+/* set nav font */
+.main-navigation-ul > li.menu-item > a.menu-item-link {
+	font-family: var(--headingFont);
+	font-weight: 900;
+}
+
+
+
+/*
+* Home: About
+*/
+body.home h1 {
+	font-size: 3.5rem;
+	color: var(--mk-skin-color);
+}
+
+
+/*
 * Home: Programs
 */
 #programs .vc_column-inner {
@@ -144,15 +222,105 @@ h1, h2, h3 {
 
 
 
+/*
+* Footer
+*/
+#mk-footer {
+	border-top: 16px solid var(--mk-link-hover-color) !important;
+	padding: 0 !important;
+}
+#mk-footer .footer-wrapper.mk-grid {
+	padding: 64px 0 !important;
+}
+#mk-footer .widget > div:not(.widgettitle) {
+	min-height: 250px;
+	background: white !important;
+	padding: 24px;
+}
+
+.widget-social-link {
+	display: block;
+	border-top: 2px solid #e8e8e8;
+	padding: 8px;
+}
+.widget-social-link.facebook {
+	font-weight: 600;
+	color: var(--mk-skin-color);
+}
+.widget-social-link.instagram {
+	font-weight: 600;
+	color: gray;
+}
+.widget-social-link img {
+	width: 33px !important;
+	height: 33px !important;
+	margin: 0 16px;
+	object-fit: contain;
+}
+
+/*
+* Sub Footer
+*/
+#sub-footer * {
+	box-sizing: border-box;
+}
+#sub-footer .mk-grid {
+	max-width: 100% !important;
+}
+#sub-footer .mk-grid .mk-footer-copyright {
+	display: block !important;
+	width: 100% !important;
+	padding: 32px 5% !important;
+}
+#sub-footer .ymca-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+#sub-footer .footer-links {
+	list-style: none !important;
+	text-align: right;
+	line-height: 1.2;
+}
+#sub-footer .ymca-copyright {
+	padding: 32px 0 0;
+	text-align: center;
+}
 
 
 
-
-
-
-
-
-
+/*
+* Gravity Forms
+*/
+.gform_wrapper {
+	margin: 0 !important;
+}
+body .gform_wrapper ul li.gfield {
+	margin-top: 0 !important;
+}
+.gform_wrapper ul.gform_fields li.gfield {
+	padding-right: 0 !important;
+}
+.gform_wrapper .top_label input.medium,
+.gform_wrapper .top_label select.medium {
+	width: 100% !important;
+	border: 2px solid #e8e8e8;
+}
+.gform_wrapper ul.gform_fields li.gfield input::placeholder {
+	color: #e8e8e8 !important;
+}
+.gform_wrapper .gform_footer {
+	margin: 0 !important;
+}
+.gform_wrapper .gform_footer input.button, .gform_wrapper .gform_footer input[type=submit], .gform_wrapper .gform_page_footer input.button, .gform_wrapper .gform_page_footer input[type=submit] {
+	width: 100% !important;
+	margin: 0 !important;
+	border: 2px solid var(--mk-skin-color) !important;
+	background: transparent !important;
+	font-family: var(--headingFont) !important;
+	font-weight: 400 !important;
+	color: var(--mk-skin-color) !important;
+}
 
 
 

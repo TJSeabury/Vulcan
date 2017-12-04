@@ -2,12 +2,139 @@
 * Vulcan Post Slider
 */
 .vulcan-post-slider {
-	width: 100%;
-	max-width: 100%;
+	position: relative;
+	--control-height: 128px;
+	--side-padding: calc( ( 100vw - 17px - var(--mk-grid-width) ) / 2 );
+}
+.vulcan-post-slider,
+.vulcan-post-slider * {
 	box-sizing: border-box;
 }
 .vulcan-post-slider .vc_row {
 	margin: 0 !important; 
+}
+.vulcan-slides-wrapper {
+	position: relative;
+	width: 100%;
+	max-width: 100%;
+	padding-top: calc( 100vh - ( var(--control-height) * 0.65 ) );
+}
+body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
+	padding-top: calc( 100vh - 32px - ( var(--control-height) * 0.65 ) );
+}
+@media handheld, only screen and (max-width: 1024px) {
+	.vulcan-post-slider .vulcan-slides-wrapper {
+		padding-top: calc( ( 100vw - 17px ) / 1.77778 - ( var(--control-height) * 0.65 ) );
+	}
+}
+.vulcan-post-slider .slide {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+.vulcan-post-slider .slide .image-wrapper,
+.vulcan-post-slider .slide .slide-fullimage,
+.vulcan-post-slider .slide .image-shader {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+.vulcan-post-slider .slide .slide-fullimage {
+	object-fit: cover;
+}
+.vulcan-post-slider .slide .image-shader {
+	background: linear-gradient( 0deg, rgba(0,0,0,0.64) 0%, rgba(0,0,0,0.1) 16%, rgba(0,0,0,0.42) 100% );
+}
+.vulcan-post-slider .slide-content {
+	position: absolute;
+	display: flex;
+	align-items: flex-end;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+.vulcan-post-slider .slide-flex-wrapper {
+	width: 100%;
+	max-width: var(--mk-grid-width);
+	margin: 0 auto;
+	padding: 10% 0;
+}
+.vulcan-post-slider .slide-title {
+	width: 65%;
+	font-size: 4rem;
+	color: white;
+}
+.vulcan-post-slider .slide-details {
+	color: white;
+}
+.vulcan-post-slider .slide-postlink {
+	
+}
+.vulcan-post-slider .slide-postlink a {
+	display: inline-block;
+	padding: 10px 42px;
+	background: white;
+	color: #222;
+	transition: all 200ms ease;
+}
+.vulcan-post-slider .slide-postlink a:hover {
+	background: var(--mk-link-color);
+	color: white;
+}
+.vulcan-post-slider .slide-controls {
+	position: absolute;
+	display: flex;
+	justify-content: flex-end;
+	left: 0;
+	bottom: calc( -1 * var(--control-height) / 2 );
+	width: 100%;
+	padding: 0 var(--side-padding);
+}
+.vulcan-post-slider .slide-controls .slide-control {
+	width: calc( var(--control-height) * 1.25 );
+	height: var(--control-height);
+	margin: 0 0 0 10px;
+	border: none;
+	padding: 0;
+	outline: none;
+	background: transparent;
+}
+
+.vulcan-post-slider .slide-controls .slide-control .thumbnail-transform-wrapper {
+	width: 100%;
+	height: 100%;
+	box-shadow: 0 8px 8px -1px rgba(0,0,0,0.2);
+	transform: translateY(0px);
+	transition: all 300ms ease;
+}
+.vulcan-post-slider .slide-controls .slide-control:hover .thumbnail-transform-wrapper {
+	box-shadow: 0 16px 16px -1px rgba(0,0,0,0.2);
+	transform: translateY(-8px)
+}
+.vulcan-post-slider .slide-controls .slide-control .slide-thumbnail {
+	width: 100%;
+	height: 100%;
+	border-radius: 2px;
+	background: none;
+	object-fit: cover;
+}
+.vulcan-post-slider .slide-controls .slide-control .slide-thumbnail {
+	filter: grayscale(64%);
+	transition: all 300ms ease;
+}
+.vulcan-post-slider .slide-controls .slide-control:hover .slide-thumbnail {
+	filter: grayscale(0%);
 }
 
 
