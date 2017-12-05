@@ -13,299 +13,247 @@ class VulcanPostSlider
     * @param {Integer} interval - Time between slide transitions in miliseconds.
     * @param {Integer} speed - Slide transition time in miliseconds.
     */
-    constructor( container, content, interval, speed )
+    constructor ( container, content, interval, speed )
     {
         this.container = container;
         this.content = content;
-		this.controlsArray = [];
+		this.controls = null;
         this.interval = interval;
         this.speed = speed;
         this.shifting = false;
         this.loop = null;
         this.slides = null;
-        this.activeSlide = null;
-        this.activeSlideIndex = 0;
-        this.preload = [];
+        this.sidx = 0;
 
         if ( !this.container.classList.contains('VulcanPostSlider') )
         {
             this.container.classList.add('VulcanPostSlider');
         }
-
-        this.view = ( 
-			() =>
-			{
-				let v = document.createElement('div');
-				v.classList.add('view');
-				return v;
-			}
-        )();
-		
-		this.overlay = ( 
-			() =>
-			{
-				let o = document.createElement('div');
-				let shape = document.createElement('figure');
-				shape.classList.add('triangle', 'right', 'cyan');
-				o.appendChild(shape);
-				o.classList.add('overlay');
-				return o;
-			}
-        )();
         
         this.slides = ( 
 			() =>
 			{
 				let sa = [];
-				for ( const slide of Array.from( this.content.children ) )
+				for ( let slide of Array.from( this.content.children ) )
 				{
-					console.log( slide );
 					sa.push( slide );
 				}
 				return sa;
 			}
         )();
+		
+		/*
+		* init slide styles
+		*/
+		this.slides.forEach(
+			e =>
+			{
+				if ( '0' === e.getAttribute( 'data-slide-index' ) )
+				{
+					e.classList.add('active');
+				}
+				e.style.setProperty( 'transition', 'all ' + this.speed + 'ms ease-out' );
+				e.style.setProperty( 'animation-duration', this.speed + 'ms' );
+			}
+		);
 
         this.controls = ( 
 			() =>
 			{
-				const c = container.getElementsByClassName('slide-controls')[0];
-				c.classList.add('controls');
-				function createControl( s, that )
+				let ca = [];
+				for ( const control of Array.from( this.container.getElementsByClassName('slide-controls')[0].children ) )
 				{
-					let g = document.createElement( 'span' );
-					g.classList.add( 'goto' );
-					g.addEventListener( 
-						'click', 
-						function handleClick()
+					control.addEventListener(
+						'click',
+						() =>
 						{
-							if ( ! that.shifting )
-							{
-								that.goToSlide( 
-									that.activeSlideIndex,
-									parseInt( s.getAttribute('data-dhs-index') )
-								);
-								that.resetInterval();
-							}
+							this.goToSlide(	parseInt( control.getAttribute('data-slide-index') ) );
 						}
 					);
-					return g;
+					ca.push( control );
 				}
-				for( const slide of this.slides )
-				{
-					const g = createControl( slide, this );
-					this.controlsArray.push( g );
-					c.appendChild( g );
-				}
-				return c;
+				return ca;
 			}
         )();
 		
-        this.activeSlide = this.view.appendChild( 
-			this.slides.slice( 
-				this.activeSlideIndex, 
-				this.activeSlideIndex + 1 
-			)[0] 
-		);
 		this.setActiveControlStyles();
-        this.container.appendChild( this.view );
-		this.container.appendChild( this.overlay );
-        this.container.appendChild( this.controls );
+		
         this.loop = setInterval( 
 			() =>
 			{
-				if ( !this.shifting )
+				if ( ! this.shifting )
 				{
 					this.advance();
 				}
 			}, 
 			this.interval
 		);
-        this.view.style.transition = this.speed + 'ms ease all';
+		
         return this;
     }
 	
 	setActiveControlStyles()
 	{
-		let ix = 0;
-		for ( const control of this.controlsArray )
+		let idx = 0;
+		for ( const control of this.controls )
 		{
 			if ( control.classList.contains('active') )
 			{
 				control.classList.remove('active');
 			}
-			if ( this.activeSlideIndex === ix++ )
+			if ( idx === this.sidx )
 			{
 				control.classList.add('active');
 			}
+			++idx;
 		}
 	}
 	
     advance()
     {
+		if ( true === this.shifting )
+		{
+			return;
+		}
         this.shifting = true;
-        let nsi = ( this.activeSlideIndex === this.slides.length - 1 ) ? 0 : this.activeSlideIndex + 1;
-        let cs = this.activeSlide;
-        let ns = this.slides.slice( nsi, nsi + 1 )[0];
-		ns.img.setAttribute(
-			'style',
-			'opacity:0;'+
-			'transform:translateX(4%);'+
-			'transition:all ' + this.speed + 'ms ease;'
-		);
-		ns.caption.setAttribute(
-			'style',
-			'opacity:0;'+
-			'transform:translateY(4%);'+
-			'transition:all ' + this.speed + 'ms ease;'
-		);
-        ns = this.view.appendChild( ns );
-        setTimeout( 
+        let newSlideIndex = this.getNextIndex();
+        let currentSlide = this.slides[this.sidx];
+        let newSlide = this.slides[newSlideIndex];
+		this.doAnimation(
+			currentSlide,
+			newSlide,
 			() =>
 			{
-				cs.img.setAttribute(
-					'style',
-					'opacity:0;'+
-					'transform:translateX(0%);'+
-					'transition:all ' + this.speed + 'ms ease;'
-				);
-				cs.caption.setAttribute(
-					'style',
-					'opacity:0;'+
-					'transform:translateY(0%);'+
-					'transition:all ' + this.speed + 'ms ease;'
-				);
-			}, 
-			1
-		);
-		setTimeout( 
-			() =>
-			{
-				ns.img.setAttribute(
-					'style',
-					'opacity:1;'+
-					'transform:translateX(0%);'+
-					'transition:all ' + this.speed + 'ms ease;'
-				);
-				ns.caption.setAttribute(
-					'style',
-					'opacity:1;'+
-					'transform:translateY(0%);'+
-					'transition:all ' + this.speed + 'ms ease;'
-				);
-			}, 
-			this.speed
-		);
-        setTimeout( 
-			() =>
-			{
-				this.view.removeChild(cs);
-				this.activeSlide = ns;
-				if ( this.activeSlideIndex < this.slides.length - 1 )
-				{
-					this.activeSlideIndex++;
-				}
-				else
-				{
-					this.activeSlideIndex = 0;
-				}
+				this.updateIndex();
 				this.setActiveControlStyles();
 				this.shifting = false;
-			}, 
-			this.speed
+				this.resetInterval();
+			}
 		);
     }
 
     retreat()
     {
-        this.shifting = true;
-        let psi = ( this.activeSlideIndex === 0 ) ? this.slides.length - 1 : this.activeSlideIndex - 1;
-        let cs = this.activeSlide;
-        let ns = this.slides.slice( psi, psi + 1 )[0];
-		ns.img.setAttribute(
-			'style',
-			'opacity:0;'+
-			'transform:translateX(4%);'+
-			'transition:all ' + this.speed + 'ms ease;'
-		);
-		ns.caption.setAttribute(
-			'style',
-			'opacity:0;'+
-			'transform:translateY(4%);'+
-			'transition:all ' + this.speed + 'ms ease;'
-		);
-        ns = this.view.appendChild( ns );
-        setTimeout( 
-			() =>
-			{
-				cs.img.setAttribute(
-					'style',
-					'opacity:0;'+
-					'transform:translateX(0%);'+
-					'transition:all ' + this.speed + 'ms ease;'
-				);
-				cs.caption.setAttribute(
-					'style',
-					'opacity:0;'+
-					'transform:translateY(0%);'+
-					'transition:all ' + this.speed + 'ms ease;'
-				);
-			}, 
-			1
-		);
-		setTimeout( 
-			() =>
-			{
-				ns.img.setAttribute(
-					'style',
-					'opacity:1;'+
-					'transform:translateX(0%);'+
-					'transition:all ' + this.speed + 'ms ease;'
-				);
-				ns.caption.setAttribute(
-					'style',
-					'opacity:1;'+
-					'transform:translateY(0%);'+
-					'transition:all ' + this.speed + 'ms ease;'
-				);
-			}, 
-			this.speed
-		);
-        setTimeout( 
-			() =>
-			{
-				this.view.removeChild(cs);
-				this.activeSlide = ns;
-				if ( this.activeSlideIndex > 0 )
-				{
-					this.activeSlideIndex--;
-				}
-				else
-				{
-					this.activeSlideIndex = this.slides.length - 1;
-				}
-				this.setActiveControlStyles();
-				this.shifting = false;
-			}, 
-			this.speed
-		);
-    }
-	
-	goToSlide( ixCurr, ixNext )
-	{
-		if ( ixNext === ixCurr )
+		if ( true === this.shifting )
 		{
 			return;
 		}
-		else if ( ixNext > ixCurr )
+        this.shifting = true;
+        let previousSlideIndex = this.getNextIndex( true );
+        let currentSlide = this.slides[this.sidx];
+        let newSlide = this.slides[previousSlideIndex];
+        this.doAnimation(
+			currentSlide,
+			newSlide,
+			() =>
+			{
+				this.updateIndex( true );
+				this.setActiveControlStyles();
+				this.shifting = false;
+				this.resetInterval();
+			}
+		);
+    }
+	
+	goToSlide( ixNext )
+	{
+		if ( ixNext === this.sidx )
 		{
-			this.activeSlideIndex = --ixNext;
-			this.advance();
+			return;
 		}
-		else if ( ixNext < ixCurr )
+		if ( true === this.shifting )
 		{
-			this.activeSlideIndex = ++ixNext;
-			this.retreat();
+			return;
+		}
+		this.shifting = true;
+		let currentSlide = this.slides[this.sidx];
+		let newSlide = this.slides[ixNext];
+		this.doAnimation(
+			currentSlide,
+			newSlide,
+			() =>
+			{
+				this.sidx = ixNext;
+				this.setActiveControlStyles();
+				this.shifting = false;
+				this.resetInterval();
+			}
+		);
+	}
+	
+	doAnimation( cs, ns, callback )
+	{
+		ns.classList.add('slide-fade-in');
+		setTimeout(
+			() =>
+			{
+				ns.classList.add('active');
+				cs.classList.remove('active');
+				ns.classList.remove('slide-fade-in');
+			},
+			this.speed - 1
+		);
+		setTimeout(
+			() =>
+			{
+				if ( 'function' === typeof callback )
+				{
+					callback();
+				}
+			},
+			this.speed
+		);
+	}
+	
+	getNextIndex ( reverse = false )
+	{
+		if ( false === reverse )
+		{
+			if ( this.slides.length - 1 === this.sidx )
+			{
+				return 0;
+			}
+			else
+			{
+				return this.sidx + 1;
+			}
+		}
+		else
+		{
+			if ( 0 === this.sidx )
+			{
+				 return this.slides.length - 1;
+			}
+			else
+			{
+				 return this.sidx - 1;
+			}
+		}
+	}
+	
+	updateIndex ( reverse = false )
+	{
+		if ( false === reverse )
+		{
+			if ( this.slides.length - 1 > this.sidx )
+			{
+				this.sidx++;
+			}
+			else
+			{
+				this.sidx = 0;
+			}
+		}
+		else
+		{
+			if ( 0 < this.sidx )
+			{
+				this.sidx--;
+			}
+			else
+			{
+				this.sidx = this.slides.length - 1;
+			}
 		}
 	}
 
@@ -326,7 +274,6 @@ class VulcanPostSlider
     
 }
 
-
 let vulcanPostSlider = null;
 window.addEventListener(
 	'load',
@@ -340,5 +287,32 @@ window.addEventListener(
 			6900,
 			666 
 		);
+		let container = (
+			() =>
+			{
+				let c = slider;
+				while ( ! c.classList.contains('mk-page-section-wrapper') || c === document.body )
+				{
+					c = c.parentNode;
+				}
+				return c;
+			}
+		)();
+		container.style.setProperty( 'z-index', '1001' );
+		
 	}
 );
+
+
+
+
+
+
+
+
+
+
+
+
+
+

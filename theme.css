@@ -17,26 +17,9 @@
 :root {
 	--headingFont: 'Cachet Book';
 	--bodyFont: 'Open Sans';
-}
-
-.blue-bar-top:after,
-.blue-bar-bottom:after {
-	content: "";
-	position: absolute;
-	left: 0;
-	width: 25vw;
-	height: 16px;
-	background: var(--mk-skin-color);
-	z-index: 100010;
-}
-.blue-bar-top:after {
-	top: 0;
-}
-.blue-bar-bottom:after {
-	bottom: 0;
-}
-.teal-bar-bottom {
-	border-bottom: 16px solid var(--mk-link-hover-color);
+	
+	--border-thickness: 16px;
+	
 }
 
 h1, h2, h3 {
@@ -112,43 +95,8 @@ h1, h2, h3 {
 /*
 * Header / Nav
 */
-body.home .mk-header {
-	position: absolute;
-	background: transparent;
-	border-bottom: 1px solid transparent;
-	transition: all 333ms ease;
-}
-/* Set home colors */
-body.home .mk-header .mk-header-holder {
-	transition: all 80ms ease !important;
-}
-body.home .mk-header:not(.a-sticky) .mk-header-holder {
-	padding-top: 42px;
-	transition: all 333ms 222ms ease !important;
-}
-body.home .mk-header .mk-header-inner {
-	transition: all 333ms ease;
-}
-body.home .mk-header:not(.a-sticky) .mk-header-inner {
-	border-bottom: 10px solid transparent;
-}
-body.home .mk-header .mk-header-bg {
-	transition: all 333ms ease;
-}
-body.home .mk-header:not(.a-sticky) .mk-header-bg {
-	background-color: transparent;
-}
-body.home .mk-header .mk-responsive-wrap {
-	transition: all 333ms ease;
-}
-body.home .mk-header:not(.a-sticky) .mk-responsive-wrap {
-	background-color: transparent;
-}
-body.home .mk-header:not(.a-sticky) .main-navigation-ul > li.menu-item > a.menu-item-link {
-	color: white;
-	font-size: 18px;
-	text-transform: uppercase;
-	letter-spacing: 1px;
+.mk-header {
+	border-bottom: none !important;
 }
 
 /* set nav font */
@@ -160,103 +108,17 @@ body.home .mk-header:not(.a-sticky) .main-navigation-ul > li.menu-item > a.menu-
 
 
 /*
-* Home: About
-*/
-body.home h1 {
-	font-size: 3.5rem;
-	color: var(--mk-skin-color);
-}
-
-
-/*
-* Home: Programs
-*/
-#programs .vc_column-inner {
-	padding: 0 !important;
-}
-#programs .page-section-content > .mk-padding-wrapper.wpb_row {
-	display: flex;
-	align-items: stretch;
-}
-#programs .programsDescription {
-	height: unset !important;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	padding: 10% 2%;
-}
-#programs .programsGrid {
-	padding: 0 0 0 10px !important;
-}
-
-
-
-/*
-* Side bar
-*/
-.side-bar .wpb_row.vc_inner.vc_row .vc_column_container .vc_column-inner {
-	padding: 32px 24px;
-}
-.side-bar .wpb_row.vc_inner.vc_row .vc_column_container .vc_column-inner p {
-	color: white;
-}
-.side-bar .mk-text-block a,
-.side-bar .mk-contactinfo-shortcode a {
-	color: white;
-	transition: all 200ms ease;
-}
-.side-bar .mk-text-block a:hover,
-.side-bar .mk-contactinfo-shortcode a:hover {
-	color: var(--mk-skin-color);
-}
-.side-bar .widget_contact_info.mk-contactinfo-shortcode .shortcode-heading.mk-fancy-title.pattern-style {
-	background: none !important;
-}
-.side-bar .widget_contact_info.mk-contactinfo-shortcode .shortcode-heading.mk-fancy-title.pattern-style span {
-	background: transparent !important;
-	color: white !important;
-}
-.side-bar .widget_contact_info.mk-contactinfo-shortcode svg {
-	fill: white !important;
-}
-
-
-
-/*
 * Footer
 */
 #mk-footer {
-	border-top: 16px solid var(--mk-link-hover-color) !important;
+	border-top: none !important;
 	padding: 0 !important;
 }
 #mk-footer .footer-wrapper.mk-grid {
 	padding: 64px 0 !important;
 }
-#mk-footer .widget > div:not(.widgettitle) {
-	min-height: 250px;
-	background: white !important;
-	padding: 24px;
-}
 
-.widget-social-link {
-	display: block;
-	border-top: 2px solid #e8e8e8;
-	padding: 8px;
-}
-.widget-social-link.facebook {
-	font-weight: 600;
-	color: var(--mk-skin-color);
-}
-.widget-social-link.instagram {
-	font-weight: 600;
-	color: gray;
-}
-.widget-social-link img {
-	width: 33px !important;
-	height: 33px !important;
-	margin: 0 16px;
-	object-fit: contain;
-}
+
 
 /*
 * Sub Footer
@@ -271,20 +133,6 @@ body.home h1 {
 	display: block !important;
 	width: 100% !important;
 	padding: 32px 5% !important;
-}
-#sub-footer .ymca-footer {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-#sub-footer .footer-links {
-	list-style: none !important;
-	text-align: right;
-	line-height: 1.2;
-}
-#sub-footer .ymca-copyright {
-	padding: 32px 0 0;
-	text-align: center;
 }
 
 

@@ -135,7 +135,6 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 
 		$i = 0;
 		while ( $my_query->have_posts() && $i < $num_posts ) {
-			$i++;
 			$my_query->the_post();
 			$post_title = the_title( '', '', false );
 			$post_id = $my_query->post->ID;
@@ -148,7 +147,7 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 			$controls[] = $thumbControl;
 
 			$html .= 
-				'<figure class="slide">' .
+				'<figure class="slide" data-slide-index="' . $i . '">' .
 					'<div class="image-wrapper">' .
 						$post_image .
 						'<div class="image-shader"></div>' .
@@ -162,6 +161,7 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 						'</div>' .
 					'</figure>' .
 				'</figure>';
+			$i++;
 		}
 		
 		$html .= '</div>';

@@ -18,6 +18,7 @@
 	width: 100%;
 	max-width: 100%;
 	padding-top: calc( 100vh - ( var(--control-height) * 0.65 ) );
+	overflow: hidden;
 }
 body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 	padding-top: calc( 100vh - 32px - ( var(--control-height) * 0.65 ) );
@@ -35,6 +36,11 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 	left: 0;
 	width: 100%;
 	height: 100%;
+}
+.vulcan-post-slider .slide.active {
+	z-index: 1;
+	opacity: 1.0;
+	transform: translateX(0%);
 }
 .vulcan-post-slider .slide .image-wrapper,
 .vulcan-post-slider .slide .slide-fullimage,
@@ -100,6 +106,7 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 	bottom: calc( -1 * var(--control-height) / 2 );
 	width: 100%;
 	padding: 0 var(--side-padding);
+	z-index: 1000101;
 }
 .vulcan-post-slider .slide-controls .slide-control {
 	width: calc( var(--control-height) * 1.25 );
@@ -118,9 +125,27 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 	transform: translateY(0px);
 	transition: all 300ms ease;
 }
+.vulcan-post-slider .slide-controls .slide-control.active .thumbnail-transform-wrapper,
 .vulcan-post-slider .slide-controls .slide-control:hover .thumbnail-transform-wrapper {
 	box-shadow: 0 16px 16px -1px rgba(0,0,0,0.2);
 	transform: translateY(-8px)
+}
+.vulcan-post-slider .slide-controls .slide-control .thumbnail-transform-wrapper:after {
+	content: "";
+	position: absolute;
+	display: block;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 8px;
+	background: var(--mk-skin-color);
+	opacity: 0;
+	pointer-events: none;
+	transition: all 300ms ease;
+}
+.vulcan-post-slider .slide-controls .slide-control.active .thumbnail-transform-wrapper:after {
+	opacity: 0.95;
 }
 .vulcan-post-slider .slide-controls .slide-control .slide-thumbnail {
 	width: 100%;
@@ -133,6 +158,7 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 	filter: grayscale(64%);
 	transition: all 300ms ease;
 }
+.vulcan-post-slider .slide-controls .slide-control.active .slide-thumbnail,
 .vulcan-post-slider .slide-controls .slide-control:hover .slide-thumbnail {
 	filter: grayscale(0%);
 }
@@ -438,8 +464,31 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 
 
 
-
-
+/*
+* Animation classes
+*/
+.slide-fade-in {
+	z-index: 1010;
+	opacity: 1.0;
+	transform: translateX(0%);
+	animation-name: slide-fade-in;
+	animation-delay: 0ms;
+	animation-direction: normal;
+	animation-fill-mode: forwards;
+	animation-iteration-count: 1;
+	animation-play-state: running;
+	animation-timing-function: ease-out;
+}
+@keyframes slide-fade-in {
+	from {
+		opacity: 0.0;
+		transform: translateX(100%);
+	}
+	to {
+		opacity: 1.0;
+		transform: translateX(0%);
+	}
+}
 
 
 
