@@ -13,10 +13,11 @@ class VulcanPostSlider
     * @param {Integer} interval - Time between slide transitions in miliseconds.
     * @param {Integer} speed - Slide transition time in miliseconds.
     */
-    constructor ( container, content, interval, speed )
+    constructor ( container, content, type, interval, speed )
     {
         this.container = container;
         this.content = content;
+		this.type = type;
 		this.controls = null;
         this.interval = interval;
         this.speed = speed;
@@ -36,6 +37,7 @@ class VulcanPostSlider
 				let sa = [];
 				for ( let slide of Array.from( this.content.children ) )
 				{
+					slide.flexWrapper = slide.getElementsByClassName('slide-flex-wrapper')[0];
 					sa.push( slide );
 				}
 				return sa;
@@ -54,6 +56,8 @@ class VulcanPostSlider
 				}
 				e.style.setProperty( 'transition', 'all ' + this.speed + 'ms ease-out' );
 				e.style.setProperty( 'animation-duration', this.speed + 'ms' );
+				e.flexWrapper.style.setProperty( 'transition', 'all ' + this.speed + 'ms ease-out' );
+				e.flexWrapper.style.setProperty( 'animation-duration', this.speed + 'ms' );
 			}
 		);
 
@@ -63,13 +67,47 @@ class VulcanPostSlider
 				let ca = [];
 				for ( const control of Array.from( this.container.getElementsByClassName('slide-controls')[0].children ) )
 				{
-					control.addEventListener(
-						'click',
-						() =>
+					if ( 'hero' === this.type )
+					{
+						control.addEventListener(
+							'click',
+							() =>
+							{
+								this.goToSlide(	parseInt( control.getAttribute('data-slide-index') ) );
+							}
+						);
+					}
+					if ( 'post' === this.type )
+					{
+						let cl = control.classList;
+						if ( cl.contains('arrow') )
 						{
-							this.goToSlide(	parseInt( control.getAttribute('data-slide-index') ) );
+							if ( cl.contains('left') )
+							{
+								control.addEventListener(
+									'click',
+									() =>
+									{
+										this.retreat();
+									}
+								);
+							}
+							else if ( cl.contains('right') )
+							{
+								control.addEventListener(
+									'click',
+									() =>
+									{
+										this.advance();
+									}
+								);
+							}
+							else
+							{
+								return;
+							}
 						}
-					);
+					}
 					ca.push( control );
 				}
 				return ca;
@@ -184,11 +222,12 @@ class VulcanPostSlider
 	doAnimation( cs, ns, callback )
 	{
 		ns.classList.add('slide-fade-in');
+		cs.classList.remove('active');
+		ns.flexWrapper.classList.add('slide-fade-in');
 		setTimeout(
 			() =>
 			{
 				ns.classList.add('active');
-				cs.classList.remove('active');
 				ns.classList.remove('slide-fade-in');
 			},
 			this.speed - 1
@@ -202,6 +241,13 @@ class VulcanPostSlider
 				}
 			},
 			this.speed
+		);
+		setTimeout(
+			() =>
+			{
+				ns.flexWrapper.classList.remove('slide-fade-in');
+			},
+			this.speed * 2
 		);
 	}
 	
@@ -281,11 +327,17 @@ window.addEventListener(
 	{
 		'use strict';
 		const slider = document.getElementById('Vulcan_Post_Slider');
+		if ( null === slider || undefined === slider )
+		{
+			return;
+		}
+		let meta = JSON.parse( slider.getAttribute('data-meta') );
 		vulcanPostSlider = new VulcanPostSlider( 
 			slider,
 			slider.getElementsByClassName('vulcan-slides-wrapper')[0],
-			6900,
-			666 
+			meta.type,
+			meta.interval,
+			meta.speed 
 		);
 		let container = (
 			() =>

@@ -29,6 +29,15 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 	let wpadminbar = document.getElementById('wpadminbar');
 	let header = document.querySelector('.mk-header');
 	let rHeader = header.querySelector('.mk-header-holder');
+	
+	let footerMap = document.querySelector('.difd-map-widget');
+	let locations = footerMap.querySelectorAll('v-location');
+	for ( const loc of Array.from(locations) )
+	{
+		let coords = JSON.parse( loc.dataset.coordinates );
+		loc.style.setProperty( 'top', coords.top );
+		loc.style.setProperty( 'left', coords.left );
+	}
     
     /* --------------------------------------------------- */
     
