@@ -64,6 +64,7 @@ function vc_before_init_actions()
 {
 	require_once( __DIR__ . '/vc-elements/vulcan-post-slider.php' );
 	require_once( __DIR__ . '/vc-elements/vulcan-events.php' );
+	require_once( __DIR__ . '/vc-elements/vulcan-facebook-page.php' );
 }
 
 add_action( 'wp_enqueue_scripts', 'vulcan_theme_css', 42 );
