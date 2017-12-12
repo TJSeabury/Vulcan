@@ -1,16 +1,16 @@
 /* 
 * This file is dynamically generated.
-* Last updated on: Fri, 08 Dec 2017 14:55:19 -0500
+* Last updated on: Tue, 12 Dec 2017 09:47:54 -0500
 */
 :root {
-	--mk-skin-color: #9b1338;
-	--mk-link-color: #255eba;
-	--mk-link-hover-color: #3e73dd;
-	--mk-strong-color: #161616;
+	--mk-skin-color: #f47e46;
+	--mk-link-color: #004f6b;
+	--mk-link-hover-color: #00b2ba;
+	--mk-strong-color: #f47e46;
 	--mk-grid-width: 1280px;
-	--mk-header-height: 70px;
-	--mk-responsive-header-height: 70px;
-	--mk-sticky-header-height: 70px;
-	--mk-logo: url("http://difdev.com/oldharbor/wp-content/uploads/2017/12/logo.png");
+	--mk-header-height: 90px;
+	--mk-responsive-header-height: 90px;
+	--mk-sticky-header-height: 90px;
+	--mk-logo: url("http://difdev.com/westernmass/wp-content/uploads/2017/11/logo.png");
 }
 			

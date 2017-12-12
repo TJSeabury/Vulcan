@@ -199,6 +199,128 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 
 
 /*
+* HeroSlider
+*/
+.HeroSlider {
+    position: relative;
+	height: calc( 100vw / 1.77778 / 2 );
+}
+.HeroSlider .view {
+    position: absolute;
+    display: block;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-sizing: border-box;
+	overflow: hidden;
+    z-index: 1;
+    transition: inherit;
+}
+.HeroSlider .view .slide {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    z-index: 1;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    transform: translateX(0);
+    transition: inherit;
+}
+.HeroSlider .view .slide:before {
+    content: "";
+    position: absolute;
+    display: block;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: hsla(0,0,0,0);
+}
+.HeroSlider .view .slide figcaption {
+    display: block;
+    width: 74%;
+    color: white;
+    font-family: 'ExpresswayRg-Regular', 'Roboto', sans-serif;
+    text-align: center;
+    filter: drop-shadow( 3px 3px 2px hsla(240,0%,0%,1.0) );
+}
+.HeroSlider .view .slide figcaption h2 {
+    margin: 0;
+    font-size: 8rem;
+}
+.HeroSlider .view .slide figcaption p {
+    margin: 0;
+    font-size: 4rem;
+    line-height: 4rem;
+}
+@media only screen and (min-width: 1024px) {
+    .HeroSlider .view .slide figcaption h2 {
+        font-size: 8rem !important;
+    }
+    .HeroSlider .view .slide figcaption p {
+        font-size: 4rem !important;
+        line-height: 4rem !important;
+    }
+}
+/* overlay */
+.HeroSlider .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000008;
+}
+/* controls */
+.HeroSlider .controls {
+    position: absolute;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+	padding: 2% 6%;
+    z-index: 1000010;
+}
+.HeroSlider .controls .goto {
+	width: 20px;
+	height: 20px;
+	margin: 0 8px;
+	background-color: white;
+	border-radius: 100%;
+	cursor: pointer;
+	transition: all 200ms ease;
+}
+.HeroSlider .controls .goto:hover {
+	background-color: var(--themeOrange);
+}
+.HeroSlider .controls .goto.active {
+	background-color: var(--themeTeal);
+}
+
+
+
+/*
 * Vulcan Events
 */
 .vulcan-events {
