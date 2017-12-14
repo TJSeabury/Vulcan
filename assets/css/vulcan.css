@@ -618,6 +618,177 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 
 
 
+/*
+* Vulcan Filtered Post Categories
+*/
+.vulcan-filtered-post-category {}
+.vulcan-filtered-post-category,
+.vulcan-filtered-post-category * {
+	box-sizing: border-box;
+}
+/* The Filter */
+.filtered-post-category-controls {
+	padding: 16px;
+	background: #ddd;
+}
+.filtered-post-category-control {
+	display: inline-flex;
+	align-items: center;
+	margin-right: 16px;
+}
+
+/*
+* INCORPORATE one of these
+*/
+/* .slideThree */
+.slideThree {
+  width: 80px;
+  height: 26px;
+  background: #333;
+  margin: 20px auto;
+  position: relative;
+  border-radius: 50px;
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+          box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+.slideThree:after {
+  content: 'OFF';
+  color: #000;
+  position: absolute;
+  right: 10px;
+  z-index: 0;
+  font: 12px/26px Arial, sans-serif;
+  font-weight: bold;
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.15);
+}
+.slideThree:before {
+  content: 'ON';
+  color: #27ae60;
+  position: absolute;
+  left: 10px;
+  z-index: 0;
+  font: 12px/26px Arial, sans-serif;
+  font-weight: bold;
+}
+.slideThree label {
+  display: block;
+  width: 34px;
+  height: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  z-index: 1;
+  background: #fcfff4;
+  background: _linear-gradient_legacy(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%...);
+  border-radius: 50px;
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  -webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+          box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+}
+.slideThree input[type=checkbox] {
+  visibility: hidden;
+}
+.slideThree input[type=checkbox]:checked + label {
+  left: 43px;
+}
+/* end .slideThree */
+/* .squaredThree */
+.squaredThree {
+  width: 20px;
+  position: relative;
+  margin: 20px auto;
+}
+.squaredThree label {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: _linear-gradient_legacy(top, #222 0%, #45484d 100%...);
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.4);
+          box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.4);
+}
+.squaredThree label:after {
+  content: '';
+  width: 9px;
+  height: 5px;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  border: 3px solid #fcfff4;
+  border-top: none;
+  border-right: none;
+  background: transparent;
+  opacity: 0;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+}
+.squaredThree label:hover::after {
+  opacity: 0.3;
+}
+.squaredThree input[type=checkbox] {
+  visibility: hidden;
+}
+.squaredThree input[type=checkbox]:checked + label:after {
+  opacity: 1;
+}
+/* end .squaredThree */
+
+.filtered-post-category-control input {
+	width: 16px;
+	height: 16px;
+	margin-right: 8px;
+	border: none;
+	border-radius: 0;
+}
+.filtered-post-category-control label {
+	opacity: 0.65;
+}
+/* The Items wrapper */
+.vulcan-filtered-post-category .category-posts-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	
+}
+/* The Items */
+.vulcan-filtered-post-category .filtered-post-category-item {
+	width: 50%;
+	padding: 16px;
+}
+
+.vulcan-filtered-post-category .filter-post-category-title {
+	margin-bottom: 8px;
+	font-family: var(--mk-font-all) !important;
+	font-size: 2rem !important;
+	line-height: 1.2 !important;
+	text-transform: uppercase !important;
+	color: var(	--mk-strong-color);
+	background-color: transparent !important;
+}
+.filter-post-category-tags {
+	font-size: 12px;
+	opacity: 0.5;
+}
+.vulcan-filtered-post-category .filtered-post-category-item ul {
+	margin: 0;
+	list-style: none;
+}
+.vulcan-filtered-post-category .filtered-post-category-item ul li {
+	margin: 0;
+}
+.vulcan-filtered-post-category .filtered-post-category-item ul li a {
+	color: var(--mk-link-color);
+}
+.vulcan-filtered-post-category .filtered-post-category-item ul li a:hover {
+	color: var(--mk-link-hover-color);
+}
+
+
+
 
 /*
 * Animation classes

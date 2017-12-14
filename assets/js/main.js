@@ -244,6 +244,13 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 	* Parse and inject shapes
 	*/
 	window.addEventListener(
+		'newshape',
+		e =>
+		{
+			e.detail.emitter.appendChild( createShape( e.detail.emitter.classList ) );
+		}
+	);
+	window.addEventListener(
 		'load',
 		() =>
 		{
@@ -252,152 +259,161 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 			{
 				[].forEach.call( 
 					ps.classList, 
-					e => 
+					cn => 
 					{
-						if ( e.includes('difd_add-triangle-') )
-						{
-							let triangle = d.createElement('figure');
-							triangle.classList.add('triangle');
-							
-							let offset = !1;
-							
-							let scale = !1;
-							let transformX = !1;
-							let transformY = !1;
-							
-							let styles = 
-								'position: absolute;' +
-								'width: 0;' +
-								'height: 0;' +
-								'margin: 0;' +
-								'border-style: solid;' +
-								'padding: 0;';
-							
-							if ( e.includes('offset') )
-							{
-								offset = e.match( /(offset_)(.*)(_)/ )[2];
-							}
-							
-							if ( e.includes('scale') )
-							{
-								scale = e.match( /(scale_)(.*)(_)/ )[2];
-							}
-							
-							if ( e.includes('transformX') )
-							{
-								transformX = e.match( /(transformX_)(.*)(_)/ )[2];
-							}
-							
-							if ( e.includes('transformY') )
-							{
-								transformY = e.match( /(transformY_)(.*)(_)/ )[2];
-							}
-							
-							if ( e.includes('transform') )
-							{
-								let transforms = 
-									( scale ? ' scale(' + scale + ')' : '' ) +
-									( transformX ? ' transformX(' + transformX + ')' : '' ) +
-									( transformY ? ' transformY(' + transformY + ')' : '' );
-								let origins = '';
-								if ( transforms )
-								{
-									styles += 'transform:' + transforms + ';';
-								}
-								if ( e.includes('top') )
-								{
-									origins += ' top';
-								}
-								else if ( e.includes('bottom') )
-								{
-									origins += ' bottom';
-								}
-								else
-								{
-									origins += ' center';
-								}
-								if ( e.includes('left') )
-								{
-									origins += ' left';
-								}
-								else if ( e.includes('right') )
-								{
-									origins += ' right';
-								}
-								else
-								{
-									origins += ' center';
-								}
-								styles += 'transform-origin:' + origins + ';';
-							}
-
-							if ( ! e.includes('invert') )
-							{
-								styles += 'border-bottom-width: calc( var(--halfViewportHeight) + 128px );';
-								styles += 'border-bottom-color: transparent;';
-							}
-							else
-							{
-								styles += 'border-top-width: calc( var(--halfViewportHeight) + 128px );';
-								styles += 'border-top-color: transparent;';
-							}
-
-							if ( e.includes('top') )
-							{
-								styles += 'top: ' + ( offset ? offset : '0px' ) + ';';
-							}
-
-							if ( e.includes('middle') )
-							{
-								styles += 'top: calc( 50% - ( var(--halfViewportHeight) / 2 + 64px - ' + ( offset ? offset : '0px' ) + ' ) );';
-							}
-
-							if ( e.includes('bottom') )
-							{
-								styles += 'bottom: ' + ( offset ? offset : '0px' ) + ';';
-							}
-
-							if ( e.includes('left') )
-							{
-								styles += 'left: 0;';
-								styles += 'border-left-width: var(--sideMarginWidth);';
-
-								if ( e.includes('orange') )
-								{
-									styles += 'border-left-color: var(--themeOrange);';
-								}
-
-								if ( e.includes('cyan') )
-								{
-									styles += 'border-left-color: var(--themeCyan);';
-								}
-							}
-
-							if ( e.includes('right') )
-							{
-								styles += 'right: 0;';
-								styles += 'border-right-width: var(--sideMarginWidth);';
-
-								if ( e.includes('orange') )
-								{
-									styles += 'border-right-color: var(--themeOrange);';
-								}
-
-								if ( e.includes('cyan') )
-								{
-									styles += 'border-right-color: var(--themeCyan);';
-								}
-							}
-
-							triangle.setAttribute( 'style', styles );
-
-							ps.appendChild(triangle);
-						}
+						ps.appendChild( createShape( cn ) );
 					} 
 				);
 			}
 		}
 	);
+	
+	function createShape( e )
+	{
+		console.log( e.includes('difd_add-triangle-') );
+		let triangle = d.createElement('figure');
+		if ( e.includes('difd_add-triangle-') )
+		{
+			let triangle = d.createElement('figure');
+			triangle.classList.add('triangle');
+
+			let offset = !1;
+
+			let scale = !1;
+			let transformX = !1;
+			let transformY = !1;
+
+			let styles = 
+				'position: absolute;' +
+				'width: 0;' +
+				'height: 0;' +
+				'margin: 0;' +
+				'border-style: solid;' +
+				'padding: 0;';
+
+			if ( e.includes('offset') )
+			{
+				offset = e.match( /(offset_)(.*)(_)/ )[2];
+			}
+
+			if ( e.includes('scale') )
+			{
+				scale = e.match( /(scale_)(.*)(_)/ )[2];
+			}
+
+			if ( e.includes('transformX') )
+			{
+				transformX = e.match( /(transformX_)(.*)(_)/ )[2];
+			}
+
+			if ( e.includes('transformY') )
+			{
+				transformY = e.match( /(transformY_)(.*)(_)/ )[2];
+			}
+
+			if ( e.includes('transform') )
+			{
+				let transforms = 
+					( scale ? ' scale(' + scale + ')' : '' ) +
+					( transformX ? ' transformX(' + transformX + ')' : '' ) +
+					( transformY ? ' transformY(' + transformY + ')' : '' );
+				let origins = '';
+				if ( transforms )
+				{
+					styles += 'transform:' + transforms + ';';
+				}
+				if ( e.includes('top') )
+				{
+					origins += ' top';
+				}
+				else if ( e.includes('bottom') )
+				{
+					origins += ' bottom';
+				}
+				else
+				{
+					origins += ' center';
+				}
+				if ( e.includes('left') )
+				{
+					origins += ' left';
+				}
+				else if ( e.includes('right') )
+				{
+					origins += ' right';
+				}
+				else
+				{
+					origins += ' center';
+				}
+				styles += 'transform-origin:' + origins + ';';
+			}
+
+			if ( ! e.includes('invert') )
+			{
+				styles += 'border-bottom-width: calc( var(--halfViewportHeight) + 128px );';
+				styles += 'border-bottom-color: transparent;';
+			}
+			else
+			{
+				styles += 'border-top-width: calc( var(--halfViewportHeight) + 128px );';
+				styles += 'border-top-color: transparent;';
+			}
+
+			if ( e.includes('top') )
+			{
+				styles += 'top: ' + ( offset ? offset : '0px' ) + ';';
+			}
+
+			if ( e.includes('middle') )
+			{
+				styles += 'top: calc( 50% - ( var(--halfViewportHeight) / 2 + 64px - ' + ( offset ? offset : '0px' ) + ' ) );';
+			}
+
+			if ( e.includes('bottom') )
+			{
+				styles += 'bottom: ' + ( offset ? offset : '0px' ) + ';';
+			}
+
+			if ( e.includes('left') )
+			{
+				styles += 'left: 0;';
+				styles += 'border-left-width: var(--sideMarginWidth);';
+
+				if ( e.includes('orange') )
+				{
+					styles += 'border-left-color: var(--themeOrange);';
+				}
+
+				if ( e.includes('cyan') )
+				{
+					styles += 'border-left-color: var(--themeCyan);';
+				}
+			}
+
+			if ( e.includes('right') )
+			{
+				styles += 'right: 0;';
+				styles += 'border-right-width: var(--sideMarginWidth);';
+
+				if ( e.includes('orange') )
+				{
+					styles += 'border-right-color: var(--themeOrange);';
+				}
+
+				if ( e.includes('cyan') )
+				{
+					styles += 'border-right-color: var(--themeCyan);';
+				}
+			}
+
+			triangle.setAttribute( 'style', styles );			
+
+		}
+		
+		return triangle;
+		
+	}
 	
 	window.addEventListener(
 		'load',

@@ -53,6 +53,7 @@
 	--smallHeadingFont: 'tex_gyre_adventorregular';
 	--paragraphFont: 'tex_gyre_adventorregular';
 	--primaryNavFont: 'texgyreadventorbold';
+	--mk-font-all: var(--smallHeadingFont);
 	
 	/* sizes */
 	--headerPaddingPercent: 6%;

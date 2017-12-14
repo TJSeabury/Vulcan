@@ -62,6 +62,15 @@ class HeroSlider
 				let o = document.createElement('div');
 				o.classList.add('overlay');
 				o.classList.add('difd_add-triangle-invert-bottom-right-cyan-offset_-64px_');
+				o.shapeEvent = new CustomEvent (
+					'newshape',
+					{
+						detail: 
+						{
+							emitter: o
+						}
+					}
+				);
 				return o;
 			}
         )();
@@ -305,5 +314,6 @@ window.addEventListener(
 			6900,
 			666 
 		);
+		window.dispatchEvent( heroSlider.overlay.shapeEvent );
 	}
 );
