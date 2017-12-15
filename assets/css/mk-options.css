@@ -1,16 +1,17 @@
 /* 
 * This file is dynamically generated.
-* Last updated on: Tue, 12 Dec 2017 09:47:54 -0500
+* Last updated on: Fri, 15 Dec 2017 15:00:09 -0500
 */
 :root {
 	--mk-skin-color: #f47e46;
-	--mk-link-color: #004f6b;
-	--mk-link-hover-color: #00b2ba;
-	--mk-strong-color: #f47e46;
+	--mk-link-color: #00b2ba;
+	--mk-link-hover-color: #f47e46;
+	--mk-strong-color: #004f6b;
 	--mk-grid-width: 1280px;
 	--mk-header-height: 90px;
 	--mk-responsive-header-height: 90px;
 	--mk-sticky-header-height: 90px;
 	--mk-logo: url("http://difdev.com/westernmass/wp-content/uploads/2017/11/logo.png");
+	--mk-font-all: ;
 }
 			

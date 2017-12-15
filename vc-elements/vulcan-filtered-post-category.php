@@ -10,6 +10,11 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
     function __construct() {
         add_action( 'init', array( $this, 'vc_vulcanFilteredCategory_mapping' ) );
         add_shortcode( 'vc_vulcanFilteredCategory', array( $this, 'vc_vulcanFilteredCategory_html' ) );
+		add_action( 'wp_enqueue_scripts', 'vulcan_filtered_category_js', 10 );
+		function vulcan_filtered_category_js() {
+			$path = get_stylesheet_directory_uri() . '/assets/js/vulcan-filtered-category-controls.js';
+			wp_enqueue_script( 'vulcan-filtered-category-js', $path, array(), vulcan_get_file_version($path), true);
+		}
     }
     
     public function vc_vulcanFilteredCategory_mapping()
@@ -76,8 +81,13 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
             )
         );
 		
+		/*
+		* Setup the query.
+		*/
 		$query_args = array(
 			'post_status' => 'publish',
+			'orderby' => 'title',
+			'order' => 'ASC'
 		);
 
 		if ( '' !== $categories )
@@ -91,20 +101,31 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
 			$query_args['category_name'] = $gc;
 		}
 		
+		/*
+		* Classes to be added to the component root.
+		*/
 		$container_classes = array(
 			'vulcan-filtered-post-category',
 			'vulcan-container'
 		);
 		
+		/*
+		* Initialize variables.
+		*/
 		$the_tags = array();
 		
 		$the_filter = null;
 		
 		$the_items = array();
 		
+		/*
+		* Do query.
+		*/
 		$the_query = new WP_Query( $query_args );
-
 		
+		/*
+		* Loop query.
+		*/
 		while ( $the_query->have_posts() ) {
 			/*
 			* Setup the Post.
@@ -115,9 +136,16 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
 			* Build the tag filter data.
 			*/
 			$the_terms = wp_get_post_tags( $the_query->post->ID );
-			foreach ( $the_terms as $term )
+			if ( empty( $the_terms ) )
 			{
-				$the_tags[] = $term->name;
+				$the_tags[] = 'uncategorized';
+			}
+			else
+			{
+				foreach ( $the_terms as $term )
+				{
+					$the_tags[] = $term->name;
+				}
 			}
 			
 			/*
@@ -133,9 +161,9 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
 		/*
 		* Build the filter.
 		*/
-		$the_filter = new VulcanFilteredCategory_FilterControls(
-			array_unique( $the_tags )
-		);
+		$the_tags = array_unique( $the_tags );
+		sort( $the_tags );
+		$the_filter = new VulcanFilteredCategory_FilterControls( $the_tags );
 
 		/*
 		* Build the component.
@@ -176,14 +204,15 @@ class VulcanFilteredCategory_FilterControls
 	private $tags = null;
 	public function __construct( $raw_tags )
 	{
-		
 		foreach ( $raw_tags as $tag )
 		{
-			
 			$this->tags[] = 
 			'<div class="filtered-post-category-control">
-				<input type="checkbox" name="' . $tag . '" value="' . $tag . '">
-				<label for="' . $tag . '">' . $tag . '</label>
+				<div class="slidebox">
+					<input type="checkbox" id="' . $tag . '" name="' . $tag . '" value="' . $tag . '" checked>
+					<label for="' . $tag . '"></label>
+				</div>
+				<span class="control-label">' . $tag . '</span>
 			</div>';
 		}
 		
@@ -192,6 +221,11 @@ class VulcanFilteredCategory_FilterControls
 	public function render()
 	{
 		$html = '<form class="filtered-post-category-controls">';
+			$html .= 
+			'<header>
+				<strong>Category Filters</strong>
+				<span>Toggle filters to reveal or hide items belonging to that tag.</span>
+			</header>';
 			$html .= implode( '', $this->tags );
 		$html .= '</form>';
 		return $html;
@@ -229,9 +263,16 @@ class VulcanFilteredCategory_CategoryItem
 		}
 		
 		// setup the tags
-		foreach ( $raw_terms as $term )
+		if ( empty( $raw_terms ) )
 		{
-			$this->tags[] = $term->name;
+			$this->tags[] = 'uncategorized';
+		}
+		else
+		{
+			foreach ( $raw_terms as $term )
+			{
+				$this->tags[] = $term->name;
+			}
 		}
 		
 	}
@@ -245,10 +286,16 @@ class VulcanFilteredCategory_CategoryItem
 			implode( ', ', $this->tags ) .
 			'</div>' .
 			'<figcaption class="filter-post-category-content">' .
-				'<ul>' .
-					'<li>' . $this->location_svg . ' <a href="' . 'https://www.google.com/maps/search/?api=1&query=' . urlencode( $this->meta['location'] ) . '" target="_blank">' . $this->meta['location'] . '</a></li>' .
-					'<li>' . $this->website_svg . ' <a href="' . $this->meta['link'] . '" target="_blank">' . $this->meta['link'] . '</a></li>' .
-				'</ul>' .
+				'<ul>';
+				if ( $this->meta['location'] )
+				{
+					$html .= '<li>' . $this->location_svg . ' <a href="' . 'https://www.google.com/maps/search/?api=1&query=' . urlencode( $this->meta['location'] ) . '" target="_blank">' . $this->meta['location'] . '</a></li>';
+				}
+				if ( $this->meta['link'] )
+				{
+					$html .= '<li>' . $this->website_svg . ' <a href="' . $this->meta['link'] . '" target="_blank">' . $this->meta['link'] . '</a></li>';
+				}
+				$html .= '</ul>' .
 			'</figcaption>' .
 		'</figure>';
 		return $html;

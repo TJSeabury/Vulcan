@@ -243,6 +243,10 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 	/*
 	* Parse and inject shapes
 	*/
+	/*
+	
+	!! this is broken, fix on monday !!
+	
 	window.addEventListener(
 		'newshape',
 		e =>
@@ -266,7 +270,7 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 				);
 			}
 		}
-	);
+	);*/
 	
 	function createShape( e )
 	{
