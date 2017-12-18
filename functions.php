@@ -106,13 +106,13 @@ function vulcan_main_js() {
 
 add_action( 'wp_enqueue_scripts', 'vulcan_snap_js', 10 );
 function vulcan_snap_js() {
-	$snapJsPath = get_stylesheet_directory_uri() . '/assets/js/snap.svg-min.js';
+	$snapJsPath = get_stylesheet_directory_uri() . '/vendor/js/snap.svg-min.js';
 	wp_enqueue_script( 'snap-svg-js', $snapJsPath, array(), vulcan_get_file_version($snapJsPath), true);
 }
 
 add_action( 'wp_enqueue_scripts', 'vulcan_skrollr_js', 10 );
 function vulcan_skrollr_js() {
-	$snapJsPath = get_stylesheet_directory_uri() . '/assets/js/skrollr.js';
+	$snapJsPath = get_stylesheet_directory_uri() . '/vendor/js/skrollr.js';
 	wp_enqueue_script( 'skrollr-js', $snapJsPath, array(), vulcan_get_file_version($snapJsPath), true);
 }
 
