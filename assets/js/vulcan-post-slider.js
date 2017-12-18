@@ -50,10 +50,12 @@ class VulcanPostSlider
 		this.slides.forEach(
 			e =>
 			{
-				if ( '0' === e.getAttribute( 'data-slide-index' ) )
+				let data_slide_index = e.getAttribute( 'data-slide-index' );
+				if ( '0' === data_slide_index )
 				{
 					e.classList.add('active');
 				}
+				e.style.setProperty( 'z-index', '11' + data_slide_index );
 				e.style.setProperty( 'transition', 'all ' + this.speed + 'ms ease-out' );
 				e.style.setProperty( 'animation-duration', this.speed + 'ms' );
 				e.flexWrapper.style.setProperty( 'transition', 'all ' + this.speed + 'ms ease-out' );
@@ -351,7 +353,7 @@ window.addEventListener(
 			}
 		)();
 		container.style.setProperty( 'z-index', '1001' );
-		
+		vulcanPostSlider.container.classList.remove( 'loading' );
 	}
 );
 

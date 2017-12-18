@@ -5,6 +5,10 @@
 	position: relative;
 	--control-height: 128px;
 	--side-padding: calc( ( 100vw - 17px - var(--mk-grid-width) ) / 2 );
+	transition: all 666ms ease-out;
+}
+.vulcan-post-slider.loading {
+	opacity: 0;
 }
 .vulcan-post-slider,
 .vulcan-post-slider * {
@@ -39,7 +43,7 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 	opacity: 0;
 }
 .vulcan-post-slider .slide.active {
-	z-index: 100;
+	z-index: 10101 !important;
 	opacity: 1.0;
 	transform: translateX(0%);
 }
@@ -105,7 +109,7 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 	background: var(--mk-link-color);
 	color: white;
 }
-.vulcan-post-sliderslider-type-hero .slide-controls {
+.vulcan-post-slider.slider-type-hero .slide-controls {
 	position: absolute;
 	display: flex;
 	justify-content: flex-end;
@@ -767,7 +771,7 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 * Animation classes
 */
 .slide-fade-in {
-	z-index: 1010;
+	z-index: 10100 !important;
 	opacity: 1.0;
 	transform: translateX(0%);
 	animation-name: slide-fade-in;
