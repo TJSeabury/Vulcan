@@ -76,9 +76,6 @@ class VulcanFilteredCategoryControls
 				this.controls.push( control );
 			}
 		}
-		
-		
-		
 	}
 	
 	reveal ( tag, callback )
@@ -89,10 +86,7 @@ class VulcanFilteredCategoryControls
 			{
 				item.visFlags[tag] = true;
 			}
-			
-			console.log( item.visFlags );
-			
-			if ( true === this.sumFlags( item ) && ! item.hasAttribute('visible') )
+			if ( true === this.sumFlags( item ) )
 			{
 				item.setAttribute( 'visible', '' );
 			}
@@ -111,10 +105,7 @@ class VulcanFilteredCategoryControls
 			{
 				item.visFlags[tag] = false;
 			}
-			
-			console.log( item.visFlags );
-			
-			if ( false === this.flagSum  && item.hasAttribute('visible') )
+			if ( false === this.sumFlags( item ) )
 			{
 				item.removeAttribute( 'visible' );
 			}
