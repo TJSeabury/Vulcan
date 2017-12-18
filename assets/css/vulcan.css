@@ -399,8 +399,6 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 	width: calc( 100% / 6 );
 }
 .vulcan-events .vulcan-event-card .event-transform-wrapper {
-	display: flex;
-	flex-direction: column;
 	width: 100%;
 	overflow: hidden;
 	box-shadow: 0 16px 24px 0px rgba(0,0,0,0.0);
@@ -730,10 +728,12 @@ body.admin-bar .vulcan-post-slider .vulcan-slides-wrapper {
 	width: 50%;
 	padding: 16px;
 	opacity: 0.1;
+	pointer-events: none;
 	transition: all 200ms ease;
 }
 .vulcan-filtered-post-category .filtered-post-category-item[visible] {
 	opacity: 1.0;
+	pointer-events: auto;
 }
 
 .vulcan-filtered-post-category .filter-post-category-title {

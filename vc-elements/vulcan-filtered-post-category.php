@@ -87,7 +87,9 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
 		$query_args = array(
 			'post_status' => 'publish',
 			'orderby' => 'title',
-			'order' => 'ASC'
+			'order' => 'ASC',
+			'nopaging' => true,
+			'posts_per_page' => -1
 		);
 
 		if ( '' !== $categories )
