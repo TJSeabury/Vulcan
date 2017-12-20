@@ -38,7 +38,7 @@ class vcVulcanPostSlider extends WPBakeryShortCode
                     array(
 						'type'        => 'textfield',
 						'heading'     => __( 'Categories', 'mk_framework' ),
-						'param_name'  => 'category',
+						'param_name'  => 'categories',
 						'description' => __( 'Enter specific Categories to be used.', 'mk_framework' ),
 					),
 			

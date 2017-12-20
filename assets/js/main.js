@@ -494,6 +494,104 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 			
 		}
 	);
+
+	/*
+	* Replace css variables with their values if the browser does not support them.
+	*/
+	if ( 
+		window.CSS && 
+		window.CSS.supports && 
+		window.CSS.supports( '--css-variable', 0 ) 
+	)
+	{
+		let stylesheets = Array.from( document.styleSheets );
+		/*
+		* Extract varaibles from :root(s).
+		*/
+		let variables = new Object();
+		for ( let sheet of stylesheets )
+		{
+			if ( 
+				null !== sheet && 
+				null !== sheet.href && 
+				sheet.href.includes( 'vulcan' ) 
+			)
+			{
+				let the_sheet = Array.from( sheet.rules );
+				for ( let rule of the_sheet )
+				{
+					if ( 
+						null !== rule.cssText && 
+						rule.cssText.includes( '--' ) && 
+						null !== rule.style && 
+						undefined !== rule.style && 
+						':root' === rule.selectorText 
+					)
+					{
+						let pattern = /--(.*?):(.*?);/g;
+						let match;
+						while ( null !== ( match = pattern.exec( rule.cssText ) ) )
+						{ 
+							variables[match[1]] = match[2];
+						}
+					}
+				}
+			}
+		}
+		/*
+		* Select variables in rules that must be injected with real values.
+		*/
+		for ( let sheet of stylesheets )
+		{
+			if ( 
+				null !== sheet && 
+				null !== sheet.href && 
+				sheet.href.includes( 'vulcan' ) 
+			)
+			{
+				let the_sheet = Array.from( sheet.rules );
+				for ( let rule of the_sheet )
+				{
+					if ( 
+						null !== rule.cssText && 
+						rule.cssText.includes( '--' ) && 
+						null !== rule.style && 
+						undefined !== rule.style 
+					)
+					{
+						let the_rules = Array.from( rule.style );
+						for ( let style of the_rules )
+						{
+							if ( 
+								null !== rule.style[style] && 
+								undefined !== rule.style[style] && 
+								rule.style[style].includes( '--' ) 
+							)
+							{
+								/*
+								* Fuck. What if there is more than one variable in the style string??!?!!?
+								*
+								* I think I need to loop this with exec return as the conditional again.
+								*
+								*/
+								let pattern_varFull = /var\(--.*?\)/g;
+								let pattern_varName = /var\(--(.*?)\)/g;
+								let current_style = rule.style[style];
+								let current_var = pattern_varName.exec( current_style )[1];
+								let injected_style = current_style.replace( pattern_varFull, variables[current_var] );
+								rule.style[style] = injected_style;
+								/*console.log( rule.selectorText + ': ' + rule.style[style] );
+								console.log( current_style );
+								console.log( current_var );
+								console.log( style + ': ' + injected_style );
+								console.log( '\n' );*/
+							}
+						}
+					}
+				}
+			}
+		}
+	}
     
     /* --------------------------------------------------- */
     
