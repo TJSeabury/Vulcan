@@ -505,9 +505,8 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 	)
 	{
 		let stylesheets = Array.from( document.styleSheets );
-		/*
-		* Extract varaibles from :root(s).
-		*/
+
+		// Extract varaible declarations
 		let variables = new Object();
 		for ( let sheet of stylesheets )
 		{
@@ -520,27 +519,37 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 				let the_sheet = Array.from( sheet.rules );
 				for ( let rule of the_sheet )
 				{
+					// But what if variables are in variables in variable declarations?????!! D:
 					if ( 
 						null !== rule.cssText && 
-						rule.cssText.includes( '--' ) && 
 						null !== rule.style && 
 						undefined !== rule.style && 
-						':root' === rule.selectorText 
+						-1 < rule.cssText.indexOf( '--' ) && 
+						( 
+							rule.cssText.indexOf( '--' ) < rule.cssText.indexOf( 'var(' ) ||
+							-1 === rule.cssText.indexOf( 'var(' )
+						)
 					)
 					{
-						let pattern = /--(.*?):(.*?);/g;
+						
+						// Son ov bich, vat iv wariables jhave nested wariables !?!?!?!? это пиздец...
+						// Recursive function callS??
+						// Forget it. I'll solve it in the next version.
+						let pattern = /--(.+?):(.+?);/g;
 						let match;
 						while ( null !== ( match = pattern.exec( rule.cssText ) ) )
 						{ 
+							//console.log( match );
 							variables[match[1]] = match[2];
 						}
 					}
 				}
 			}
 		}
-		/*
-		* Select variables in rules that must be injected with real values.
-		*/
+		
+		console.log( variables );
+		
+		// Select variables in rules that must be injected with real values.
 		for ( let sheet of stylesheets )
 		{
 			if ( 
@@ -554,12 +563,25 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 				{
 					if ( 
 						null !== rule.cssText && 
-						rule.cssText.includes( '--' ) && 
-						null !== rule.style && 
-						undefined !== rule.style 
+						rule.cssText.includes( '--' )
 					)
 					{
-						let the_rules = Array.from( rule.style );
+						let pattern_varFull = /var\(--.+?\)/g;
+						let pattern_varName = /var\(--(.+?)\)/g;
+						let match;
+						let i = 0;
+						/*let match_name = pattern_varName.exec( rule.cssText );
+						rule.cssText.replace( pattern_varFull, variables[match_name] );
+						console.log( rule.cssText );*/
+						while ( null !== ( match = pattern_varFull.exec( rule.cssText ) ) && i < 10 )
+						{
+							let match_name = pattern_varName.exec( rule.cssText );
+							rule.cssText.replace( pattern_varFull, variables[match_name] );
+							console.log( pattern_varFull.exec( rule.cssText ) );
+							i++;
+						}
+						
+						/*let the_rules = Array.from( rule.style );
 						for ( let style of the_rules )
 						{
 							if ( 
@@ -568,30 +590,66 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 								rule.style[style].includes( '--' ) 
 							)
 							{
-								/*
-								* Fuck. What if there is more than one variable in the style string??!?!!?
-								*
-								* I think I need to loop this with exec return as the conditional again.
-								*
-								*/
-								let pattern_varFull = /var\(--.*?\)/g;
-								let pattern_varName = /var\(--(.*?)\)/g;
+								
+								// What if there is more than one variable in the style string??!?!!? D:<
+								// I think I need to loop this with exec return as the conditional again.
+								let pattern_varFull = /var\(--.+?\)/g;
+								let pattern_varName = /var\(--(.+?)\)/g;
 								let current_style = rule.style[style];
 								let current_var = pattern_varName.exec( current_style )[1];
 								let injected_style = current_style.replace( pattern_varFull, variables[current_var] );
 								rule.style[style] = injected_style;
-								/*console.log( rule.selectorText + ': ' + rule.style[style] );
+								console.log( rule.cssText );
+								console.log( rule.selectorText + ': ' + rule.style[style] );
 								console.log( current_style );
 								console.log( current_var );
 								console.log( style + ': ' + injected_style );
-								console.log( '\n' );*/
+								console.log( '\n' );
 							}
-						}
+						}*/
 					}
 				}
 			}
 		}
 	}
+	
+	/*function occurrences(string, subString, allowOverlapping) {
+
+		string += "";
+		subString += "";
+		if (subString.length <= 0) return (string.length + 1);
+
+		var n = 0,
+			pos = 0,
+			step = allowOverlapping ? 1 : subString.length;
+
+		while (true) {
+			pos = string.indexOf(subString, pos);
+			if (pos >= 0) {
+				++n;
+				pos += step;
+			} else break;
+		}
+		return n;
+	}
+	
+	function occurrences(string, substring) {
+
+	  var n = 0;
+	  var pos = 0;
+	  var l=substring.length;
+
+	  while (true) {
+		pos = string.indexOf(substring, pos);
+		if (pos > -1) {
+		  n++;
+		  pos += l;
+		} else {
+		  break;
+		}
+	  }
+	  return (n);
+	}*/
     
     /* --------------------------------------------------- */
     
