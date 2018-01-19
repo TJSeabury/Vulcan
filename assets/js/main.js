@@ -243,15 +243,11 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 	/*
 	* Parse and inject shapes
 	*/
-	/*
-	
-	!! this is broken, fix on monday !!
-	
 	window.addEventListener(
 		'newshape',
 		e =>
 		{
-			e.detail.emitter.appendChild( createShape( e.detail.emitter.classList ) );
+			e.detail.emitter.appendChild( createShape( [].join.call( e.detail.emitter.classList, '' ) ) );
 		}
 	);
 	window.addEventListener(
@@ -265,18 +261,19 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 					ps.classList, 
 					cn => 
 					{
-						ps.appendChild( createShape( cn ) );
+						if ( cn.includes('difd_add-triangle-') )
+						{
+							ps.appendChild( createShape( [].join.call( cn, '' ) ) );
+						}
 					} 
 				);
 			}
 		}
-	);*/
+	);
 	
-	function createShape( e )
+	function createShape( cl )
 	{
-		console.log( e.includes('difd_add-triangle-') );
-		let triangle = d.createElement('figure');
-		if ( e.includes('difd_add-triangle-') )
+		if ( cl.includes('difd_add-triangle-') )
 		{
 			let triangle = d.createElement('figure');
 			triangle.classList.add('triangle');
@@ -295,27 +292,27 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 				'border-style: solid;' +
 				'padding: 0;';
 
-			if ( e.includes('offset') )
+			if ( cl.includes('offset') )
 			{
-				offset = e.match( /(offset_)(.*)(_)/ )[2];
+				offset = cl.match( /(offset_)(.*)(_)/ )[2];
 			}
 
-			if ( e.includes('scale') )
+			if ( cl.includes('scale') )
 			{
-				scale = e.match( /(scale_)(.*)(_)/ )[2];
+				scale = cl.match( /(scale_)(.*)(_)/ )[2];
 			}
 
-			if ( e.includes('transformX') )
+			if ( cl.includes('transformX') )
 			{
-				transformX = e.match( /(transformX_)(.*)(_)/ )[2];
+				transformX = cl.match( /(transformX_)(.*)(_)/ )[2];
 			}
 
-			if ( e.includes('transformY') )
+			if ( cl.includes('transformY') )
 			{
-				transformY = e.match( /(transformY_)(.*)(_)/ )[2];
+				transformY = cl.match( /(transformY_)(.*)(_)/ )[2];
 			}
 
-			if ( e.includes('transform') )
+			if ( cl.includes('transform') )
 			{
 				let transforms = 
 					( scale ? ' scale(' + scale + ')' : '' ) +
@@ -326,11 +323,11 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 				{
 					styles += 'transform:' + transforms + ';';
 				}
-				if ( e.includes('top') )
+				if ( cl.includes('top') )
 				{
 					origins += ' top';
 				}
-				else if ( e.includes('bottom') )
+				else if ( cl.includes('bottom') )
 				{
 					origins += ' bottom';
 				}
@@ -338,11 +335,11 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 				{
 					origins += ' center';
 				}
-				if ( e.includes('left') )
+				if ( cl.includes('left') )
 				{
 					origins += ' left';
 				}
-				else if ( e.includes('right') )
+				else if ( cl.includes('right') )
 				{
 					origins += ' right';
 				}
@@ -353,7 +350,7 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 				styles += 'transform-origin:' + origins + ';';
 			}
 
-			if ( ! e.includes('invert') )
+			if ( ! cl.includes('invert') )
 			{
 				styles += 'border-bottom-width: calc( var(--halfViewportHeight) + 128px );';
 				styles += 'border-bottom-color: transparent;';
@@ -364,59 +361,56 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 				styles += 'border-top-color: transparent;';
 			}
 
-			if ( e.includes('top') )
+			if ( cl.includes('top') )
 			{
 				styles += 'top: ' + ( offset ? offset : '0px' ) + ';';
 			}
 
-			if ( e.includes('middle') )
+			if ( cl.includes('middle') )
 			{
 				styles += 'top: calc( 50% - ( var(--halfViewportHeight) / 2 + 64px - ' + ( offset ? offset : '0px' ) + ' ) );';
 			}
 
-			if ( e.includes('bottom') )
+			if ( cl.includes('bottom') )
 			{
 				styles += 'bottom: ' + ( offset ? offset : '0px' ) + ';';
 			}
 
-			if ( e.includes('left') )
+			if ( cl.includes('left') )
 			{
 				styles += 'left: 0;';
 				styles += 'border-left-width: var(--sideMarginWidth);';
 
-				if ( e.includes('orange') )
+				if ( cl.includes('orange') )
 				{
 					styles += 'border-left-color: var(--themeOrange);';
 				}
 
-				if ( e.includes('cyan') )
+				if ( cl.includes('cyan') )
 				{
 					styles += 'border-left-color: var(--themeCyan);';
 				}
 			}
 
-			if ( e.includes('right') )
+			if ( cl.includes('right') )
 			{
 				styles += 'right: 0;';
 				styles += 'border-right-width: var(--sideMarginWidth);';
 
-				if ( e.includes('orange') )
+				if ( cl.includes('orange') )
 				{
 					styles += 'border-right-color: var(--themeOrange);';
 				}
 
-				if ( e.includes('cyan') )
+				if ( cl.includes('cyan') )
 				{
 					styles += 'border-right-color: var(--themeCyan);';
 				}
 			}
-
-			triangle.setAttribute( 'style', styles );			
-
+			triangle.setAttribute( 'style', styles );
+			return triangle;
 		}
-		
-		return triangle;
-		
+		return;
 	}
 	
 	window.addEventListener(
@@ -508,44 +502,62 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 
 		// Extract varaible declarations
 		let variables = new Object();
-		for ( let sheet of stylesheets )
+		let unsolvedVariables = new Array();
+
+		do
 		{
-			if ( 
-				null !== sheet && 
-				null !== sheet.href && 
-				sheet.href.includes( 'vulcan' ) 
-			)
+			for ( let sheet of stylesheets )
 			{
-				let the_sheet = Array.from( sheet.rules );
-				for ( let rule of the_sheet )
+				if ( 
+					null !== sheet && 
+					null !== sheet.href && 
+					sheet.href.includes( 'vulcan' ) 
+				)
 				{
-					// But what if variables are in variables in variable declarations?????!! D:
-					if ( 
-						null !== rule.cssText && 
-						null !== rule.style && 
-						undefined !== rule.style && 
-						-1 < rule.cssText.indexOf( '--' ) && 
-						( 
-							rule.cssText.indexOf( '--' ) < rule.cssText.indexOf( 'var(' ) ||
-							-1 === rule.cssText.indexOf( 'var(' )
-						)
-					)
+					let the_sheet = Array.from( sheet.rules );
+					for ( let rule of the_sheet )
 					{
-						
-						// Son ov bich, vat iv wariables jhave nested wariables !?!?!?!? это пиздец...
-						// Recursive function callS??
-						// Forget it. I'll solve it in the next version.
-						let pattern = /--(.+?):(.+?);/g;
-						let match;
-						while ( null !== ( match = pattern.exec( rule.cssText ) ) )
-						{ 
-							//console.log( match );
-							variables[match[1]] = match[2];
+						// But what if variables are in variables in variable declarations?????!! D:
+						if ( 
+							null !== rule.cssText && 
+							null !== rule.style && 
+							undefined !== rule.style && 
+							-1 < rule.cssText.indexOf( '--' ) && 
+							( 
+								rule.cssText.indexOf( '--' ) < rule.cssText.indexOf( 'var(' ) ||
+								-1 === rule.cssText.indexOf( 'var(' )
+							)
+						)
+						{
+							let pattern_declaration = /--(.+?):(.+?);/g;
+							let pattern_varFull = /var\(--.+?\)/g;
+							let pattern_varName = /var\(--(.+?)\)/g;
+							
+							let current_style = rule.style[style];
+							let current_var = pattern_varName.exec( current_style )[1];
+							let injected_style = current_style.replace( pattern_varFull, variables[current_var] );
+							let match;
+							while ( null !== ( match = pattern_declaration.exec( rule.cssText ) ) )
+							{
+								if ( -1 === match[2].indexOf( 'var(' ) )
+								{
+									variables[match[1]] = match[2];
+								}
+								else if ( unresolvedVariables[match[1]] && ( match = pattern_varName.exec( rule.cssText ) ) )
+								{
+									console.log( match[2] );
+								}
+								else
+								{
+									unresolvedVariables[match[1]] = match[2];
+								}
+							}
 						}
 					}
 				}
 			}
-		}
+		} while ( unresolvedVariables.length )
+		
 		
 		console.log( variables );
 		
@@ -581,7 +593,7 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 							i++;
 						}
 						
-						/*let the_rules = Array.from( rule.style );
+						let the_rules = Array.from( rule.style );
 						for ( let style of the_rules )
 						{
 							if ( 
@@ -590,7 +602,6 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 								rule.style[style].includes( '--' ) 
 							)
 							{
-								
 								// What if there is more than one variable in the style string??!?!!? D:<
 								// I think I need to loop this with exec return as the conditional again.
 								let pattern_varFull = /var\(--.+?\)/g;
@@ -606,7 +617,7 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 								console.log( style + ': ' + injected_style );
 								console.log( '\n' );
 							}
-						}*/
+						}
 					}
 				}
 			}
