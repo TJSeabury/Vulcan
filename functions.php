@@ -71,6 +71,15 @@ function vc_before_init_actions()
 	require_once( __DIR__ . '/vc-elements/vulcan-facebook-page.php' );
 }
 
+/*
+* Include widgets
+*/
+add_action( 'widgets_init', 'register_vulcan_widgets' );
+function register_vulcan_widgets() {
+	require_once( __DIR__ . '/vulcan-widgets/vulcan-upcoming-events.php' );
+    register_widget( 'Vulcan_widget_upcoming_event' );
+}
+
 add_action( 'init', 'add_taxonomies_to_pages' );
 function add_taxonomies_to_pages()
 {

@@ -150,6 +150,7 @@ class vcVulcanEvents extends WPBakeryShortCode
         $events = tribe_get_events(
 			array(
 				'posts_per_page' => $num_events,
+				'eventDisplay' => 'upcoming',
 			)
 		);
 		
@@ -223,7 +224,7 @@ class vcVulcanEvents extends WPBakeryShortCode
 									$post_start_day .
 									'<div class="event-category">' .$categories_html . '</div>' .
 									'<h2 class="event-title">' . $post->post_title . '</h2>' .
-									'<p class="event-content">' . $post->post_content . '</p>' .
+									'<p class="event-content">' . wp_strip_all_tags( get_the_excerpt( $post ), true ) . '</p>' .
 								'</div>' .
 							'</div>' .
 						'</a>' .

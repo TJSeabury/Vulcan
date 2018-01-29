@@ -50,6 +50,30 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
 						'value' => '',
 						'description' => __('', 'mk_framework')
 					),
+			
+					array(
+						'type' => 'textfield',
+						'heading' => __('Tag(s)', 'mk_framework'),
+						'param_name' => 'tags',
+						'value' => '',
+						'description' => __('', 'mk_framework')
+					),
+			
+					array(
+						'type' => 'toggle',
+						'heading' => __('Enable Excerpt', 'mk_framework'),
+						'param_name' => 'enable_excerpt',
+						'value' => false,
+						'description' => __('', 'mk_framework'),
+					),
+			
+					array(
+						'type' => 'toggle',
+						'heading' => __('Enable Link to Post', 'mk_framework'),
+						'param_name' => 'enable_link_to_post',
+						'value' => false,
+						'description' => __('Adds a button that links to the source post.', 'mk_framework'),
+					),
 
 					array(
 						'type' => 'textfield',
@@ -75,11 +99,17 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
                 array(
 					'section_title' => '',
 					'categories' => '',
+					'tags' => '',
+					'enable_excerpt' => false,
+					'enable_link_to_post' => false,
 					'el_class' => '',
                 ), 
                 $atts
             )
         );
+		
+		$enable_excerpt = filter_var( $enable_excerpt, FILTER_VALIDATE_BOOLEAN );
+		$enable_link_to_post = filter_var( $enable_link_to_post, FILTER_VALIDATE_BOOLEAN );
 		
 		/*
 		* Setup the query.
@@ -97,10 +127,21 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
 			$categories = explode( ',', $categories );
 			$gc = array();
 			foreach ( $categories as $category ) {
-				$gc[] = $category;
+				$gc[] = toLowerAndHypenate( $category );
 			}
 			$gc = implode( ',', $gc );
 			$query_args['category_name'] = $gc;
+		}
+		
+		if ( '' !== $tags )
+		{
+			$tags = explode( ',', $tags );
+			$gc = array();
+			foreach ( $tags as $tag ) {
+				$gc[] = toLowerAndHypenate( $tag );
+			}
+			$gc = implode( ',', $gc );
+			$query_args['tag'] = $gc;
 		}
 		
 		/*
@@ -110,6 +151,11 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
 			'vulcan-filtered-post-category',
 			'vulcan-container'
 		);
+		
+		if ( true === $enable_excerpt )
+		{
+			$container_classes[] = 'force-one-column';
+		}
 		
 		/*
 		* Initialize variables.
@@ -156,7 +202,9 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
 			$the_items[] = new VulcanFilteredCategory_CategoryItem(
 				$the_query->post,
 				get_post_meta( $the_query->post->ID ),
-				wp_get_post_tags( $the_query->post->ID )
+				wp_get_post_tags( $the_query->post->ID ),
+				(bool)$enable_excerpt,
+				(bool)$enable_link_to_post
 			);
 		}
 		
@@ -249,8 +297,14 @@ class VulcanFilteredCategory_CategoryItem
 	
 	private $title = null;
 	
-	public function __construct( $raw_post, $raw_meta, $raw_terms )
+	public function __construct( $raw_post, $raw_meta, $raw_terms, $enable_excerpt, $enable_link_to_post )
 	{
+		$this->id = $raw_post->ID;
+		
+		$this->excerpt = $enable_excerpt;
+		
+		$this->enable_link_to_post = $enable_link_to_post;
+		
 		// setup title
 		$this->title = $raw_post->post_title;
 		
@@ -277,12 +331,21 @@ class VulcanFilteredCategory_CategoryItem
 			}
 		}
 		
+		// setup the content
+		if ( true === $this->excerpt )
+		{
+			$this->content = $raw_post->post_content;
+		}
+		
 	}
 	
 	public function render()
 	{
+		$image = get_the_post_thumbnail( $this->id, 'full', array( 'class' => 'slide-fullimage' ) );
+		$image_html = '<div class="aspect-ratio-wrapper">' . $image . '</div>';
 		$html .= 
 		'<figure class="filtered-post-category-item" data-tags=\'' . json_encode( $this->tags ) . '\'">' .
+			( $image ? $image_html : '' ) .
 			'<h2 class="filter-post-category-title">' . $this->title . '</h2>' .
 			'<div class="filter-post-category-tags">' .
 			implode( ', ', $this->tags ) .
@@ -297,10 +360,26 @@ class VulcanFilteredCategory_CategoryItem
 				{
 					$html .= '<li>' . $this->website_svg . ' <a href="' . $this->meta['link'] . '" target="_blank">' . $this->meta['link'] . '</a></li>';
 				}
-				$html .= '</ul>' .
-			'</figcaption>' .
+				$html .= '</ul>';
+				if ( true === $this->excerpt )
+				{
+					$html .= '<p>' . do_shortcode( $this->content ) . '</p>';
+				}
+				if ( true === $this->enable_link_to_post )
+				{
+					$html .= '<p><a class="filter-post-category-link-to-post" href="' . get_permalink( $this->id ) . '">View Post</a></p>';
+				}
+			$html .= '</figcaption>' .
 		'</figure>';
 		return $html;
 	}
 	
+}
+
+function toLowerAndHypenate( $string )
+{
+	$string = strtolower( $string );
+	$string = trim( $string );
+	$string = str_replace( ' ', '-', $string );
+	return $string;
 }
