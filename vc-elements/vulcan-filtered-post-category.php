@@ -152,10 +152,10 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
 			'vulcan-container'
 		);
 		
-		if ( true === $enable_excerpt )
+		/*if ( true === $enable_excerpt )
 		{
 			$container_classes[] = 'force-one-column';
-		}
+		}*/
 		
 		/*
 		* Initialize variables.
@@ -309,13 +309,17 @@ class VulcanFilteredCategory_CategoryItem
 		$this->title = $raw_post->post_title;
 		
 		// setup meta
-		if ( $raw_meta['location'] )
+		if ( array_key_exists( 'location', $raw_meta ) )
 		{
 			$this->meta['location'] = $raw_meta['location'][0];
 		}
-		if ( $raw_meta['link'] )
+		if ( array_key_exists( 'link', $raw_meta ) )
 		{
 			$this->meta['link'] = $raw_meta['link'][0];
+		}
+		if ( array_key_exists( 'excerpt', $raw_meta ) )
+		{
+			$this->meta['excerpt'] = $raw_meta['excerpt'][0];
 		}
 		
 		// setup the tags
@@ -331,19 +335,13 @@ class VulcanFilteredCategory_CategoryItem
 			}
 		}
 		
-		// setup the content
-		if ( true === $this->excerpt )
-		{
-			$this->content = $raw_post->post_content;
-		}
-		
 	}
 	
 	public function render()
 	{
 		$image = get_the_post_thumbnail( $this->id, 'full', array( 'class' => 'slide-fullimage' ) );
 		$image_html = '<div class="aspect-ratio-wrapper">' . $image . '</div>';
-		$html .= 
+		$html = 
 		'<figure class="filtered-post-category-item" data-tags=\'' . json_encode( $this->tags ) . '\'">' .
 			( $image ? $image_html : '' ) .
 			'<h2 class="filter-post-category-title">' . $this->title . '</h2>' .
@@ -352,18 +350,18 @@ class VulcanFilteredCategory_CategoryItem
 			'</div>' .
 			'<figcaption class="filter-post-category-content">' .
 				'<ul>';
-				if ( $this->meta['location'] )
+				if ( array_key_exists( 'location', $this->meta ) && ! empty( $this->meta['location'] ) )
 				{
 					$html .= '<li>' . $this->location_svg . ' <a href="' . 'https://www.google.com/maps/search/?api=1&query=' . urlencode( $this->meta['location'] ) . '" target="_blank">' . $this->meta['location'] . '</a></li>';
 				}
-				if ( $this->meta['link'] )
+				if ( array_key_exists( 'link', $this->meta ) && ! empty( $this->meta['link'] ) )
 				{
 					$html .= '<li>' . $this->website_svg . ' <a href="' . $this->meta['link'] . '" target="_blank">' . $this->meta['link'] . '</a></li>';
 				}
 				$html .= '</ul>';
-				if ( true === $this->excerpt )
+				if ( true === $this->excerpt && array_key_exists( 'excerpt', $this->meta ) && ! empty( $this->meta['excerpt'] ) )
 				{
-					$html .= '<p>' . do_shortcode( $this->content ) . '</p>';
+					$html .= '<p>' . $this->meta['excerpt'] . '</p>';
 				}
 				if ( true === $this->enable_link_to_post )
 				{
