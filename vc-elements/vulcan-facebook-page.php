@@ -24,7 +24,7 @@ class vcVulcanFacebookPage extends WPBakeryShortCode
         // Map the block with vc_map()
         vc_map( 
             array(
-                'name' => __('Vulcan Facebook Page', 'text-domain'),
+                'name' => __('Facebook Page', 'text-domain'),
                 'base' => 'vc_vulcanFacebookPage',
                 'description' => __('Embeds a Facebook page feed.', 'text-domain'), 
                 'category' => __('Vulcan', 'text-domain'),   

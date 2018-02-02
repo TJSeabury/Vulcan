@@ -28,7 +28,7 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
         // Map the block with vc_map()
         vc_map( 
             array(
-                'name' => __('Vulcan Filtered Category', 'text-domain'),
+                'name' => __('Filtered Category List', 'text-domain'),
                 'base' => 'vc_vulcanFilteredCategory',
                 'description' => __('Outputs a category, or categories, of posts and enables the results to be filtered by tags.', 'text-domain'), 
                 'category' => __('Vulcan', 'text-domain'),   

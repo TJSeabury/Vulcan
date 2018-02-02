@@ -28,7 +28,7 @@ class vcVulcanEvents extends WPBakeryShortCode
         // Map the block with vc_map()
         vc_map(
             array(
-                'name' => __('Vulcan Events', 'text-domain'),
+                'name' => __('Events List', 'text-domain'),
                 'base' => 'vc_vulcanEvents',
                 'description' => __('Your events, your way.', 'text-domain'),
                 'category' => __('Vulcan', 'text-domain'),

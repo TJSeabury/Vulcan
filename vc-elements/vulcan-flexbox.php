@@ -23,7 +23,7 @@ class WPBakeryShortCode_VulcanFlexbox extends WPBakeryShortCodesContainer
         // Map the block with vc_map()
         vc_map( 
 		array(
-			'name' => __('Vulcan Flexbox', 'text-domain'),
+			'name' => __('Flexbox Container', 'text-domain'),
 			'base' => 'vc_vulcanFlexbox',
 			'description' => __('A Flexbox.', 'text-domain'), 
 			'category' => __('Vulcan', 'text-domain'),   

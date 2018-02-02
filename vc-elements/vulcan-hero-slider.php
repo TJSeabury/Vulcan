@@ -28,7 +28,7 @@ class vcVulcanHeroSlider extends WPBakeryShortCode
         // Map the block with vc_map()
         vc_map( 
             array(
-                'name' => __('Vulcan Hero Slider', 'text-domain'),
+                'name' => __('Hero Slider', 'text-domain'),
                 'base' => 'vc_vulcanHeroSlider',
                 'description' => __('Turns a selection of images into a hero slider.', 'text-domain'), 
                 'category' => __('Vulcan', 'text-domain'),   

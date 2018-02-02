@@ -28,7 +28,7 @@ class vcVulcanPostSlider extends WPBakeryShortCode
         // Map the block with vc_map()
         vc_map( 
             array(
-                'name' => __('Vulcan Post Slider', 'text-domain'),
+                'name' => __('Post Slider', 'text-domain'),
                 'base' => 'vc_vulcanPostSlider',
                 'description' => __('Turns a category of posts into a hero slider.', 'text-domain'), 
                 'category' => __('Vulcan', 'text-domain'),   
