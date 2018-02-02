@@ -25,6 +25,7 @@ window.addEventListener('DIFDesignCoreReady', function main() {
     * @use Add class 'difFullHeight' to elements to set their height.
     */
 	D.heightSetter( '.difFullHeight', 1.0, ['#wpadminbar', '.mk-header'], 666 );
+	D.heightSetter( '.difHalfHeight', 0.5, ['#wpadminbar', '.mk-header'], 666 );
 	
 	/*
 	* Rectify the height of mk-header that has been changed by custom css.
@@ -44,7 +45,7 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 			for(;;)
 			{
 				now = performance.now();
-				if ( now - then < 5000 )
+				if ( now - then < 500 )
 				{
 					if (
 						headerElements[0] &&
@@ -486,181 +487,595 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 				window.dispatchEvent( new Event('scroll') );
 			}
 			
-		}
-	);
-
-	/*
-	* Replace css variables with their values if the browser does not support them.
-	*/
-	if ( 
-		window.CSS && 
-		window.CSS.supports && 
-		window.CSS.supports( '--css-variable', 0 ) 
-	)
-	{
-		let stylesheets = Array.from( document.styleSheets );
-
-		// Extract varaible declarations
-		let variables = new Object();
-		let unsolvedVariables = new Array();
-
-		do
-		{
-			for ( let sheet of stylesheets )
-			{
-				if ( 
-					null !== sheet && 
-					null !== sheet.href && 
-					sheet.href.includes( 'vulcan' ) 
-				)
-				{
-					let the_sheet = Array.from( sheet.rules );
-					for ( let rule of the_sheet )
-					{
-						// But what if variables are in variables in variable declarations?????!! D:
-						if ( 
-							null !== rule.cssText && 
-							null !== rule.style && 
-							undefined !== rule.style && 
-							-1 < rule.cssText.indexOf( '--' ) && 
-							( 
-								rule.cssText.indexOf( '--' ) < rule.cssText.indexOf( 'var(' ) ||
-								-1 === rule.cssText.indexOf( 'var(' )
-							)
-						)
-						{
-							let pattern_declaration = /--(.+?):(.+?);/g;
-							let pattern_varFull = /var\(--.+?\)/g;
-							let pattern_varName = /var\(--(.+?)\)/g;
-							
-							let current_style = rule.style[style];
-							let current_var = pattern_varName.exec( current_style )[1];
-							let injected_style = current_style.replace( pattern_varFull, variables[current_var] );
-							let match;
-							while ( null !== ( match = pattern_declaration.exec( rule.cssText ) ) )
-							{
-								if ( -1 === match[2].indexOf( 'var(' ) )
-								{
-									variables[match[1]] = match[2];
-								}
-								else if ( unresolvedVariables[match[1]] && ( match = pattern_varName.exec( rule.cssText ) ) )
-								{
-									console.log( match[2] );
-								}
-								else
-								{
-									unresolvedVariables[match[1]] = match[2];
-								}
-							}
-						}
-					}
-				}
-			}
-		} while ( unresolvedVariables.length )
-		
-		
-		console.log( variables );
-		
-		// Select variables in rules that must be injected with real values.
-		for ( let sheet of stylesheets )
-		{
+			/*
+			* Replace css variables with their values if the browser does not support them.
+			*/
 			if ( 
-				null !== sheet && 
-				null !== sheet.href && 
-				sheet.href.includes( 'vulcan' ) 
+				window.CSS && 
+				window.CSS.supports && 
+				window.CSS.supports( '--css-variable', 0 ) 
 			)
 			{
-				let the_sheet = Array.from( sheet.rules );
-				for ( let rule of the_sheet )
+				let stylesheets = Array.from( document.styleSheets );
+
+				// Extract varaible declarations
+				let variables = new Object();
+				let unresolvedVariables = new Object();
+				
+				do
+				{
+					for ( let sheet of stylesheets )
+					{
+						if ( 
+							null !== sheet && 
+							null !== sheet.href && 
+							sheet.href.includes( 'vulcan' ) 
+						)
+						{
+							let the_sheet = Array.from( sheet.rules );
+							for ( let rule of the_sheet )
+							{
+								if ( 
+									null !== rule.cssText && 
+									null !== rule.style && 
+									undefined !== rule.style && 
+									-1 < rule.cssText.indexOf( '--' ) && 
+									( 
+										rule.cssText.indexOf( '--' ) < rule.cssText.indexOf( 'var(' ) ||
+										-1 === rule.cssText.indexOf( 'var(' )
+									)
+								)
+								{
+									let pattern_declaration = /--(.+?):(.+?);/g;
+									let pattern_varFull = /var\(--.+?\)/g;
+									let pattern_varName = /var\(--(.+?)\)/g;
+									let match;
+									while ( null !== ( match = pattern_declaration.exec( rule.cssText ) ) )
+									{
+										let varName = null;
+										if ( -1 !== match[2].indexOf( 'var(' ) )
+										{
+											let patternNameMatch = pattern_varName.exec( match[2] );
+											varName = patternNameMatch[1];
+										}
+										
+										if ( -1 === match[2].indexOf( 'var(' ) )
+										{
+											variables[match[1]] = match[2].trim();
+										}
+										else if ( null !== varName && unresolvedVariables[match[1]] && variables[varName] )
+										{
+											let value = unresolvedVariables[match[1]].replace( pattern_varFull.exec( unresolvedVariables[match[1]] ), variables[varName] );
+											variables[match[1]] = value.trim();
+											delete unresolvedVariables[match[1]];
+										}
+										else
+										{
+											unresolvedVariables[match[1]] = match[2];
+										}
+									}
+								}
+							}
+						}
+					}
+				} while ( 0 < Object.keys( unresolvedVariables ).length );
+
+
+				//console.log( 'unresolved', unresolvedVariables, '\n', 'resolved', variables );
+				
+
+				// Select variables in rules that must be injected with real values.
+				for ( let sheet of stylesheets )
 				{
 					if ( 
-						null !== rule.cssText && 
-						rule.cssText.includes( '--' )
+						null !== sheet && 
+						null !== sheet.href && 
+						sheet.href.includes( 'vulcan' ) 
 					)
 					{
-						let pattern_varFull = /var\(--.+?\)/g;
-						let pattern_varName = /var\(--(.+?)\)/g;
-						let match;
-						let i = 0;
-						/*let match_name = pattern_varName.exec( rule.cssText );
-						rule.cssText.replace( pattern_varFull, variables[match_name] );
-						console.log( rule.cssText );*/
-						while ( null !== ( match = pattern_varFull.exec( rule.cssText ) ) && i < 10 )
-						{
-							let match_name = pattern_varName.exec( rule.cssText );
-							rule.cssText.replace( pattern_varFull, variables[match_name] );
-							console.log( pattern_varFull.exec( rule.cssText ) );
-							i++;
-						}
-						
-						let the_rules = Array.from( rule.style );
-						for ( let style of the_rules )
+						let rules = sheet.cssRules || sheet.rules;
+						let the_sheet = Array.from( rules );
+						for ( let rule of the_sheet )
 						{
 							if ( 
-								null !== rule.style[style] && 
-								undefined !== rule.style[style] && 
-								rule.style[style].includes( '--' ) 
+								null !== rule.cssText && 
+								rule.cssText.includes( 'var(' ) && 
+								rule.cssText.indexOf( '--' ) > rule.cssText.indexOf( 'var(' ) 
 							)
 							{
-								// What if there is more than one variable in the style string??!?!!? D:<
-								// I think I need to loop this with exec return as the conditional again.
-								let pattern_varFull = /var\(--.+?\)/g;
-								let pattern_varName = /var\(--(.+?)\)/g;
-								let current_style = rule.style[style];
-								let current_var = pattern_varName.exec( current_style )[1];
-								let injected_style = current_style.replace( pattern_varFull, variables[current_var] );
-								rule.style[style] = injected_style;
-								console.log( rule.cssText );
-								console.log( rule.selectorText + ': ' + rule.style[style] );
-								console.log( current_style );
-								console.log( current_var );
-								console.log( style + ': ' + injected_style );
-								console.log( '\n' );
+								let pattern_declaration = /;?([-_a-zA-Z]+[_a-zA-Z0-9-]):\s*(\s*var\(\s?--(.+?)\))+\s?(.*?)?;/g;
+								
+								let styleVals = pattern_declaration.exec( rule.cssText );
+								if ( null === styleVals )
+								{
+									continue;
+								}
+								
+								//console.log( styleVals );
+								
+								/*let important = false;
+								if ( undefined !== styleVals[3] && styleVals[3].includes('!important') )
+								{
+									important = true;
+								}
+
+								let styleName = styleVals[1];
+								let styleValue = variables[styleVals[2]];
+								
+								if ( important )
+								{
+									console.log( 'old style:', rule );
+									rule.style.setProperty( styleName, styleValue, ( important ? 'important' : '' ) );
+									console.log( 'new style:', rule );
+								}*/
 							}
 						}
 					}
 				}
 			}
+
+			/*function occurrences(string, subString, allowOverlapping) {
+
+				string += "";
+				subString += "";
+				if (subString.length <= 0) return (string.length + 1);
+
+				var n = 0,
+					pos = 0,
+					step = allowOverlapping ? 1 : subString.length;
+
+				while (true) {
+					pos = string.indexOf(subString, pos);
+					if (pos >= 0) {
+						++n;
+						pos += step;
+					} else break;
+				}
+				return n;
+			}
+
+			function occurrences(string, substring) {
+
+			  var n = 0;
+			  var pos = 0;
+			  var l=substring.length;
+
+			  while (true) {
+				pos = string.indexOf(substring, pos);
+				if (pos > -1) {
+				  n++;
+				  pos += l;
+				} else {
+				  break;
+				}
+			  }
+			  return (n);
+			}*/
+			
+		}
+	);
+	
+	/*
+	* Inject sub-menu icons
+	*/
+	let icons = {
+		'restaurants': `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+							 viewBox="0 0 72 72" style="enable-background:new 0 0 72 72;" xml:space="preserve">
+						<path class="hover" d="M36,63.4c2.1,0,4.2-0.3,6.2-0.7c0.2-5.8,0.3-10.3-0.1-11.3c-0.1-0.2-5.7-3.6-5.7-12.2c0-4,1.2-7.6,3-9.7
+							c0.3-0.3,0.5-0.6,0.8-0.8c0.5-0.4,1-0.8,1.6-1c0.2-0.1,0.4-0.1,0.7-0.2c0.3-0.1,0.6-0.1,0.8-0.1c0.3,0,0.6,0,0.8,0.1
+							c0.2,0,0.4,0.1,0.7,0.2c0.6,0.2,1.1,0.5,1.6,1c0.3,0.2,0.6,0.5,0.8,0.8c1.8,2.1,3,5.7,3,9.7c0,8.6-5.7,12-5.7,12.2
+							c-0.4,0.9-0.4,5.2-0.1,10.7c11-3.5,19-13.9,19-26.1C63.4,20.9,51.1,8.6,36,8.6l-0.2,0C20.8,8.7,8.6,21,8.6,36
+							c0,12,7.8,22.2,18.6,25.9c0.5-9.2,0.9-17.8,0.3-19.1c-1.1-2.7-2.8-3.6-3.5-3.8c-0.2-0.1-0.3-0.2-0.3-0.5c0-0.1,0-0.2,0-0.3
+							c0,0,0-0.1,0-0.2c0.1-2.5,1.2-19.3,1.2-19.3l0.6,0l0.7,15.5c0,0,0,0.1,0.1,0.2c0.1-0.1,0.1-0.2,0.1-0.2l0.8-15.5l0.6,0l0.8,15.5
+							c0,0,0,0.1,0,0.1c0,0,0,0,0,0c0,0,0,0,0,0c0-0.1,0-0.1,0-0.1l0.8-15.5l0.6,0L31,34.4c0,0,0,0.1,0.1,0.2c0.1-0.1,0.1-0.2,0.1-0.2
+							l0.7-15.5l0.6,0c0,0,1.1,16.8,1.2,19.3c0,0.1,0,0.1,0,0.2c0,0.1,0,0.2,0,0.3c0,0.2-0.1,0.4-0.3,0.5c-0.7,0.2-2.5,1.2-3.5,3.8
+							c-0.6,1.4-0.2,10.5,0.3,20c1.8,0.4,3.7,0.6,5.6,0.6L36,63.4z"/>
+						<path d="M72,36C72,16.1,55.9,0,36,0c-0.1,0-0.2,0-0.2,0C16,0.1,0,16.2,0,36c0,16.6,11.3,30.6,26.6,34.8
+							c0.2-2.1,0.3-4.4,0.4-6.6c-12-3.8-20.6-15-20.6-28.2c0-16.2,13.2-29.5,29.4-29.6l0.2,0c16.3,0,29.6,13.3,29.6,29.6
+							c0,13.4-8.9,24.7-21.1,28.3c0.1,2.1,0.2,4.3,0.4,6.6C60.4,67,72,52.8,72,36z"/>
+						<path d="M36,65.6l-0.1,0c-1.9,0-3.7-0.2-5.5-0.6c0.1,2.2,0.3,4.5,0.4,6.6c1.6,0.2,3.3,0.4,5,0.4c0.1,0,0.1,0,0.2,0
+							c2,0,3.9-0.2,5.8-0.5c0.1-2.3,0.3-4.5,0.4-6.6C40.1,65.3,38.1,65.6,36,65.6z"/>
+						</svg>`,
+		'beer trail': `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+							 viewBox="0 0 93.9 86.2" style="enable-background:new 0 0 93.9 86.2;" xml:space="preserve">
+						<path d="M32.8,56.1c-7.6-3.7-14.9-5.4-23.9-4.3c-2.2,0.3-4.8,1.5-6,3.4c-1.5,2.4-2.6,5-1.5,7.5
+							c1.2,2.5,3.6,4.4,6.2,5.7c6.3,3.2,13.8,3.7,20.9,3c7.1-0.7,14-2.5,21-3.8c10.7-1.9,21.7-2.4,32.5-1.5c1.6,0.1,5.2,0,6.7,0.7
+							c3.4,1.5,4.5,3,4,5.1c-0.9,3.6-5.9,4.2-6.7,4.6c-2.8,1.5-7.3,1.8-10.5,2.5c-6.8,1.5-15.2,2.4-20.9,6.2"/>
+						<path d="M65.2,0H32.7c-1.1,0-2,0.9-1.9,2.1l5.3,58.6c0,0-0.4,2.9,12.5,2.9c12.9,0,13-2.9,13-2.9L67,2.1
+							C67.1,0.9,66.3,0,65.2,0z M59.7,59.9c-0.6,0.4-3.1,1.5-11,1.5c-7.6,0-9.9-1-10.5-1.4l-5.3-58h32L59.7,59.9z"/>
+						<path class="hover" d="M39.4,59.3c1,0.4,3.5,1,9.3,1c6.2,0,8.8-0.7,9.8-1.1l4.1-44.8c-0.1,0.1-4.2,1.6-12.9,1.6
+							c-8.7,0-14.4-1.6-14.4-1.6L39.4,59.3z M49.2,41.5c-1.8,0-3.2-1.4-3.2-3.2c0-1.8,1.4-3.2,3.2-3.2c1.8,0,3.2,1.4,3.2,3.2
+							C52.4,40.1,51,41.5,49.2,41.5z M51.7,18.1c1.8,0,3.2,1.5,3.2,3.2c0,1.8-1.4,3.2-3.2,3.2c-1.8,0-3.2-1.4-3.2-3.2
+							C48.4,19.6,49.9,18.1,51.7,18.1z M45.4,24.8c2.3,0,4.2,1.9,4.2,4.2s-1.9,4.2-4.2,4.2c-2.3,0-4.2-1.9-4.2-4.2S43.1,24.8,45.4,24.8
+							z"/>
+						<path d="M49.2,40.1c-1,0-1.8-0.8-1.8-1.8c0-1,0.8-1.8,1.8-1.8c1,0,1.8,0.8,1.8,1.8C51,39.3,50.2,40.1,49.2,40.1z"/>
+						<path d="M49.2,36.5c-1,0-1.8,0.8-1.8,1.8c0,1,0.8,1.8,1.8,1.8c1,0,1.8-0.8,1.8-1.8C51,37.3,50.2,36.5,49.2,36.5z"/>
+						<path d="M45.4,31.4c1.3,0,2.4-1.1,2.4-2.4c0-1.3-1.1-2.4-2.4-2.4c-1.3,0-2.4,1.1-2.4,2.4
+							C43,30.3,44.1,31.4,45.4,31.4z"/>
+						<path d="M51.7,23.2c1,0,1.8-0.8,1.8-1.8s-0.8-1.8-1.8-1.8c-1,0-1.8,0.8-1.8,1.8S50.7,23.2,51.7,23.2z"/>
+						</svg>`,
+		'food trails': `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+						 viewBox="0 0 113.7 89" style="enable-background:new 0 0 113.7 89;" xml:space="preserve">
+						<path d="M18.4,66.5v1.8h-6.1v-1.8H18.4z M6.1,66.5v1.8H0v-1.8H6.1z"/>
+						<path d="M30.4,69.9l-1.6,0.9c-0.5-0.8-1-1.6-1.5-2.5h-2.9v-1.8h3.9l0.3,0.5C29.3,68.1,29.8,69,30.4,69.9z"/>
+						<path d="M81.3,76.2C80,78,78.6,79.6,77.2,81l-1.3-1.3c1.4-1.3,2.6-2.8,4-4.6L81.3,76.2z M72.2,85
+							c-1.8,1.1-3.8,2-5.9,2.7l-0.5-1.7c1.9-0.6,3.7-1.4,5.4-2.5L72.2,85z M60,88.8c-1,0.1-2.1,0.1-3.2,0.1c-1.1,0-2.2,0-3.2-0.1
+							l0.2-1.8c1,0.1,2,0.1,3,0.1c1,0,2,0,3-0.1L60,88.8z M47.9,85.9l-0.5,1.7c-2.1-0.6-4-1.5-5.9-2.7l1-1.5
+							C44.1,84.4,46,85.3,47.9,85.9z M37.7,79.7L36.5,81c-1.4-1.4-2.8-3-4.1-4.8l1.5-1.1C35.1,76.8,36.4,78.3,37.7,79.7z"/>
+						<path d="M89.2,66.5v1.8h-2.9c-0.5,0.9-1,1.7-1.5,2.5l-1.6-0.9c0.5-0.9,1.1-1.9,1.7-2.9l0.3-0.5H89.2z"/>
+						<path d="M113.7,66.5v1.8h-6.1v-1.8H113.7z M101.4,66.5v1.8h-6.1v-1.8H101.4z"/>
+						<path d="M68.5,18.3c4.6,0,8.3-3.7,8.3-8.3c0-4.6-3.7-8.3-8.3-8.3c-1.6,0-3.2,0.5-4.5,1.3c-1.8-1.9-4.4-3-7.2-3
+							c-2.8,0-5.3,1.2-7.2,3c-1.3-0.8-2.8-1.3-4.5-1.3c-4.6,0-8.3,3.7-8.3,8.3c0,4.6,3.7,8.3,8.3,8.3c0.4,0,0.8,0,1.2-0.1v8.4
+							c2.9-2.2,6.5-3.6,10.4-3.6c3.9,0,7.5,1.3,10.4,3.6v-8.4C67.6,18.3,68.1,18.3,68.5,18.3z"/>
+						<path class="hover" d="M73.9,43.5c0-5.5-2.6-10.4-6.7-13.6c-2.9-2.2-6.5-3.6-10.4-3.6c-3.9,0-7.5,1.3-10.4,3.6
+							c-4.1,3.1-6.7,8-6.7,13.6c0,1.6,0.2,3.1,0.6,4.6l0,0c0,0,1.6,10.3,16.4,26.5c13.7-14,16.5-26.4,16.5-26.4l0,0
+							C73.7,46.7,73.9,45.2,73.9,43.5z M56.8,50.3c-3.7,0-6.8-3-6.8-6.8c0-3.7,3-6.8,6.8-6.8c3.7,0,6.8,3,6.8,6.8
+							C63.6,47.3,60.6,50.3,56.8,50.3z"/>
+						</svg>`,
+		'banquet': `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+							 viewBox="0 0 72 72" style="enable-background:new 0 0 72 72;" xml:space="preserve">
+						<path class="hover" d="M36,63.4c2.1,0,4.2-0.3,6.2-0.7c0.2-5.8,0.3-10.3-0.1-11.3c-0.1-0.2-5.7-3.6-5.7-12.2c0-4,1.2-7.6,3-9.7
+							c0.3-0.3,0.5-0.6,0.8-0.8c0.5-0.4,1-0.8,1.6-1c0.2-0.1,0.4-0.1,0.7-0.2c0.3-0.1,0.6-0.1,0.8-0.1c0.3,0,0.6,0,0.8,0.1
+							c0.2,0,0.4,0.1,0.7,0.2c0.6,0.2,1.1,0.5,1.6,1c0.3,0.2,0.6,0.5,0.8,0.8c1.8,2.1,3,5.7,3,9.7c0,8.6-5.7,12-5.7,12.2
+							c-0.4,0.9-0.4,5.2-0.1,10.7c11-3.5,19-13.9,19-26.1C63.4,20.9,51.1,8.6,36,8.6l-0.2,0C20.8,8.7,8.6,21,8.6,36
+							c0,12,7.8,22.2,18.6,25.9c0.5-9.2,0.9-17.8,0.3-19.1c-1.1-2.7-2.8-3.6-3.5-3.8c-0.2-0.1-0.3-0.2-0.3-0.5c0-0.1,0-0.2,0-0.3
+							c0,0,0-0.1,0-0.2c0.1-2.5,1.2-19.3,1.2-19.3l0.6,0l0.7,15.5c0,0,0,0.1,0.1,0.2c0.1-0.1,0.1-0.2,0.1-0.2l0.8-15.5l0.6,0l0.8,15.5
+							c0,0,0,0.1,0,0.1c0,0,0,0,0,0c0,0,0,0,0,0c0-0.1,0-0.1,0-0.1l0.8-15.5l0.6,0L31,34.4c0,0,0,0.1,0.1,0.2c0.1-0.1,0.1-0.2,0.1-0.2
+							l0.7-15.5l0.6,0c0,0,1.1,16.8,1.2,19.3c0,0.1,0,0.1,0,0.2c0,0.1,0,0.2,0,0.3c0,0.2-0.1,0.4-0.3,0.5c-0.7,0.2-2.5,1.2-3.5,3.8
+							c-0.6,1.4-0.2,10.5,0.3,20c1.8,0.4,3.7,0.6,5.6,0.6L36,63.4z"/>
+						<path d="M72,36C72,16.1,55.9,0,36,0c-0.1,0-0.2,0-0.2,0C16,0.1,0,16.2,0,36c0,16.6,11.3,30.6,26.6,34.8
+							c0.2-2.1,0.3-4.4,0.4-6.6c-12-3.8-20.6-15-20.6-28.2c0-16.2,13.2-29.5,29.4-29.6l0.2,0c16.3,0,29.6,13.3,29.6,29.6
+							c0,13.4-8.9,24.7-21.1,28.3c0.1,2.1,0.2,4.3,0.4,6.6C60.4,67,72,52.8,72,36z"/>
+						<path d="M36,65.6l-0.1,0c-1.9,0-3.7-0.2-5.5-0.6c0.1,2.2,0.3,4.5,0.4,6.6c1.6,0.2,3.3,0.4,5,0.4c0.1,0,0.1,0,0.2,0
+							c2,0,3.9-0.2,5.8-0.5c0.1-2.3,0.3-4.5,0.4-6.6C40.1,65.3,38.1,65.6,36,65.6z"/>
+						</svg>`
+	};
+	let submenu = document.querySelector('#menu-primary.main-navigation-ul');
+	let items = submenu.getElementsByClassName('submenu-icon');
+	[].forEach.call(
+		items,
+		e =>
+		{
+			let iconWrapper = document.createElement('div');
+			let linkWrapper = e.getElementsByTagName('a')[0];
+			iconWrapper.classList.add('icon-wrapper');
+			iconWrapper.innerHTML = icons[e.innerText.toLowerCase().trim()];
+			linkWrapper.prepend( iconWrapper );
+		}
+	);
+	
+	
+	
+	/*
+	* Inner page Anchor menu
+	*/
+	window.addEventListener(
+		'load',
+		() =>
+		{
+			if ( undefined !== window.vulcanAnchorFlyoutMenuSetup )
+			{
+				renderAnchorMenu( window.vulcanAnchorFlyoutMenuSetup );
+			}
+		}
+	);
+	
+	function renderAnchorMenu( ids )
+	{
+		let anchorMenu = (
+			function()
+			{
+				let m = document.createElement( 'div' );
+				m.classList.add( 'vulcan-anchor-menu' );
+				let anchors = (
+					ids =>
+					{
+						let a = new Array();
+						for ( let el of ids )
+						{
+							el = d.querySelector( el );
+							if ( undefined !== el && null !== el )
+							{
+								a.push( el.id );
+							}
+						}
+						return a;
+					}
+				)( ids );
+				m.sections = (
+					ids =>
+					{
+						let b = new Array();
+						for ( let el of ids )
+						{
+							el = d.querySelector( el );
+							if ( undefined !== el && null !== el )
+							{
+								b.push( el );
+							}
+						}
+						return b;
+					}
+				)( ids );
+				m.items = new Array();
+				let ul = document.createElement( 'ul' );
+				for ( let anchor of anchors )
+				{
+					let li = (
+						function( id, menu )
+						{
+							let l = document.createElement( 'li' );
+							l.classList.add( 'menu-item' );
+							let a = d.createElement( 'a' );
+							a.href = '#' + id;
+							a.innerHTML = id.toUpperCase();
+							a.classList.add( 'menu-item-link' );
+							l.appendChild( a );
+							menu.items.push( l );
+							return l;
+						}
+					)( anchor, m );
+					ul.appendChild( li );
+				}
+				m.appendChild( ul );
+				return m;
+			}
+		)();
+		
+		/*
+		* Setup Flyout Header
+		*/
+		anchorMenu.button = (
+			function()
+			{
+				let wrap = document.createElement( 'div' );
+				wrap.classList.add( 'vulcan-flyout-button-wrapper' );
+				let b = document.createElement( 'a' );
+				for ( let x = 0; x < 3; ++x )
+				{
+					let bar = document.createElement( 'div' );
+					bar.classList.add( 'vulcan-flyout-bar' );
+					b.appendChild( bar );
+				}
+				b.classList.add( 'vulcan-flyout-button' );
+				b.state = false;
+				b.addEventListener(
+					'click',
+					function()
+					{
+						if ( false === this.state )
+						{
+							this.classList.add( 'expanded' );
+							anchorMenu.classList.add( 'expanded' );
+							this.state = true;
+						}
+						else
+						{
+							this.classList.remove( 'expanded' );
+							anchorMenu.classList.remove( 'expanded' );
+							this.state = false;
+						}
+					}
+				);
+				wrap.appendChild( b );
+				return wrap;
+			}
+		)();
+		anchorMenu.prepend( anchorMenu.button );
+		
+		window.addEventListener(
+			'scroll',
+			highlightVisibleSections( anchorMenu.sections, anchorMenu.items ),
+			{
+				passive: true
+			}
+		);
+		
+		let themePage = d.querySelector( '#theme-page' );
+		themePage.appendChild( anchorMenu );
+		
+		function setStyles( element, obj )
+		{
+			for ( let key of Object.keys( obj ) )
+			{
+				element.style.setProperty( key, obj[key] );
+			}
+		}
+		
+		function isInViewport( element )
+		{
+			let rect = element.getBoundingClientRect();
+			let offset = 200;
+			return (
+				-rect.height + offset <= rect.top && rect.top <= window.innerHeight - offset
+			);
+		}
+		
+		function highlightVisibleSections( sections, items )
+		{
+			return function()
+			{
+				for ( let i = 0, s = sections[i], li = items[i]; i < sections.length; ++i, s = sections[i], li = items[i] )
+				{
+					if ( isInViewport( s ) )
+					{
+						li.classList.add( 'isInViewport' );
+					}
+					else
+					{
+						li.classList.remove( 'isInViewport' );
+					}
+				}
+			};
+		}
+		
+		// Interceptor constructor must be called with a css selector string 
+		// that targets the header and/or nav to be used when calculating 
+		// scroll offsets; e.g., '.mk-header.header-style-1'.
+		let interceptor = new AnchorInterceptor( '.mk-header-holder' );
+		if ( true === interceptor.checkForTarget() )
+		{
+			interceptor.doAnimate( interceptor.getTarget() );
+		}
+		window.addEventListener(
+			'click',
+			function( ev )
+			{
+				interceptor.clickHandler( ev );
+			}
+		);
+	}
+
+	class AnchorInterceptor
+	{
+		constructor( headerQueryString )
+		{
+			this.hqs = headerQueryString;
+			this.getHeaderHeight();
+		}
+		
+		getHeaderHeight()
+		{
+			this.header = (
+				function( hqs )
+				{
+					let header = document.querySelector( hqs );
+					if ( undefined !== header || null !== header )
+					{
+						return header;
+					}
+				}
+			)( this.hqs);
+			this.headerOffset = this.header.offsetHeight;
+		}
+
+		setTarget( anchorTarget )
+		{
+			sessionStorage.setItem( 'anchorTarget', anchorTarget );
+		}
+
+		getTarget()
+		{
+			return sessionStorage.getItem( 'anchorTarget' );
+		}
+		removeTarget()
+		{
+			if ( sessionStorage.getItem( 'anchorTarget' ) )
+			{
+				sessionStorage.removeItem( 'anchorTarget' );
+			}
+		}
+
+		checkForTarget()
+		{
+			if ( 
+				null !== sessionStorage.getItem( 'anchorTarget' ) &&
+				'' !== sessionStorage.getItem( 'anchorTarget' )
+			)
+			{
+				return true;
+			}
+			return false;
+		}
+
+		getLinkFromTarget( target ) {
+			while ( target.localName !== 'a' ) {
+				if ( ! target.localName )
+				{
+					return false;
+				}
+				target = target.parentNode;
+			} 
+			return target;
+		}
+
+		getStripURL( link )
+		{
+			let url = link.href;
+			url = url.substring( 0, url.indexOf( '#' ) );
+			return url;
+		}
+
+		getTargetID( link )
+		{
+			return link.href.substring( link.href.indexOf( '#' ) + 1 );
+		}
+
+		doNavigate( url )
+		{
+			window.location.href = url;
+		}
+
+		doAnimate( id )
+		{
+			const anchorTarget = document.getElementById( id );
+			if ( undefined === anchorTarget )
+			{
+				return;
+			}
+			let deltaY = this.getScrollAmount( anchorTarget ) - this.headerOffset;
+			if ( 0 === deltaY )
+			{
+				this.removeTarget();
+				return;
+			}
+			let that = this;
+			$('html').animate(
+				{
+					scrollTop: deltaY + 'px'
+				},
+				{
+					duration: 666,
+					step: function( now, tween )
+					{
+						that.getHeaderHeight();
+						deltaY = that.getScrollAmount( anchorTarget ) - that.headerOffset;
+						tween.end = deltaY;
+					}
+				}
+			);
+			this.removeTarget();
+		}
+
+		getScrollAmount( t )
+		{
+			let windowOffset = t.getBoundingClientRect().top;
+			let elementOffset = window.scrollY + windowOffset;
+			return elementOffset;
+		}
+
+		clickHandler( event )
+		{
+			const link = this.getLinkFromTarget( event.target );
+			if ( ! link )
+			{
+				return;
+			}
+			if ( ! link.hasAttribute( 'href' ) )
+			{
+				return;
+			}
+			event.preventDefault();
+			const url = link.href;
+			const cleanURL = this.getStripURL( link );
+			const id = this.getTargetID( link );
+			if ( -1 === url.indexOf('#') )
+			{
+				this.doNavigate( url );
+			}
+			else if ( window.location.href === cleanURL )
+			{
+				this.doAnimate( id );
+			}
+			else
+			{
+				this.setTarget( id );
+				this.doNavigate( cleanURL );
+			}
 		}
 	}
 	
-	/*function occurrences(string, subString, allowOverlapping) {
-
-		string += "";
-		subString += "";
-		if (subString.length <= 0) return (string.length + 1);
-
-		var n = 0,
-			pos = 0,
-			step = allowOverlapping ? 1 : subString.length;
-
-		while (true) {
-			pos = string.indexOf(subString, pos);
-			if (pos >= 0) {
-				++n;
-				pos += step;
-			} else break;
-		}
-		return n;
-	}
 	
-	function occurrences(string, substring) {
-
-	  var n = 0;
-	  var pos = 0;
-	  var l=substring.length;
-
-	  while (true) {
-		pos = string.indexOf(substring, pos);
-		if (pos > -1) {
-		  n++;
-		  pos += l;
-		} else {
-		  break;
-		}
-	  }
-	  return (n);
-	}*/
     
     /* --------------------------------------------------- */
     
