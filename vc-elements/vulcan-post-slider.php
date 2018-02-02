@@ -39,6 +39,7 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 						'type'        => 'textfield',
 						'heading'     => __( 'Categories', 'mk_framework' ),
 						'param_name'  => 'categories',
+						'value' => '',
 						'description' => __( 'Enter specific Categories to be used.', 'mk_framework' ),
 					),
 			
@@ -60,8 +61,8 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 						"param_name" => "controls_type",
 						"value" => array(
 							__("Thumbnail", 'mk_framework') => "thumbnail",
-							__("Arrows", 'mk_framework') => "arrow"
-			
+							__("Arrows", 'mk_framework') => "arrow",
+							__("Bullets", 'mk_framework') => "bullet",
 						),
 						"type" => "dropdown"
 					),
@@ -121,6 +122,14 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 						),
 						"type" => "dropdown"
 					),
+				
+					array(
+						"type" => "textfield",
+						"heading" => __("Overlay classnames", "mk_framework"),
+						"param_name" => "overlay_class",
+						"value" => "",
+						"description" => __("Add classes to the slider overlay; useful for shaders or other styling effects.", "mk_framework")
+					),
 
 					array(
 						"type" => "textfield",
@@ -144,11 +153,13 @@ class vcVulcanPostSlider extends WPBakeryShortCode
                 array(
 					'slider_type' => 'hero',
 					'controls_type' => 'thumbnail',
-                    'categories'   => '',
+                    'categories' => '',
                     'num_posts' => '3',
 					'order' => '',
 					'interval' => '7000',
-					'speed' => '1000'
+					'speed' => '1000',
+					'overlay_class' => '',
+					'el_class' => ''
                 ), 
                 $atts
             )
@@ -192,27 +203,31 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 			$slider_classes[] = 'slider-type-post';
 		}
 		
+		$slider_classes[] = $controls_type . '_controls';
+		
 		$slider_classes = implode( ' ', $slider_classes );
 		
-		$slider_meta_data  = new class( $slider_type, $controls_type, $interval, $speed )
-							{
-								public $type;
-								public $controls;
-								public $interval;
-								public $speed;
-								public function __construct( $slider_type, $controls_type, $interval, $speed )
-								{
-									$this->type = $slider_type;
-									$this->controls = $controls_type;
-									$this->interval = $interval;
-									$this->speed = $speed;
-								}
-							};
+		$slider_meta_data  = new class( $slider_type, $controls_type, $interval, $speed, $overlay_class )
+		{
+			public $type;
+			public $controls;
+			public $interval;
+			public $speed;
+			public $overlay;
+			public function __construct( $slider_type, $controls_type, $interval, $speed, $overlay_class )
+			{
+				$this->type = $slider_type;
+				$this->controls = $controls_type;
+				$this->interval = $interval;
+				$this->speed = $speed;
+				$this->overlay = $overlay_class;
+			}
+		};
 		
 		$html = '<div id="Vulcan_Post_Slider" class="' . $slider_classes . '" data-meta=\'' . json_encode($slider_meta_data) . '\' >';
 		
 		$html .= '<div class="vulcan-slides-wrapper">';
-
+		
 		$my_query = new WP_Query( $query_args );
 		
 		if ( 'arrow' === $controls_type )
@@ -234,6 +249,12 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 			if ( 'thumbnail' === $controls_type )
 			{
 				$thumbControl = '<button class="slide-control" data-slide-index="' . $i . '"><div class="thumbnail-transform-wrapper">' . $post_thumbnail . '</div></button>';
+				$controls[] = $thumbControl;
+			}
+			
+			if ( 'bullet' === $controls_type )
+			{
+				$thumbControl = '<span class="slide-control-bullet" data-slide-index="' . $i . '"></span>';
 				$controls[] = $thumbControl;
 			}
 			

@@ -13,14 +13,16 @@ class VulcanPostSlider
     * @param {Integer} interval - Time between slide transitions in miliseconds.
     * @param {Integer} speed - Slide transition time in miliseconds.
     */
-    constructor ( container, content, type, interval, speed )
+    constructor ( container, content, type, controls_type, interval, speed, overlay )
     {
         this.container = container;
         this.content = content;
 		this.type = type;
 		this.controls = null;
+		this.controls_type = controls_type;
         this.interval = interval;
         this.speed = speed;
+		this.overlay = overlay;
         this.shifting = false;
         this.loop = null;
         this.slides = null;
@@ -50,18 +52,35 @@ class VulcanPostSlider
 		this.slides.forEach(
 			e =>
 			{
-				let data_slide_index = e.getAttribute( 'data-slide-index' );
-				if ( '0' === data_slide_index )
+				if ( '0' === e.getAttribute( 'data-slide-index' ) )
 				{
 					e.classList.add('active');
 				}
-				e.style.setProperty( 'z-index', '11' + data_slide_index );
 				e.style.setProperty( 'transition', 'all ' + this.speed + 'ms ease-out' );
 				e.style.setProperty( 'animation-duration', this.speed + 'ms' );
 				e.flexWrapper.style.setProperty( 'transition', 'all ' + this.speed + 'ms ease-out' );
 				e.flexWrapper.style.setProperty( 'animation-duration', this.speed + 'ms' );
 			}
 		);
+		
+		this.overlay = ( 
+			() =>
+			{
+				let o = document.createElement('div');
+				o.classList.add('overlay');
+				o.classList.add( this.overlay );
+				o.shapeEvent = new CustomEvent (
+					'newshape',
+					{
+						detail: 
+						{
+							emitter: o
+						}
+					}
+				);
+				return o;
+			}
+        )();
 
         this.controls = ( 
 			() =>
@@ -69,7 +88,7 @@ class VulcanPostSlider
 				let ca = [];
 				for ( const control of Array.from( this.container.getElementsByClassName('slide-controls')[0].children ) )
 				{
-					if ( 'hero' === this.type )
+					if ( 'thumbnail' === this.controls_type || 'bullet' === this.controls_type )
 					{
 						control.addEventListener(
 							'click',
@@ -79,7 +98,7 @@ class VulcanPostSlider
 							}
 						);
 					}
-					if ( 'post' === this.type )
+					if ( 'arrow' === this.controls_type )
 					{
 						let cl = control.classList;
 						if ( cl.contains('arrow') )
@@ -117,7 +136,7 @@ class VulcanPostSlider
         )();
 		
 		this.setActiveControlStyles();
-		
+		this.container.appendChild( this.overlay );
         this.loop = setInterval( 
 			() =>
 			{
@@ -338,8 +357,10 @@ window.addEventListener(
 			slider,
 			slider.getElementsByClassName('vulcan-slides-wrapper')[0],
 			meta.type,
+			meta.controls,
 			meta.interval,
-			meta.speed 
+			meta.speed,
+			meta.overlay
 		);
 		let container = (
 			() =>
@@ -353,7 +374,7 @@ window.addEventListener(
 			}
 		)();
 		container.style.setProperty( 'z-index', '1001' );
-		vulcanPostSlider.container.classList.remove( 'loading' );
+		window.dispatchEvent( vulcanPostSlider.overlay.shapeEvent );
 	}
 );
 
