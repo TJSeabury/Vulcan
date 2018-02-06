@@ -39,25 +39,44 @@ $vulcan = new Vulcan(
 
 $vulcan->initAdmin();
 
+$vulcan->initVCElements(
+	array(
+		'/vc-elements/vulcan-filtered-post-category.php',
+		//'/vc-elements/vulcan-flexbox.php', ! currently broken !
+		'/vc-elements/vulcan-post-slider.php',
+		'/vc-elements/vulcan-hero-slider.php',
+		'/vc-elements/vulcan-events.php',
+		'/vc-elements/vulcan-facebook-page.php'
+	)
+);
+
+$vulcan->initWidgets(
+	array(
+		'Vulcan_widget_upcoming_events'
+	)
+);
+
 $vulcan->initStyles(
 	'/public/css/modules/',
 	'/public/css/',
 	'aggregate.min.css'
 );
 
-$vulcan->initScripts();
-
-
 /*
-* Enable modules based on theme options.
+* This needs to be rewritten to accept filenames and folders.
 */
-if ( (bool)get_option('vulcan_interface_ajax_shortcodes') )
-{
-	interfaces\AjaxShortcodes::enable();
-}
+//$vulcan->initScripts();
+
+$vulcan->initFilters();
+
+$vulcan->enableModulesBasedOnThemeOptions();
 
 /* ------------------------------------------- */
 
+
+/* 
+* This needs to be moved to it's own method within $vulcan and made more robust.
+*/
 add_action(
 	'init',
 	function()
@@ -67,7 +86,9 @@ add_action(
 		if ( file_exists( $path ) ) {
 			try {
 				$timestamp = filemtime( $path );
-			} catch ( \Exception $e ) {
+			}
+			finally
+			{
 				$timestamp = 0;
 			}
 		}
@@ -114,33 +135,11 @@ add_action(
 	}
 );
 
-add_action( 'vc_before_init', 'vc_before_init_actions' );
-function vc_before_init_actions()
-{
-	require_once( __DIR__ . '/vc-elements/vulcan-filtered-post-category.php' );
-	//require_once( __DIR__ . '/vc-elements/vulcan-flexbox.php' );
-	require_once( __DIR__ . '/vc-elements/vulcan-post-slider.php' );
-	require_once( __DIR__ . '/vc-elements/vulcan-hero-slider.php' );
-	require_once( __DIR__ . '/vc-elements/vulcan-events.php' );
-	require_once( __DIR__ . '/vc-elements/vulcan-facebook-page.php' );
-}
 
-/*
-* Include widgets
+
+/* 
+* These need to be handled by $vulcan->initScripts()
 */
-add_action( 'widgets_init', 'register_vulcan_widgets' );
-function register_vulcan_widgets() {
-	require_once( __DIR__ . '/vulcan-widgets/vulcan-upcoming-events.php' );
-    register_widget( 'Vulcan_widget_upcoming_event' );
-}
-
-add_action( 'init', 'add_taxonomies_to_pages' );
-function add_taxonomies_to_pages()
-{
-	register_taxonomy_for_object_type( 'post_tag', 'page' );
-	register_taxonomy_for_object_type( 'category', 'page' );
-}
-
 add_action( 'wp_enqueue_scripts', 'vulcan_theme_css', 42 );
 function vulcan_theme_css() {
 	$mainCSSPath = get_stylesheet_directory_uri() . '/theme.css';
@@ -179,6 +178,10 @@ function vulcan_skrollr_js() {
 	wp_enqueue_script( 'skrollr-js', $snapJsPath, array(), vulcan_get_file_version($snapJsPath), true);
 }
 
+
+/* 
+* This can be removed after checking for any remaining dependencies.
+*/
 function vulcan_get_file_version( $url ) {
 	$content_url = content_url();
 	$filepath    = str_replace( $content_url, WP_CONTENT_DIR, $url );
@@ -196,8 +199,3 @@ function vulcan_get_file_version( $url ) {
 	}
 	return $timestamp ? (string) $timestamp : null;
 }
-
-/*
-* Adds the option to hide Gravity form field labels.
-*/
-add_filter( 'gform_enable_field_label_visibility_settings', '__return_true' );

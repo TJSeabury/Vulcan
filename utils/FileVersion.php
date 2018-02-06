@@ -1,13 +1,12 @@
 <?php namespace DIFDesign\utils;
 
-
 class FileVersion
 {
 	/*
 	* @param string $url The full file url.
 	* @return int
 	*/
-	public static function getVersion( $url )
+	public static function getVersion( string $url )
 	{
 		$content_url = content_url();
 		$filepath    = str_replace( $content_url, WP_CONTENT_DIR, $url );

@@ -56,7 +56,7 @@ class Vulcan_widget_upcoming_event extends WP_Widget {
 									'<p class="event-content">' . $post->post_content . '</p>' .
 									'<div class="vc_btn3-container  difThemeButton vc_btn3-center">' .
 									'<button class="vc_general vc_btn3 vc_btn3-size-md vc_btn3-shape-round vc_btn3-style-outline vc_btn3-block vc_btn3-color-primary">' .
-										'<a href="' . $url . ''">View Event</a>' .
+										'<a href="' . $url . '">View Event</a>' .
 									'</button></div>' .
 								'</div>' .
 							'</div>' .

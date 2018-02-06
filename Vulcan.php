@@ -174,6 +174,70 @@ class Vulcan
 		} );
 		
 	}
+
+	public function initVCElements( array $filenames )
+	{
+		add_action( 'vc_before_init', 'vc_before_init_actions' );
+		function vc_before_init_actions()
+		{
+			foreach ( $filenames as $filename )
+			{
+				try
+				{
+					require_once( __DIR__ . $filename );
+				}
+				catch ( \Exception $e )
+				{
+					throw $e;
+				}
+			}
+		}
+	}
+
+	public function initWidgets( array $obj )
+	{
+		add_action( 'widgets_init', 'register_vulcan_widgets' );
+		function register_vulcan_widgets() {
+			foreach ( $filenames as $filename )
+			{
+				try
+				{
+					require_once( __DIR__ . '/vulcan-widgets/' . $filename . '.php' );
+					register_widget( $filename );
+				}
+				catch ( \Exception $e )
+				{
+					throw $e;
+				}
+			}
+		}
+	}
+
+	public function enableModulesBasedOnThemeOptions()
+	{
+		if ( (bool)get_option('vulcan_interface_ajax_shortcodes') )
+		{
+			interfaces\AjaxShortcodes::enable();
+		}
+	}
+
+	public function registerTaxonomies()
+	{
+		add_action( 'init', 'add_taxonomies_to_pages' );
+		function add_taxonomies_to_pages()
+		{
+			register_taxonomy_for_object_type( 'post_tag', 'page' );
+			register_taxonomy_for_object_type( 'category', 'page' );
+		}
+	}
+
+	public function initFilters()
+	{
+		/*
+		* Adds the option to hide Gravity form field labels.
+		*/
+		add_filter( 'gform_enable_field_label_visibility_settings', '__return_true' );
+	}
 	
 	/*
 	* Initializes theme styles.
