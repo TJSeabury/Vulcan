@@ -1,15 +1,69 @@
-<?php
+<?php namespace Vulcan;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 date_default_timezone_set('America/New_York');
+
+define( 'VULCANTHEMEROOT', get_stylesheet_directory_uri() );
+
+/*
+* Lazy load classes for brevity.
+* @param string $class The fully-qualified class name.
+* @return void
+*/
+spl_autoload_register( function ( string $class )
+{
+    $prefix = 'Vulcan\\';
+    $base_dir = __DIR__ . '/';
+    $len = strlen( $prefix );
+    if ( strncmp( $prefix, $class, $len ) !== 0 )
+	{
+        return;
+    }
+    $relative_class = substr( $class, $len );
+    $file = $base_dir . str_replace( '\\', '/', $relative_class ) . '.php';
+    if ( file_exists( $file ) )
+	{
+        include_once $file;
+    }
+} );
+
+/*
+* Instantiate and setup child theme.
+*/
+$vulcan = new Vulcan(
+	__DIR__,
+	VULCANTHEMEROOT,
+	time()
+);
+
+$vulcan->initAdmin();
+
+$vulcan->initStyles(
+	'/public/css/modules/',
+	'/public/css/',
+	'aggregate.min.css'
+);
+
+$vulcan->initScripts();
+
+
+/*
+* Enable modules based on theme options.
+*/
+if ( (bool)get_option('vulcan_interface_ajax_shortcodes') )
+{
+	interfaces\AjaxShortcodes::enable();
+}
+
+/* ------------------------------------------- */
 
 add_action(
 	'init',
 	function()
 	{
 		$path = __DIR__ . '/assets/css/mk-options.css';
-	$timestamp;
+		$timestamp;
 		if ( file_exists( $path ) ) {
 			try {
 				$timestamp = filemtime( $path );
@@ -147,42 +201,3 @@ function vulcan_get_file_version( $url ) {
 * Adds the option to hide Gravity form field labels.
 */
 add_filter( 'gform_enable_field_label_visibility_settings', '__return_true' );
-
-/*
-* Enables ajax for getting shortcodes dynamically
-*/
-add_action('wp_ajax_do_shortcode', 'ajax_do_shortcode');
-add_action('wp_ajax_nopriv_do_shortcode', 'ajax_do_shortcode');
-
-function ajax_do_shortcode()
-{
-	$output;
-    switch( $_REQUEST['fn'] )
-	{
-		case 'do_shortcode':
-			$output = do_shortcode( wp_unslash( $_REQUEST['shortcode'] ) );
-			break;
-		default:
-			$output = 'Invalid shortcode';
-			break;
-	}
-	$output = json_encode( $output );
-	echo $output;
-	wp_die();
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
