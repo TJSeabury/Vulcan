@@ -1,4 +1,4 @@
-<?php namespace DIFDesign\utils;
+<?php namespace Vulcan\utils;
 
 class FileVersion
 {
