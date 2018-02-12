@@ -1,4 +1,4 @@
-<?php
+<?php namespace Vulcan\vcElements;
 
 /*
 * Vulcan Post Slider.
