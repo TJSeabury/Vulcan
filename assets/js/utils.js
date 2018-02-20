@@ -1,11 +1,10 @@
 /*
- * DIFDesign Core frontend library.
- * © Copyright 2017, Tyler Seabury, DIF Design, All Rights reserved.
+ * DIFDesign Core frontend library
+ * © Copyright 2017-2018, Tyler Seabury, All Rights reserved.
  * @author Tyler Seabury, tylerseabury@gmail.com
  * @author DIF Design
  * @authorURL https://github.com/TJSeabury/
- * @authorURL http://difdesign.com/
- * @version 0.4.0
+ * @version 0.5.0
  */
 
 
@@ -27,6 +26,27 @@ function DIFDESIGNCOREUTILITIES() {
         this.H = window.innerHeight;
     });
     window.dispatchEvent( new Event('resize') );
+
+    /*
+	* Returns the version number of IE or 0 for another browser.
+	*/
+	this.getIEVersion = function()
+	{
+		const sAgent = window.navigator.userAgent;
+		const Idx = sAgent.indexOf( 'MSIE' );
+		if ( Idx > 0 )
+		{
+			return parseInt( sAgent.substring( Idx + 5, sAgent.indexOf( '.', Idx ) ) );
+		}
+		else if ( !! navigator.userAgent.match( /Trident\/7\./ ) )
+		{
+			return 11;
+		}
+		else
+		{
+			return 0;
+		}
+	};
     
     /*
     * Helper method to more easily create elements.
@@ -96,39 +116,32 @@ function DIFDESIGNCOREUTILITIES() {
 	};
 
     /*
-     *
-     * !! TODO !!
-     *
-     * The Eye of Sauron will, in the future, replace event listeners for most use cases.
-     * !! This is still in development and should not be considered anything other than experimental,
-     * be expected to function properly, or at all. !!
-     * @Use - Don't, not yet.
-     */
-    this.eyeOfSauron = new EyeOfSauron();
-    function EyeOfSauron(subject) {
-        this.watchers = [];
-
-        /*
-        * { name, target, callback }
-        */
-        this.regard = function(obj) {
-            let ob = new MutationObserver( mutations => {
-                for ( let m = 0; m < mutations.length; ++m ) {
-
+    * Polyfill for prepend
+    * Source: https://github.com/jserz/js_piece/blob/master/DOM/ParentNode/prepend()/prepend().md
+    */
+	(function (arr) {
+        arr.forEach(function (item) {
+            if (item.hasOwnProperty('prepend')) {
+                return;
+            }
+            Object.defineProperty(item, 'prepend', {
+                configurable: true,
+                enumerable: true,
+                writable: true,
+                value: function prepend() {
+                var argArr = Array.prototype.slice.call(arguments),
+                    docFrag = document.createDocumentFragment();
+    
+                argArr.forEach(function (argItem) {
+                    var isNode = argItem instanceof Node;
+                    docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
+                });
+    
+                this.insertBefore(docFrag, this.firstChild);
                 }
-                // Object.prototype.toString.call( mutation.addedNodes[i] ) === '[object HTMLDivElement]'
             });
-
-            observer.observe( document, {
-                attributes: true,
-                childList: true,
-                characterData: true,
-                subtree: true
-            });
-
-        }
-
-    }
+        });
+    })([Element.prototype, Document.prototype, DocumentFragment.prototype]);
     
     /* 
     * Polyfill for focusin and focusout.
@@ -232,7 +245,7 @@ function DIFDESIGNCOREUTILITIES() {
      * @param {HTMLElement Array} subtration - Elements to subtract the height of from the final height applied to the element.
 	 * @param {Number} timeout - Time in miliseconds to wait for asynchronus elements in the DOM.
      */
-    this.heightSetter = function( elements, fraction, subtraction, timeout )
+    this.heightSetter = function( elements, fraction, subtraction, timeout, once )
     {
 		let fullHeightElements = document.querySelectorAll( elements );
 		let subtractionElements = [];
@@ -300,7 +313,8 @@ function DIFDESIGNCOREUTILITIES() {
 		}
 		function doHeightSet()
 		{
-			window.addEventListener( 'resize', () =>
+			let handler;
+			window.addEventListener( 'resize', handler = () =>
 			{
 				let h = self.H;
 				let s = 0;
@@ -316,6 +330,16 @@ function DIFDESIGNCOREUTILITIES() {
 				}
 			} );
 			window.dispatchEvent( new Event('resize') );
+			if ( once )
+			{
+				setTimeout(
+					() =>
+					{
+						window.removeEventListener( 'resize', handler );
+					},
+					100
+				);
+			}
 		}
     };
 	

@@ -12,7 +12,7 @@ class vcVulcanPostSlider extends WPBakeryShortCode
 		add_action( 'wp_enqueue_scripts', 'vulcan_post_slider_js', 10 );
 		function vulcan_post_slider_js() {
 			$path = get_stylesheet_directory_uri() . '/assets/js/vulcan-post-slider.js';
-			wp_enqueue_script( 'vulcan-post-slider-js', $path, array(), vulcan_get_file_version($path), true);
+			wp_enqueue_script( 'vulcan-post-slider-js', $path, array(), utils\FileVersion::getVersion($path), true);
 		}
         add_shortcode( 'vc_vulcanPostSlider', array( $this, 'vc_vulcanPostSlider_html' ) );
     }

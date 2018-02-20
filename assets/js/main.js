@@ -1,6 +1,6 @@
 /*
 * Main scripts
-* © Copyright 2017, DIF Design, All Rights reserved.
+* © Copyright 2017-2018, DIF Design, All Rights reserved.
 * @author Tyler Seabury, tylerseabury@gmail.com
 * @author DIF Design
 * @authorURL https://github.com/TJSeabury/
@@ -13,19 +13,63 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 	let D = DIFDesignCoreUtilities;
 	let $ = jQuery;
 	let d = document;
+	let h = d.documentElement;
+	let w = window;
 	
 	/*
     * Tags each page with a class based on the Wordpress fed page title.
     * Useful for targeting specific pages with styles.
 	*/
 	document.body.classList.add( document.title.replace( /\W/g, '' ) );
+	
+	if ( /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream )
+	{
+		h.classList.add( 'IOS' );
+	}
+	
+	if ( 0 !== D.getIEVersion() )
+	{
+		h.classList.add('IE');
+	}
     
     /*
     * Sets the height of elements to the viewport height minus the headers.
     * @use Add class 'difFullHeight' to elements to set their height.
     */
-	D.heightSetter( '.difFullHeight', 1.0, ['#wpadminbar', '.mk-header'], 666 );
-	D.heightSetter( '.difHalfHeight', 0.5, ['#wpadminbar', '.mk-header'], 666 );
+	const argsFull = [ '.difFullHeight', 1.0, ['#wpadminbar', '.mk-header'], 666 ];
+	const argsHalf = [ '.difFullHeight', 0.5, ['#wpadminbar', '.mk-header'], 666 ];
+	if ( D.W > 1023 )
+	{
+		D.heightSetter( ...argsFull, false );
+		D.heightSetter( ...argsHalf, false );
+	}
+	else
+	{
+		D.heightSetter( ...argsFull, true );
+		D.heightSetter( ...argsHalf, true );
+	}
+	
+	/*
+	* Override Juptier preloader so that it fires an event on loading complete.
+	*/
+	w.addEventListener(
+		'load',
+		() =>
+		{
+			w.MK.ui.preloader.hide = function hide()
+			{
+				window.dispatchEvent( new CustomEvent( 'mk-preloader-complete' ) );
+				$( this.dom.overlay ).fadeOut(
+					600,
+					"easeInOutExpo",
+					function()
+					{
+						$('body').removeClass('loading');
+					}
+				);
+			};
+		}
+	);
 	
 	/*
 	* Rectify the height of mk-header that has been changed by custom css.
@@ -1074,8 +1118,6 @@ window.addEventListener('DIFDesignCoreReady', function main() {
 			}
 		}
 	}
-	
-	
     
     /* --------------------------------------------------- */
     
