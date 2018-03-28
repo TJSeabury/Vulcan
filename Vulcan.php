@@ -113,7 +113,7 @@ class Vulcan
 			*/
 			register_setting( 
 				'vulcan_options', 
-				'vulcan_interface_ajax_shortcodes' 
+				'vulcan_interface_ajax_shortcodes'
 			);
 			add_settings_field(
 				'vulcan_interface_ajax_shortcodes',
@@ -134,12 +134,13 @@ class Vulcan
 				)
 			);
 			
-		} );
+		}
+		);
 		
 		add_action( 'admin_menu', function()
 		{
 			add_menu_page(
-				'DIF Design Theme Options',
+				'Vulcan Options',
 				'Theme Options',
 				'manage_options',
 				'vulcan',
@@ -171,7 +172,8 @@ class Vulcan
 				$this->themeUri . '/assets/media/vulcan-icon.png',
 				2
 			);
-		} );
+		}
+		);
 		
 	}
 
@@ -233,6 +235,36 @@ class Vulcan
 
 	public function initFilters()
 	{
+
+		/*
+		* Custom admin footers.
+		*/
+		function remove_footer_admin () {
+			$wordpress = '<a href="http://www.wordpress.org" target="_blank">WordPress</a>';
+			$difdesign = '<a href="https://difdesign.com" target="_blank">DIF Design</a>';
+			
+			$taglines = array(
+				"Your custom $wordpress, and theme, designed and developed by $difdesign.",
+				"At $difdesign, we ensure that all $wordpress themes are raised free-range and organic.",
+				"Your custom $wordpress, sourced and crafted from local materials by $difdesign.",
+				"Gluten free $wordpress, crafted with love from $difdesign.",
+				"Harder, better, faster, blogger. Your custom $wordpress by $difdesign.",
+				"\"Damn it man! I'm a $wordpress engineer, not a doctor!\" — someone at $difdesign probably.",
+				"$difdesign and the Masters of the Cyberverse: \"By the power of $wordpress! I have the power!\""
+			);
+			
+			$rn = random_int( 0, count( $taglines ) - 1 );
+			
+			ob_start();
+			?>
+			<div class="difdesign_admin_footer">
+				<p><?php echo $taglines[ $rn ]; ?></p>
+			</div>
+			<?php
+			echo ob_get_clean();
+		}
+		add_filter('admin_footer_text', 'remove_footer_admin');
+
 		/*
 		* Adds the option to hide Gravity form field labels.
 		*/
@@ -250,8 +282,9 @@ class Vulcan
 			{
 				$currentCss = $this->themePath . $writePath . $filename;
 				
-				$cssModulePaths = utils\AggregatorCss::getFiles(
+				$cssModulePaths = utils\FileAggregator::getFiles(
 					$this->themePath . $readPath,
+					array( 'php', 'css' ),
 					true
 				);
 				
@@ -266,17 +299,18 @@ class Vulcan
 				
 				if ( $areNewFiles )
 				{
-					$css = utils\AggregatorCss::agg(
-						utils\AggregatorCss::getFiles(
+					$css = utils\FileAggregator::agg(
+						utils\FileAggregator::getFiles(
 							$this->themePath . $readPath,
+							array( 'php', 'css' ),
 							false
 						)
 					);
 					if ( (bool)get_option('vulcan_minify_css') )
 					{
-						$css = utils\AggregatorCss::minify( $css );
+						$css = utils\FileAggregator::minify( $css );
 					}
-					utils\AggregatorCss::write(
+					utils\FileAggregator::write(
 						$css,
 						$this->themePath . $writePath,
 						$filename
@@ -289,17 +323,18 @@ class Vulcan
 			'update_option_' . 'vulcan_minify_css',
 			function() use( $readPath, $writePath, $filename )
 			{
-				$css = utils\AggregatorCss::agg(
-					utils\AggregatorCss::getFiles(
+				$css = utils\FileAggregator::agg(
+					utils\FileAggregator::getFiles(
 						$this->themePath . $readPath,
+						array( 'php', 'css' ),
 						false
 					)
 				);
 				if ( (bool)get_option('vulcan_minify_css') )
 				{
-					$css = utils\AggregatorCss::minify( $css );
+					$css = utils\FileAggregator::minify( $css );
 				}
-				utils\AggregatorCss::write(
+				utils\FileAggregator::write(
 					$css,
 					$this->themePath . $writePath,
 					$filename
@@ -313,8 +348,7 @@ class Vulcan
 			{
 				wp_enqueue_style(
 					'vulcan-aggregate-minified-styles',
-					$this->themeUri . $writePath . $filename,
-					array( 'avada-stylesheet' )
+					$this->themeUri . $writePath . $filename
 				);
 			},
 			3
@@ -322,9 +356,7 @@ class Vulcan
 		
 	}
 
-	/*
-	* This needs to be moved to it's own method within $vulcan and made more robust.
-	*/
+
 	public function expose_mk_options()
 	{
 		add_action(
@@ -347,22 +379,29 @@ class Vulcan
 					$mko = get_option('Jupiter_options');
 					ob_start();
 					?>
-					/* 
-					* This file is dynamically generated.
-					* Last updated on: <?php echo date(DATE_RFC2822) . "\n"; ?>
-					*/
-					:root {
-						--mk-skin-color: <?php echo $mko['skin_color']; ?>;
-						--mk-link-color: <?php echo $mko['a_color']; ?>;
-						--mk-link-hover-color: <?php echo $mko['a_color_hover']; ?>;
-						--mk-strong-color: <?php echo $mko['strong_color']; ?>;
-						--mk-grid-width: <?php echo $mko['grid_width']; ?>px;
-						--mk-header-height: <?php echo $mko['header_height']; ?>px;
-						--mk-responsive-header-height: <?php echo $mko['res_header_height']; ?>px;
-						--mk-sticky-header-height: <?php echo $mko['header_scroll_height']; ?>px;
-						--mk-logo: url("<?php echo $mko['logo']; ?>");
-						--mk-font-all: <?php echo $mko['fonts'][0]['fontFamily']; ?>;
-					}
+/* 
+* This file is dynamically generated.
+* Last updated on: <?php echo date(DATE_RFC2822) . "\n"; ?>
+*/
+:root {
+	--mk-skin-color: <?php echo $mko['skin_color']; ?>;
+	--mk-link-color: <?php echo $mko['a_color']; ?>;
+	--mk-link-hover-color: <?php echo $mko['a_color_hover']; ?>;
+	--mk-strong-color: <?php echo $mko['strong_color']; ?>;
+	--mk-grid-width: <?php echo $mko['grid_width']; ?>px;
+	--mk-header-height: <?php echo $mko['header_height']; ?>px;
+	--mk-responsive-header-height: <?php echo $mko['res_header_height']; ?>px;
+	--mk-sticky-header-height: <?php echo $mko['header_scroll_height']; ?>px;
+	--mk-logo: url("<?php echo $mko['logo']; ?>");
+	<?php
+	for ( $f = 0; $f < count( $mko['fonts'] ); ++$f )
+	{
+	?>
+	--mk-font-<?php echo $f; ?>: <?php echo $mko['fonts'][$f]['fontFamily']; ?>;
+	<?php
+	}
+	?>
+}
 					<?php
 					$css = ob_get_clean();
 					$f = fopen( $path, 'wb' );
@@ -390,76 +429,63 @@ class Vulcan
 	/*
 	* Initialize theme scripts
 	*/
-	public function initScripts()
+	public function initScripts( array $paths )
 	{
-
-		add_action( 'wp_enqueue_scripts', function()
+		foreach( $paths as $path )
 		{
-			$coreJsPath = $this->themeUri . '/public/js/vulcancoreutilities.js';
-			wp_register_script( 'vulcanCoreJS', $coreJsPath );
-			wp_localize_script( 'vulcanCoreJS', 'wpMeta', array( 'siteURL' => get_option( 'siteurl' ) ) );
-			wp_enqueue_script( 'vulcanCoreJS', $coreJsPath, array(), utils\FileVersion::getVersion( $coreJsPath ), true);
-		}, 2 );
-
-		add_action( 'wp_enqueue_scripts', function()
-		{
-			$mainJsPath = $this->themeUri . '/public/js/main.js';
-			wp_enqueue_script( 'vulcanMainJS', $mainJsPath, array(), utils\FileVersion::getVersion( $mainJsPath ), true);
-		}, 1 );
-
-		add_action( 'wp_enqueue_scripts', 'vulcan_theme_css', 42 );
-		function vulcan_theme_css() {
-			$mainCSSPath = get_stylesheet_directory_uri() . '/theme.css';
-			wp_enqueue_style( 'vulcan-theme-css', $mainCSSPath, array(), utils\FileVersion::getVersion($mainCSSPath) );
-		}
-
-		add_action( 'wp_enqueue_scripts', 'vulcan_components_css', 32 );
-		function vulcan_components_css() {
-			$mainCSSPath = get_stylesheet_directory_uri() . '/assets/css/vulcan.css';
-			wp_enqueue_style( 'vulcan-component-css', $mainCSSPath, array(), utils\FileVersion::getVersion($mainCSSPath) );
-		}
-
-		add_action( 'wp_enqueue_scripts', 'vulcan_core_js', 10 );
-		function vulcan_core_js() {
-			$coreJsPath = get_stylesheet_directory_uri() . '/assets/js/utils.js';
-			wp_register_script( 'vulcan-utils-js', $coreJsPath );
-			wp_localize_script( 'vulcan-utils-js', 'wpMeta', array( 'siteURL' => get_option('siteurl') ) );
-			wp_enqueue_script( 'vulcan-utils-js', $coreJsPath, array(), utils\FileVersion::getVersion($coreJsPath), true);
-		}
-
-		add_action( 'wp_enqueue_scripts', 'vulcan_main_js', 9 );
-		function vulcan_main_js() {
-			$mainJsPath = get_stylesheet_directory_uri() . '/assets/js/main.js';
-			wp_enqueue_script( 'vulcan-main-js', $mainJsPath, array(), utils\FileVersion::getVersion($mainJsPath), true);
-		}
-
-		add_action( 'wp_enqueue_scripts', 'vulcan_snap_js', 10 );
-		function vulcan_snap_js() {
-			$snapJsPath = get_stylesheet_directory_uri() . '/vendor/js/snap.svg-min.js';
-			wp_enqueue_script( 'snap-svg-js', $snapJsPath, array(), utils\FileVersion::getVersion($snapJsPath), true);
-		}
-
-		add_action( 'wp_enqueue_scripts', 'vulcan_skrollr_js', 10 );
-		function vulcan_skrollr_js() {
-			$snapJsPath = get_stylesheet_directory_uri() . '/vendor/js/skrollr.js';
-			wp_enqueue_script( 'skrollr-js', $snapJsPath, array(), utils\FileVersion::getVersion($snapJsPath), true);
-		}
-
-		add_action(
-			'wp_enqueue_scripts',
-			function()
+			$filePaths = utils\FileAggregator::getFiles(
+				$this->themePath . $path,
+				array( 'js' ),
+				true
+			);
+			foreach( $filePaths as $fpath )
 			{
-				$path = get_stylesheet_directory_uri() . '/vendor/js/skrollr.js';
-				wp_enqueue_script(
-					'skrollr-js',
-					$path,
-					array(),
-					utils\FileVersion::getVersion($path),
-					true
+				$name = null;
+				$priority = null;
+				$metaHeader = get_file_data(
+					$fpath,
+					array(
+						'Name' => 'Name',
+						'Priority' => 'Priority'
+						)
 				);
-			},
-			10
-		);
+				if ( $metaHeader['Name'] )
+				{
+					$name = $metaHeader['Name'];
+				}
+				else
+				{
+					$fn = pathinfo( $fpath );
+					if ( $fn )
+					{
+						$name = $fn['filename'];
+					}
+				}
+				if ( $metaHeader['Priority'] )
+				{
+					$priority = $metaHeader['Priority'];
+				}
+				add_action(
+					'wp_enqueue_scripts',
+					function()
+					{
+						wp_enqueue_script(
+							$name,
+							$fpath,
+							array(),
+							utils\FileVersion::getVersion( $fpath ),
+							true
+						);
+					},
+					$priority
+				);
+			}
+		}
+		
+		
+			
+
+		
 
 	}
 	

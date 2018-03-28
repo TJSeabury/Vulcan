@@ -1,0 +1,291 @@
+/*
+* Vulcan Events
+*/
+.vulcan-events {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	margin: 64px 0;
+}
+.vulcan-events * {
+	box-sizing: border-box;
+	transition: all 333ms ease;
+}
+.vulcan-events .vulcan-title {
+	width: 100%;
+	margin: 32px 0 64px;
+	text-align: center;
+}
+.vulcan-event {
+	padding: 0 10px;
+}
+.vulcan-event a {
+	display: flex;
+}
+.vulcan-event a,
+.vulcan-event a:hover {
+	color: #444;
+}
+
+/*
+* Events Minimal
+*/
+.vulcan-events.vulcan-minimal-list {
+	display: block;
+	margin: 0;
+}
+.vulcan-events.vulcan-minimal-list .vulcan-title {
+	width: 100%;
+	margin: 16px 0;
+	font-size: 24px;
+	font-weight: 600;
+	text-align: left;
+	text-transform: uppercase;
+}
+
+/*
+* Event cards
+*/
+.vulcan-cards-wrap {
+	display: flex;
+	width: 100%;
+	margin: 0 0 64px 0;
+}
+.vulcan-event.vulcan-event-card {
+	display: flex;
+}
+.vulcan-events[data-num_cards="1"] .vulcan-event.vulcan-event-card {
+	width: calc( 100% / 1 );
+}
+.vulcan-events[data-num_cards="2"] .vulcan-event.vulcan-event-card {
+	width: calc( 100% / 2 );
+}
+.vulcan-events[data-num_cards="3"] .vulcan-event.vulcan-event-card {
+	width: calc( 100% / 3 );
+}
+.vulcan-events[data-num_cards="4"] .vulcan-event.vulcan-event-card {
+	width: calc( 100% / 4 );
+}
+.vulcan-events[data-num_cards="5"] .vulcan-event.vulcan-event-card {
+	width: calc( 100% / 5 );
+}
+.vulcan-events[data-num_cards="6"] .vulcan-event.vulcan-event-card {
+	width: calc( 100% / 6 );
+}
+.vulcan-events .vulcan-event-card .event-transform-wrapper {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	overflow: hidden;
+	box-shadow: 0 16px 24px 0px rgba(0,0,0,0.0);
+	transform: translateY(0px);	
+}
+.vulcan-events .vulcan-event-card:hover .event-transform-wrapper {
+	box-shadow: 0 16px 24px 0px rgba(0,0,0,0.2);
+	transform: translateY(-16px);	
+}
+.vulcan-events .vulcan-event-card .event-transform-wrapper:after {
+	content: "";
+	position: absolute;
+	display: block;
+	bottom: 0;
+	width: 100%;
+	height: 16px;
+	background: var(--mk-skin-color);
+	opacity: 0;
+	transition: all 333ms ease;
+}
+.vulcan-events .vulcan-event-card:hover .event-transform-wrapper:after {
+	opacity: 1;
+}
+.vulcan-event-card .aspect-ratio-wrap {
+	position: relative;
+	width: 100%;
+	padding-top: 75%;
+}
+.vulcan-event-card .aspect-ratio-wrap img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.vulcan-event-card .event-details {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	padding: 16px;
+}
+.vulcan-event-card .event-date {
+	display: inline-block;
+	margin: 0 0 8px 0;
+}
+.vulcan-event-card .event-date .month,
+.vulcan-event-card .event-date .day {
+	font-size: 16px;
+	font-weight: 700;
+	color: #999;
+	line-height: 1;
+}
+.vulcan-event-card .event-category {
+	display: inline-block;
+	font-size: 14px;
+	color: #999;
+}
+.vulcan-event-card .event-title {
+	width: 100%;
+	margin: 0 0 16px 0;
+	font-size: 24px;
+	font-weight: 500;
+	line-height: 1;
+	color: #666;
+	text-transform: capitalize;
+}
+.vulcan-event-card .event-content {
+	display: block;
+	width: 100%;
+}
+
+/*
+* List items
+*/
+.vulcan-event.vulcan-event-listitem {
+	width: 50%;
+	margin: 10px 0;
+}
+.vulcan-events .vulcan-event-listitem .event-transform-wrapper {
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+	border: 1px solid #ddd;
+	box-shadow: 0 8px 24px -4px rgba(0,0,0,0.0);
+	transform: translateY(0px);
+	overflow: hidden;
+}
+.vulcan-events .vulcan-event-listitem:hover .event-transform-wrapper {
+	box-shadow: 0 8px 24px -4px rgba(0,0,0,0.2);
+	transform: translateY(-8px);
+}
+.vulcan-event-listitem .event-date {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	flex-shrink: 0;
+	width: 64px;
+	height: 64px;
+	background: var(--mk-link-hover-color);
+}
+.vulcan-event-listitem .event-date .month,
+.vulcan-event-listitem .event-date .day {
+	color: white;
+	line-height: 1;
+}
+.vulcan-event-listitem .event-date .day {
+	font-size: 24px;
+	font-weight: 600;
+}
+.vulcan-event-listitem .event-details {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	width: 100%;
+	padding: 4px 0 4px 10px;
+}
+.vulcan-event-listitem .event-title {
+	width: 100%;
+	margin: 0;
+	font-size: 20px;
+	font-weight: 500;
+	color: #666;
+	text-transform: capitalize;
+}
+.vulcan-event-listitem:hover .event-title {
+	color: var(--mk-link-hover-color);
+}
+.vulcan-event-listitem .event-categories {
+	display: inline-block;
+	margin: 0 10px 0 0;
+	border-right: 2px solid #ddd;
+	padding: 0 10px 0 0;
+	text-transform: uppercase;
+}
+.vulcan-event-listitem .event-timeframe {
+	display: inline-block;
+	text-transform: uppercase;
+}
+
+.vulcan-view-all-events {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin: 64px 0 32px;
+}
+.vulcan-view-all-events a {
+	padding: 16px 48px;
+	font-size: 20px;
+	font-weight: 600px;
+	text-transform: uppercase;
+	background: var(--mk-skin-color);
+	color: white;
+	box-shadow: 0 8px 24px -4px rgba(0,0,0,0.0);
+	transform: translateY(0px);
+}
+.vulcan-view-all-events a:hover {
+	background: var(--mk-link-hover-color);
+	color: white;
+	box-shadow: 0 8px 24px -4px rgba(0,0,0,0.33);
+	transform: translateY(-8px);
+}
+
+/*
+* List Items Minimal
+*/
+.vulcan-events.vulcan-minimal-list .vulcan-event.vulcan-event-listitem {
+	width: 100%;
+	margin: 10px 0;
+	padding: 0;
+}
+.vulcan-events.vulcan-minimal-list .vulcan-event-listitem .event-transform-wrapper {
+	flex-direction: column;
+	border: none;
+	padding: 4px;
+	box-shadow: 0 4px 24px -4px rgba(0,0,0,0.0);
+	transform: translateY(0px);
+	overflow: hidden;
+}
+.vulcan-events.vulcan-minimal-list .vulcan-event-listitem:hover .event-transform-wrapper {
+	background: #eee;
+	box-shadow: 0 4px 16px -4px rgba(0,0,0,0.2);
+	transform: translateY(-4px);
+}
+.vulcan-events.vulcan-minimal-list .vulcan-event-listitem .event-details {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	width: 100%;
+	padding: 4px 0;
+}
+.vulcan-events.vulcan-minimal-list .vulcan-event-listitem .event-date {
+	display: inline-flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	width: unset;
+	height: unset;
+	align-items: flex-end;
+	flex-shrink: 0;
+	margin: 0 10px 0 0;
+	padding: 2px 4px;
+	background: var(--mk-link-hover-color);
+}
+.vulcan-events.vulcan-minimal-list .vulcan-event-listitem .event-date .month {
+	margin: 0 2px 0 0;
+	font-size: 14px;
+}
+.vulcan-events.vulcan-minimal-list .vulcan-event-listitem .event-date .day {
+	font-size: 18px;
+	font-weight: 400;
+}

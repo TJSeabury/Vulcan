@@ -1,6 +1,6 @@
 <?php namespace Vulcan\utils;
 
-class AggregatorCss
+class FileAggregator
 {
 	/*
 	* Retrieves the files contents as if outputting to a client,
@@ -8,13 +8,13 @@ class AggregatorCss
 	* @param string $readPath - The absolute path to the folder.
 	* @return array
 	*/
-	public static function getFiles( string $readPath, bool $pathOnly )
+	public static function getFiles( string $readPath, array $extensions, bool $pathOnly )
 	{
 		$r = array();
 		foreach( array_filter( glob( $readPath . '/*.*' ), 'is_file' ) as $file )
 			{
 				$fn = pathinfo( $file );
-				if ( $fn['extension'] == 'php' || $fn['extension'] == 'css' && $fn['filename'] !== 'index' )
+				if ( in_array( $fn['extension'], $extensions, true ) && $fn['filename'] !== 'index' )
 				{
 					if ( $pathOnly )
 					{
@@ -24,7 +24,6 @@ class AggregatorCss
 					{
 						$r[] = self::get_file_output( $file );
 					}
-					
 				}
 			}
 		return $r;

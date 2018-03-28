@@ -1,0 +1,53 @@
+/*
+* Atomic classes
+*/
+
+
+
+/* Layout */
+.flex-vertical-center {
+	display: flex !important;
+	align-items: center;
+}
+.flex-horizontal-center {
+	display: flex !important;
+	justify-content: center;
+}
+.flex-fullheight {
+	display: flex !important;
+	align-items: stretch;
+}
+.fullHeight > .vc_column-inner {
+	height: 100%;
+	padding: 0 !important;
+}
+.flex-center-inner > .vc_column-inner {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+@media handheld, only screen and (max-width: 411px) {
+	.flex-vertical-center {
+		flex-direction: column;
+	}
+	.flex-horizontal-center {
+		flex-direction: column;
+	}
+	.flex-fullheight {
+		flex-direction: column;
+	}
+	.flex-center-inner > .vc_column-inner {
+		flex-direction: column;
+	}
+}
+
+
+/* Typography */
+.white-text,
+.white-text * {
+	color: white;
+}
+.multicolumn {
+	column-count: 3;
+	column-gap: 48px;
+}

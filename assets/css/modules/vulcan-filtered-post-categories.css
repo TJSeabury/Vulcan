@@ -1,0 +1,174 @@
+/*
+* Vulcan Filtered Post Categories
+*/
+.vulcan-filtered-post-category {}
+.vulcan-filtered-post-category,
+.vulcan-filtered-post-category * {
+	box-sizing: border-box;
+}
+.vulcan-filtered-post-category.vulcan-container .vc_separator {
+	margin: 32px 0 0;
+}
+.vulcan-filtered-post-category.vulcan-container .vc_separator h1 {
+	margin: 0;
+}
+/* The Filter */
+.filtered-post-category-controls {
+	margin-bottom: 16px;
+	border-bottom: 1px solid #ddd;
+	padding: 0 16px 16px;
+}
+.filtered-post-category-controls header strong {
+	display: block;
+}
+.filtered-post-category-control {
+	display: inline-flex;
+	align-items: center;
+	margin-right: 18px;
+}
+
+/*
+* INCORPORATE one of these
+* ^This is very vague. find out what this means soonish.
+*/
+.filtered-post-category-control .slidebox {
+	width: 38px;
+	height: 18px;
+	background: #ddd;
+	margin: 0 6px 0 0;
+	position: relative;
+	border-radius: 50px;
+	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+.filtered-post-category-control .slidebox:before {
+	content: "";
+	position: absolute;
+	left: 2px;
+	z-index: 0;
+	font: 17px/16px var(--mk-font-all);
+	color: var(--mk-strong-color);
+}
+.filtered-post-category-control .slidebox label {
+	position: absolute;
+	display: block;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	cursor: pointer;
+	background: transparent;
+	border-radius: 50px;
+	transition: all 200ms ease-out;
+}
+.filtered-post-category-control .slidebox label:after {
+	content: "";
+	display: block;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	position: absolute;
+	top: 1px;
+	left: 1px;
+	z-index: 1;
+	background: #fcfff4;
+	border-radius: 50px;
+	transition: all 200ms ease-out;
+	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+}
+.filtered-post-category-control .slidebox input[type=checkbox] {
+	visibility: hidden;
+}
+.filtered-post-category-control .slidebox input[type=checkbox] + label:after {
+	background: var(--mk-strong-color);
+}
+.filtered-post-category-control .slidebox input[type=checkbox] + label:hover:after,
+.filtered-post-category-control .slidebox input[type=checkbox]:checked + label:hover:after {
+	background: var(--mk-link-color);
+}
+.filtered-post-category-control .slidebox input[type=checkbox]:checked + label:after {
+	background: var(--mk-link-hover-color);
+	transform: translateX( calc( 100% + 4px ) );
+}
+.filtered-post-category-control .control-label {
+	opacity: 0.65;
+}
+
+/* The Items wrapper */
+.vulcan-filtered-post-category .category-posts-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	
+}
+/* The Items */
+.vulcan-filtered-post-category .filtered-post-category-item {
+	width: 50%;
+	margin-bottom: 24px;
+	padding: 16px;
+	opacity: 0.1;
+	pointer-events: none;
+	transition: all 200ms ease;
+}
+.vulcan-filtered-post-category.force-one-column .filtered-post-category-item {
+	width: 100%;
+}
+.vulcan-filtered-post-category .filtered-post-category-item[visible] {
+	opacity: 1.0;
+	pointer-events: auto;
+}
+
+.vulcan-filtered-post-category .filtered-post-category-item .aspect-ratio-wrapper {
+	position: relative;
+	margin-bottom: 16px;
+	padding-top: 75%;
+}
+.vulcan-filtered-post-category .filtered-post-category-item .aspect-ratio-wrapper img {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.vulcan-filtered-post-category .filter-post-category-title {
+	margin-bottom: 4px;
+	font-family: var(--mk-font-all) !important;
+	font-size: 2rem !important;
+	line-height: 1.2 !important;
+	text-transform: uppercase !important;
+	color: var(	--mk-strong-color);
+	background-color: transparent !important;
+}
+.filter-post-category-tags {
+	font-size: 12px;
+	line-height: 1;
+	opacity: 0.5;
+}
+.vulcan-filtered-post-category .filtered-post-category-item ul {
+	margin: 0;
+	list-style: none;
+}
+.vulcan-filtered-post-category .filtered-post-category-item ul li {
+	margin: 0;
+}
+.vulcan-filtered-post-category .filtered-post-category-item ul li a {
+	color: var(--mk-link-color);
+}
+.vulcan-filtered-post-category .filtered-post-category-item ul li a:hover {
+	color: var(--mk-link-hover-color);
+}
+.vulcan-filtered-post-category .filter-post-category-link-to-post {
+	display: inline-block;
+	margin: 8px 0;
+	padding: 4px 24px;
+	background-color: var(--mk-strong-color);
+	color: white;
+	transition: all 200ms ease;
+}
+.vulcan-filtered-post-category .filter-post-category-link-to-post:hover {
+	background-color: var(--mk-skin-color);
+}

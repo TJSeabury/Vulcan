@@ -4,7 +4,7 @@
  * @author Tyler Seabury, tylerseabury@gmail.com
  * @author DIF Design
  * @authorURL https://github.com/TJSeabury/
- * @version 0.5.0
+ * @version 0.7.0
  */
 
 

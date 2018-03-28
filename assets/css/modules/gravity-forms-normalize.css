@@ -1,0 +1,85 @@
+/*
+* Gravity Forms Normalize
+*/
+.gform_body input::-webkit-input-placeholder {
+	font-size: 16px !important;
+	color: white !important;
+	transition: all 200ms ease;
+}
+.gform_body input::-moz-placeholder {
+	font-size: 16px !important;
+	color: white !important;
+	transition: all 200ms ease;
+}
+.gform_body input:-ms-input-placeholder {
+	font-size: 16px !important;
+	color: white !important;
+	transition: all 200ms ease;
+}
+.gform_body input::-ms-input-placeholder {
+	font-size: 16px !important;
+	color: white !important;
+	transition: all 200ms ease;
+}
+.gform_body input:-moz-placeholder {
+	font-size: 16px !important;
+	color: white !important;
+	transition: all 200ms ease;
+}
+.gform_body input::-moz-placeholder {
+	font-size: 16px !important;
+	color: white !important;
+	transition: all 200ms ease;
+}
+.gform_body input:placeholder-shown {
+	font-size: 16px !important;
+	color: white !important;
+	transition: all 200ms ease;
+}
+.gform_body input:placeholder {
+	font-size: 16px !important;
+	color: white !important;
+	transition: all 200ms ease;
+}
+.gform_body input:focus::-webkit-input-placeholder {
+	color: rgba(255,255,255,0.33) !important;
+}
+.gform_body input:focus::-moz-placeholder {
+	color: rgba(255,255,255,0.33) !important;
+}
+.gform_body input:focus:-ms-input-placeholder {
+	color: rgba(255,255,255,0.33) !important;
+}
+.gform_body input:focus::-ms-input-placeholder {
+	color: rgba(255,255,255,0.33) !important;
+}
+.gform_body input:focus:-moz-placeholder {
+	color: rgba(255,255,255,0.33) !important;
+}
+.gform_body input:focus::-moz-placeholder {
+	color: rgba(255,255,255,0.33) !important;
+}
+.gform_body input:focus:placeholder-shown {
+	color: rgba(255,255,255,0.33) !important;
+}
+.gform_body input:focus:placeholder {
+	color: rgba(255,255,255,0.33) !important;
+}
+
+.gform_button[type=submit] {
+	background-color: white !important;
+	color: var(--themeTeal) !important;
+}
+.gform_button[type=submit]:hover {
+	background-color: var(--themeOrange) !important;
+	color: white !important;
+}
+
+
+
+
+
+
+
+
+

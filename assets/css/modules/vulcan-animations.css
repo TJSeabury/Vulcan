@@ -1,0 +1,38 @@
+/*
+* Animation classes
+*/
+.slide-fade-in {
+	z-index: 1010;
+	opacity: 1.0;
+	transform: translateX(0%);
+	animation-name: slide-fade-in;
+	animation-delay: 0ms;
+	animation-direction: normal;
+	animation-fill-mode: forwards;
+	animation-iteration-count: 1;
+	animation-play-state: running;
+	animation-timing-function: ease-out;
+}
+
+.slide-fade-in.slide-flex-wrapper {
+	z-index: 1010;
+	opacity: 0.0;
+	transform: translateX(100%);
+	animation-name: slide-fade-in;
+	animation-delay: 300ms;
+	animation-direction: normal;
+	animation-fill-mode: forwards;
+	animation-iteration-count: 1;
+	animation-play-state: running;
+	animation-timing-function: ease-out;
+}
+@keyframes slide-fade-in {
+	from {
+		opacity: 0.0;
+		transform: translateX(100%);
+	}
+	to {
+		opacity: 1.0;
+		transform: translateX(0%);
+	}
+}
