@@ -6,31 +6,8 @@ date_default_timezone_set('America/New_York');
 
 define( 'VULCANTHEMEROOT', get_stylesheet_directory_uri() );
 
-/*
-* Lazy load classes for brevity.
-* @param string $class The fully-qualified class name.
-* @return void
-*/
-spl_autoload_register( function ( string $class )
-{
-    $prefix = 'Vulcan\\';
-    $base_dir = __DIR__ . '/';
-    $len = strlen( $prefix );
-    if ( strncmp( $prefix, $class, $len ) !== 0 )
-	{
-        return;
-    }
-    $relative_class = substr( $class, $len );
-    $file = $base_dir . str_replace( '\\', '/', $relative_class ) . '.php';
-    if ( file_exists( $file ) )
-	{
-        include_once $file;
-    }
-} );
+require_once( 'autoloader.php' );
 
-/*
-* Instantiate and setup child theme.
-*/
 $vulcan = new Vulcan(
 	__DIR__,
 	VULCANTHEMEROOT,
@@ -56,15 +33,14 @@ $vulcan->initWidgets(
 	)
 );
 
+$vulcan->expose_mk_options();
+
 $vulcan->initStyles(
 	'/assests/css/modules/',
 	'/assets/css/',
 	'aggregate.min.css'
 );
 
-/*
-* This needs to be rewritten to accept filenames and folders.
-*/
 $vulcan->initScripts(
 	array(
 		'/assets/js/',
@@ -72,6 +48,20 @@ $vulcan->initScripts(
 		'/admin/js/'
 	)
 );
+
+$vulcan->initFilters();
+
+$vulcan->enableModulesBasedOnThemeOptions();
+
+
+
+
+
+
+
+
+
+
 
 add_action( 'wp_enqueue_scripts', function()
 {
@@ -140,11 +130,3 @@ add_action(
 	},
 	10
 );
-
-
-
-
-
-$vulcan->initFilters();
-
-$vulcan->enableModulesBasedOnThemeOptions();

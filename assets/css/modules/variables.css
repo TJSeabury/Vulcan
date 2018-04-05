@@ -1,0 +1,3 @@
+:root {
+	--side-padding: calc( ( var(--window-width) - var(--mk-grid-width) ) / 2 );
+}

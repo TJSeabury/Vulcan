@@ -11,6 +11,7 @@ class Vulcan
 		$this->themePath = $themeRootPath;
 		$this->themeUri = $themeRootUri;
 		$this->initTime = $Time;
+		$GLOBALS['themeName'] = 'vulcan';
 	}
 	
 	/*
@@ -23,7 +24,7 @@ class Vulcan
 			add_settings_section( 
 				'primary_settings',
 				'Primary Settings',
-				function( $arg )
+				function( $args )
 			    {
 					?>
 					<p>Super important settings.</p>
@@ -36,9 +37,10 @@ class Vulcan
 			* Theme Mode
 			*/
 			register_setting( 
-				'vulcan_options', 
-				'vulcan_theme_mode' 
+				'vulcan_options',
+				'vulcan_theme_mode'
 			);
+
 			add_settings_field(
 				'vulcan_theme_mode',
 				'Theme Mode',
@@ -48,7 +50,7 @@ class Vulcan
 					<label for="<?php echo $args['id']; ?>">
 						<input type="checkbox" id="<?php echo $args['id']; ?>" name="<?php echo $args['id']; ?>" value="1" <?php checked( '1', get_option('vulcan_theme_mode') ); ?> />
 						Live
-					</labe>
+					</label>
 				<?php
 				},
 				'vulcan',
@@ -85,7 +87,15 @@ class Vulcan
 			/*
 			* Minify css
 			*/
-			register_setting(
+			utils\admin\MenuField::create_field(
+				'primary_settings',
+				'options',
+				'minify_css',
+				'toggle',
+				''
+			);
+
+			/* register_setting(
 				'vulcan_options',
 				'vulcan_minify_css'
 			);
@@ -106,7 +116,7 @@ class Vulcan
 				array(
 					'id' => 'vulcan_minify_css'
 				)
-			);
+			); */
 			
 			/*
 			* Ajax Shortcodes Interface
@@ -154,7 +164,7 @@ class Vulcan
 					?>
 					<div class="wrap">
 						<h1><?= esc_html( get_admin_page_title() ); ?></h1>
-						<p>Various options to toggle theme functinos and components.</p>
+						<p>Various options to toggle theme functions and components.</p>
 						<form action="options.php" method="post">
 							<?php
 							// output security fields for the registered setting "vulcan_options"
@@ -219,7 +229,7 @@ class Vulcan
 	{
 		if ( (bool)get_option('vulcan_interface_ajax_shortcodes') )
 		{
-			interfaces\AjaxShortcodes::enable();
+			interfaces\ajax\AjaxShortcodes::enable();
 		}
 	}
 
@@ -247,7 +257,7 @@ class Vulcan
 				"Your custom $wordpress, and theme, designed and developed by $difdesign.",
 				"At $difdesign, we ensure that all $wordpress themes are raised free-range and organic.",
 				"Your custom $wordpress, sourced and crafted from local materials by $difdesign.",
-				"Gluten free $wordpress, crafted with love from $difdesign.",
+				"Gluten free $wordpress, baked with love from $difdesign.",
 				"Harder, better, faster, blogger. Your custom $wordpress by $difdesign.",
 				"\"Damn it man! I'm a $wordpress engineer, not a doctor!\" — someone at $difdesign probably.",
 				"$difdesign and the Masters of the Cyberverse: \"By the power of $wordpress! I have the power!\""
@@ -359,12 +369,12 @@ class Vulcan
 
 	public function expose_mk_options()
 	{
+		$path = __DIR__ . '/assets/css/mk-options.css';
 		add_action(
 			'init',
 			function()
 			{
-				$path = __DIR__ . '/assets/css/mk-options.css';
-				$timestamp;
+				$timestamp = 0;
 				if ( file_exists( $path ) ) {
 					try {
 						$timestamp = filemtime( $path );
@@ -411,12 +421,11 @@ class Vulcan
 				add_action( 'wp_enqueue_scripts',
 					function()
 					{
-						$mainCSSPath = get_stylesheet_directory_uri() . '/assets/css/mk-options.css';
 						wp_enqueue_style(
-							'DIFDesignThemeOptions',
-							$mainCSSPath,
+							'MK-Options-Exposed',
+							$path,
 							array(),
-							utils\FileVersion::getVersion( $mainCSSPath )
+							utils\FileVersion::getVersion( $path )
 						);
 					},
 					32
@@ -441,7 +450,7 @@ class Vulcan
 			foreach( $filePaths as $fpath )
 			{
 				$name = null;
-				$priority = null;
+				$priority = 10;
 				$metaHeader = get_file_data(
 					$fpath,
 					array(

@@ -15,15 +15,19 @@ function DIFDESIGNCOREUTILITIES() {
     'use strict';
 
     let self = this;
+
+    const html = document.documentElement;
 	
 	this._rootPathname = wpMeta.siteURL || '/';
 
-    /*
+     /*
     * Handy-Dandy nifty properties
     */
     window.addEventListener('resize', () => {
         this.W = document.body.clientWidth;
         this.H = window.innerHeight;
+        html.style.setProperty( '--window-width', this.W + 'px' );
+        html.style.setProperty( '--window-height', this.H + 'px' );
     });
     window.dispatchEvent( new Event('resize') );
 
