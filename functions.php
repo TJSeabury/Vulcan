@@ -8,6 +8,29 @@ define( 'VULCANTHEMEROOT', get_stylesheet_directory_uri() );
 
 require_once( 'autoloader.php' );
 
+add_action(
+	'init',
+	function()
+	{
+		if (is_admin()) {
+			$config = array(
+				'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
+				'proper_folder_name' => 'plugin-name', // this is the name of the folder your plugin lives in
+				'api_url' => 'https://api.github.com/repos/TJSeabury/Vulcan', // the GitHub API url of your GitHub repo
+				'raw_url' => 'https://raw.github.com/TJSeabury/Vulcan/master', // the GitHub raw url of your GitHub repo
+				'github_url' => 'https://github.com/TJSeabury/Vulcan', // the GitHub url of your GitHub repo
+				'zip_url' => 'https://github.com/TJSeabury/Vulcan/archive/master.zip', // the zip url of the GitHub repo
+				'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
+				'requires' => '4.0', // which version of WordPress does your plugin require?
+				'tested' => '4.9.4', // which version of WordPress is your plugin tested up to?
+				'readme' => 'README.md', // which file to use as the readme for the version number
+				'access_token' => '', // Access private repositories by authorizing under Appearance > GitHub Updates when this example plugin is installed
+			);
+			new utils\WP_GitHub_Updater( $config );
+		}
+	}
+);
+
 $vulcan = new Vulcan(
 	__DIR__,
 	VULCANTHEMEROOT,

@@ -2,6 +2,7 @@
 
 class MenuSection 
 {
+    public $fields = null;
     public function __construct( object $s, string $title, array $fields )
     {
         add_settings_section(
@@ -19,5 +20,11 @@ class MenuSection
             },
             $s->slug
         );
+        $this->add_fields( $fields );
+    }
+
+    private function add_fields( array $fields )
+    {
+
     }
 }

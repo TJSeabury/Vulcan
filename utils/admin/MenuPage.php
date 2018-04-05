@@ -1,12 +1,30 @@
 <?php namespace Vulcan\utils\admin;
 
-/* 
-* 
+/*
+@param (array) (required) $settings [
+    'title' - (string) (Required) The text to be displayed in the title tags of the page when the menu is selected. AND (string) (Required) The text to be used for the menu.
+
+    'capability' - (string) (Required) The capability required for this menu to be displayed to the user.
+
+    'slug' - (string) (Required) The slug name to refer to this menu by. Should be unique for this menu page and only include lowercase alphanumeric, dashes, and underscores characters to be compatible with sanitize_key().
+
+    'icon' - (string) (Optional) The URL to the icon to be used for this menu. 
+    * Pass a base64-encoded SVG using a data URI, which will be colored to match the color scheme. This should begin with 'data:image/svg+xml;base64,'. 
+    * Pass the name of a Dashicons helper class to use a font icon, e.g. 'dashicons-chart-pie'. 
+    * Pass 'none' to leave div.wp-menu-image empty so an icon can be added via CSS.
+    Default value: ''
+
+    'position' - (int) (Optional) The position in the menu order this one should appear.
+    Default value: null
+
+    'type' - (string) (required) The type of menu page to be rendered.
+]
+@param (array) (required) $sections [
+    
+]
 */
 class MenuPage
 {
-
-    public $page = null;
     public $sections = null;
     private $settings = null;
 
@@ -36,10 +54,6 @@ class MenuPage
         {
             throw new WP_Error( 'invalid_arguement', $args['type'] );
         }
-        if ( ! ( $args['callback'] && is_callable( $args['callback'] ) ) )
-        {
-            throw new WP_Error( 'invalid_arguement', $args['callback'] );
-        }
 
         $this->settings = (object)array(
             'title' => $args['title'],
@@ -47,11 +61,10 @@ class MenuPage
             'slug' => $args['slug'],
             'icon' => $args['icon'],
             'position' => $args['position'],
-            'type' => $args['type'],
-            'callback' => $args['callback']
+            'type' => $args['type']
         );
 
-        $this->page = $this->create_page( $this->settings );
+        $this->create_page( $this->settings );
 
         $this->sections = $this->add_sections( $sections );
     }
@@ -114,9 +127,18 @@ class MenuPage
         };
     }
 
-    public function add_sections()
+    public function add_sections( array $sections )
     {
-
+        $temp = array();
+        foreach ( $sections as $section )
+        {
+            $temp[] = new utils\admin\MenuSection(
+                $this->settings,
+                $section['title'],
+                $section['fields']
+            );
+        }
+        return $sections;
     }
 
 }
