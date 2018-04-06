@@ -12,7 +12,7 @@ class vcVulcanHeroSlider extends WPBakeryShortCode
 		add_action( 'wp_enqueue_scripts', 'vulcan_hero_slider_js', 10 );
 		function vulcan_hero_slider_js() {
 			$path = get_stylesheet_directory_uri() . '/assets/js/vulcan-hero-slider.js';
-			wp_enqueue_script( 'vulcan-hero-slider-js', $path, array(), utils\FileVersion::getVersion($path), true);
+			wp_enqueue_script( 'vulcan-hero-slider-js', $path, array(), utils\FileTools::getVersion($path), true);
 		}
         add_shortcode( 'vc_vulcanHeroSlider', array( $this, 'vc_vulcanHeroSlider_html' ) );
     }

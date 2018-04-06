@@ -14,6 +14,16 @@ class Vulcan
 		$GLOBALS['themeName'] = 'vulcan';
 	}
 	
+	public function getPath()
+	{
+		return $this->themePath;
+	}
+
+	public function getUri()
+	{
+		return $this->themeUri;
+	}
+
 	/*
 	* Initializes Wordpress admin theme menu.
 	*/
@@ -189,40 +199,45 @@ class Vulcan
 
 	public function initVCElements( array $filenames )
 	{
-		add_action( 'vc_before_init', 'vc_before_init_actions' );
-		function vc_before_init_actions()
-		{
-			foreach ( $filenames as $filename )
+		add_action(
+			'vc_before_init',
+			function() use( $filenames )
 			{
-				try
+				foreach ( $filenames as $filename )
 				{
-					require_once( __DIR__ . $filename );
-				}
-				catch ( \Exception $e )
-				{
-					throw $e;
+					try
+					{
+						require_once( __DIR__ . $filename );
+					}
+					catch ( \Exception $e )
+					{
+						throw $e;
+					}
 				}
 			}
-		}
+		);
 	}
 
-	public function initWidgets( array $obj )
+	public function initWidgets( array $Widgets )
 	{
-		add_action( 'widgets_init', 'register_vulcan_widgets' );
-		function register_vulcan_widgets() {
-			foreach ( $filenames as $filename )
-			{
-				try
+		add_action(
+			'widgets_init',
+			function() use( $Widgets ) {
+				foreach ( $Widgets as $Widget )
 				{
-					require_once( __DIR__ . '/vulcan-widgets/' . $filename . '.php' );
-					register_widget( $filename );
-				}
-				catch ( \Exception $e )
-				{
-					throw $e;
+					try
+					{
+						require_once( __DIR__ . '/vulcan-widgets/' . $Widget . '.php' );
+						register_widget( $Widget );
+					}
+					catch ( \Exception $e )
+					{
+						throw $e;
+					}
 				}
 			}
-		}
+		);
+		
 	}
 
 	public function enableModulesBasedOnThemeOptions()
@@ -292,7 +307,7 @@ class Vulcan
 			{
 				$currentCss = $this->themePath . $writePath . $filename;
 				
-				$cssModulePaths = utils\FileAggregator::getFiles(
+				$cssModulePaths = utils\FileTools::getFiles(
 					$this->themePath . $readPath,
 					array( 'php', 'css' ),
 					true
@@ -300,7 +315,7 @@ class Vulcan
 				
 				if ( file_exists( $currentCss ) )
 				{
-					$areNewFiles = utils\FileVersion::comparator( $currentCss, $cssModulePaths );
+					$areNewFiles = utils\FileTools::comparator( $currentCss, $cssModulePaths );
 				}
 				else
 				{
@@ -309,8 +324,8 @@ class Vulcan
 				
 				if ( $areNewFiles )
 				{
-					$css = utils\FileAggregator::agg(
-						utils\FileAggregator::getFiles(
+					$css = utils\FileTools::agg(
+						utils\FileTools::getFiles(
 							$this->themePath . $readPath,
 							array( 'php', 'css' ),
 							false
@@ -318,9 +333,9 @@ class Vulcan
 					);
 					if ( (bool)get_option('vulcan_minify_css') )
 					{
-						$css = utils\FileAggregator::minify( $css );
+						$css = utils\FileTools::minify( $css );
 					}
-					utils\FileAggregator::write(
+					utils\FileTools::write(
 						$css,
 						$this->themePath . $writePath,
 						$filename
@@ -333,8 +348,8 @@ class Vulcan
 			'update_option_' . 'vulcan_minify_css',
 			function() use( $readPath, $writePath, $filename )
 			{
-				$css = utils\FileAggregator::agg(
-					utils\FileAggregator::getFiles(
+				$css = utils\FileTools::agg(
+					utils\FileTools::getFiles(
 						$this->themePath . $readPath,
 						array( 'php', 'css' ),
 						false
@@ -342,9 +357,9 @@ class Vulcan
 				);
 				if ( (bool)get_option('vulcan_minify_css') )
 				{
-					$css = utils\FileAggregator::minify( $css );
+					$css = utils\FileTools::minify( $css );
 				}
-				utils\FileAggregator::write(
+				utils\FileTools::write(
 					$css,
 					$this->themePath . $writePath,
 					$filename
@@ -372,7 +387,7 @@ class Vulcan
 		$path = __DIR__ . '/assets/css/mk-options.css';
 		add_action(
 			'init',
-			function()
+			function() use( $path )
 			{
 				$timestamp = 0;
 				if ( file_exists( $path ) ) {
@@ -425,7 +440,7 @@ class Vulcan
 							'MK-Options-Exposed',
 							$path,
 							array(),
-							utils\FileVersion::getVersion( $path )
+							utils\FileTools::getVersion( $path )
 						);
 					},
 					32
@@ -442,7 +457,7 @@ class Vulcan
 	{
 		foreach( $paths as $path )
 		{
-			$filePaths = utils\FileAggregator::getFiles(
+			$filePaths = utils\FileTools::getFiles(
 				$this->themePath . $path,
 				array( 'js' ),
 				true
@@ -474,15 +489,16 @@ class Vulcan
 				{
 					$priority = $metaHeader['Priority'];
 				}
+				$fpath = utils\FileTools::get_url_from_path( $this, $fpath );
 				add_action(
 					'wp_enqueue_scripts',
-					function()
+					function() use( $name, $fpath )
 					{
 						wp_enqueue_script(
 							$name,
 							$fpath,
 							array(),
-							utils\FileVersion::getVersion( $fpath ),
+							utils\FileTools::getVersion( $fpath ),
 							true
 						);
 					},
@@ -491,11 +507,6 @@ class Vulcan
 			}
 		}
 		
-		
-			
-
-		
-
 	}
 	
 }

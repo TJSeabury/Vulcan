@@ -13,7 +13,7 @@ class vcVulcanFilteredCategory extends WPBakeryShortCode
 		add_action( 'wp_enqueue_scripts', 'vulcan_filtered_category_js', 10 );
 		function vulcan_filtered_category_js() {
 			$path = get_stylesheet_directory_uri() . '/assets/js/vulcan-filtered-category-controls.js';
-			wp_enqueue_script( 'vulcan-filtered-category-js', $path, array(), utils\FileVersion::getVersion($path), true);
+			wp_enqueue_script( 'vulcan-filtered-category-js', $path, array(), utils\FileTools::getVersion($path), true);
 		}
     }
     

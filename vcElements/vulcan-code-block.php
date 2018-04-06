@@ -14,7 +14,7 @@ class vcCodeBlock extends WPBakeryShortCode
             function()
             {
                 $path = get_stylesheet_directory_uri() . '/assets/js/prism.js';
-                wp_enqueue_script( 'vulcan-prism-js', $path, array(), utils\FileVersion::getVersion( $path ), true );
+                wp_enqueue_script( 'vulcan-prism-js', $path, array(), utils\FileTools::getVersion( $path ), true );
             },
             10
         );
