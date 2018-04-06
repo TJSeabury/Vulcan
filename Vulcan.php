@@ -97,15 +97,15 @@ class Vulcan
 			/*
 			* Minify css
 			*/
-			utils\admin\MenuField::create_field(
+			/*utils\admin\MenuField::create_field(
 				'primary_settings',
 				'options',
 				'minify_css',
 				'toggle',
 				''
-			);
+			);*/
 
-			/* register_setting(
+			 register_setting(
 				'vulcan_options',
 				'vulcan_minify_css'
 			);
@@ -126,7 +126,7 @@ class Vulcan
 				array(
 					'id' => 'vulcan_minify_css'
 				)
-			); */
+			); 
 			
 			/*
 			* Ajax Shortcodes Interface
@@ -189,7 +189,7 @@ class Vulcan
 					</div>
 					<?php
 				},
-				$this->themeUri . '/assets/media/vulcan-icon.png',
+				$this->themeUri . '/assets/media/vulcan-icon-tiny.png',
 				2
 			);
 		}
@@ -434,7 +434,7 @@ class Vulcan
 					fclose( $f );
 				}
 				add_action( 'wp_enqueue_scripts',
-					function()
+					function() use( $path )
 					{
 						wp_enqueue_style(
 							'MK-Options-Exposed',

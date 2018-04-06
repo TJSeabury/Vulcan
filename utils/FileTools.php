@@ -133,11 +133,11 @@ class FileTools
 		return false;
 	}
 
-	public static function get_url_from_path( Vulcan $theme, string $path )
+	public static function get_url_from_path( \Vulcan\Vulcan $theme, string $path )
 	{
 		$themePath = $theme->getPath();
 		$themeUri = $theme->getUri();
-		$url = str_replace( $themePath, $themeUri, $url );
+		$url = str_replace( $themePath, $themeUri, $path );
 		$url = str_replace( '\\', '/', $url );
 		return $url;
 	}
