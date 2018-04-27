@@ -28,132 +28,163 @@
         );
 
         class AnchorInterceptor
-        {
-            constructor( headerQueryString )
-            {
-				this.header = (
-					function( hqs )
-					{
-						let header = document.querySelector( hqs );
-						if ( undefined !== header || null !== header )
-						{
-							return header;
-						}
-					}
-				)( headerQueryString );
-				this.headerOffset = this.header.offsetHeight;
-            }
-			
-            setTarget( anchorTarget )
-            {
-                sessionStorage.setItem( 'anchorTarget', anchorTarget );
-            }
+{
+	constructor( headerQueryString )
+	{
+		this.hqs = headerQueryString;
+		this.getHeaderHeight();
+	}
 
-            getTarget()
-            {
-                return sessionStorage.getItem( 'anchorTarget' );
-            }
-			removeTarget()
+	getHeaderHeight()
+	{
+		this.header = (
+			function( hqs )
 			{
-				if ( sessionStorage.getItem( 'anchorTarget' ) )
+				let header = document.querySelector( hqs );
+				if ( undefined !== header || null !== header )
 				{
-					sessionStorage.removeItem( 'anchorTarget' );
+					return header;
 				}
 			}
+		)( this.hqs);
+		this.headerOffset = this.header.offsetHeight || 0;
+	}
 
-            checkForTarget()
-            {
-            	if ( 
-					null !== sessionStorage.getItem( 'anchorTarget' ) &&
-					'' !== sessionStorage.getItem( 'anchorTarget' )
-				)
-				{
-					return true;
-				}
+	setTarget( anchorTarget )
+	{
+		sessionStorage.setItem( 'anchorTarget', anchorTarget );
+	}
+
+	getTarget()
+	{
+		return sessionStorage.getItem( 'anchorTarget' );
+	}
+	removeTarget()
+	{
+		if ( sessionStorage.getItem( 'anchorTarget' ) )
+		{
+			sessionStorage.removeItem( 'anchorTarget' );
+		}
+	}
+
+	checkForTarget()
+	{
+		if ( 
+			null !== sessionStorage.getItem( 'anchorTarget' ) &&
+			'' !== sessionStorage.getItem( 'anchorTarget' )
+		)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	getLinkFromTarget( target ) {
+		while ( target.localName !== 'a' ) {
+			if ( ! target.localName )
+			{
 				return false;
-            }
-			
-			getLinkFromTarget( target ) {
-				while ( target.localName !== 'a' ) {
-					if ( ! target.localName )
-					{
-						return false;
-					}
-					target = target.parentNode;
-				} 
-				return target;
 			}
-			
-			getStripURL( link )
+			target = target.parentNode;
+		} 
+		return target;
+	}
+
+	getStripURL( link )
+	{
+		let url = link.href;
+		url = url.substring( 0, url.indexOf( '#' ) );
+		return url;
+	}
+
+	getTargetID( link )
+	{
+		return link.href.substring( link.href.indexOf( '#' ) + 1 );
+	}
+
+	doNavigate( url, newTab )
+	{
+		if ( newTab )
+		{
+			window.open( url, '_blank' );	
+		}
+		else
+		{
+			window.location.href = url;
+		}
+	}
+
+	doAnimate( id )
+	{
+		const anchorTarget = document.getElementById( id );
+		if ( undefined === anchorTarget || null === anchorTarget )
+		{
+			console.error( 'AnchorInterceptor: anchorTarget is ' + anchorTarget );
+			return;
+		}
+		let deltaY = this.getScrollAmount( anchorTarget ) - this.headerOffset;
+		if ( 0 === deltaY )
+		{
+			this.removeTarget();
+			return;
+		}
+		let that = this;
+		let html_or_body = ( !document.documentElement.classList.contains('IOS') ? 'html' : 'body' );
+		jQuery( html_or_body ).animate(
 			{
-				let url = link.href;
-				url = url.substring( 0, url.indexOf( '#' ) );
-				return url;
-			}
-			
-			getTargetID( link )
+				scrollTop: deltaY + 'px'
+			},
 			{
-				return link.href.substring( link.href.indexOf( '#' ) + 1 );
+				duration: 666,
+				step: function( now, tween )
+				{
+					that.getHeaderHeight();
+					deltaY = that.getScrollAmount( anchorTarget ) - that.headerOffset;
+					tween.end = deltaY;
+				}
 			}
-            
-            doNavigate( url )
-            {
-				window.location.href = url;
-            }
-			
-			doAnimate( id )
-			{
-				const anchorTarget = document.getElementById( id );
-				if ( undefined === anchorTarget )
-				{
-					return;
-				}
-				const deltaY = this.getScrollAmount( anchorTarget ) - this.headerOffset;
-				if ( 0 === deltaY )
-				{
-					this.removeTarget();
-					return;
-				}
-				$("html, body").animate(
-					{ scrollTop: deltaY + 'px' },
-					500
-				);
-				this.removeTarget();
-			}
-			
-			getScrollAmount( t )
-			{
-				let windowOffset = t.getBoundingClientRect().top;
-				let elementOffset = window.scrollY + windowOffset;
-				return elementOffset;
-			}
-            
-            clickHandler( event )
-            {
-				const link = this.getLinkFromTarget( event.target );
-				if ( ! link )
-				{
-					return;
-				}
-				event.preventDefault();
-				const url = link.href;
-				const cleanURL = this.getStripURL( link );
-				const id = this.getTargetID( link );
-				if ( -1 === url.indexOf('#') )
-				{
-					this.doNavigate( url );
-				}
-				else if ( window.location.href === cleanURL )
-				{
-					this.doAnimate( id );
-				}
-				else
-				{
-					this.setTarget( id );
-					this.doNavigate( cleanURL );
-				}
-            }
-        }
+		);
+		this.removeTarget();
+	}
+
+	getScrollAmount( t )
+	{
+		let windowOffset = t.getBoundingClientRect().top;
+		let elementOffset = window.scrollY + windowOffset;
+		return elementOffset;
+	}
+
+	clickHandler( event )
+	{
+		const link = this.getLinkFromTarget( event.target );
+		const newTab = link.target === '_blank' ? true : false;
+		if ( ! link )
+		{
+			return;
+		}
+		if ( ! link.hasAttribute( 'href' ) )
+		{
+			return;
+		}
+		event.preventDefault();
+		const url = link.href;
+		const cleanURL = this.getStripURL( link );
+		const id = this.getTargetID( link );
+		if ( -1 === url.indexOf('#') )
+		{
+			this.doNavigate( url, newTab );
+		}
+		else if ( window.location.href === cleanURL )
+		{
+			this.doAnimate( id );
+		}
+		else
+		{
+			this.setTarget( id );
+			this.doNavigate( cleanURL, newTab );
+		}
+	}
+}
 
     }
 )( jQuery );
