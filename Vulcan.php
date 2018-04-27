@@ -141,30 +141,44 @@ class Vulcan
 	 */
 	public function initAdmin()
 	{
-		$themeOptions = new \Vulcan\models\admin\MenuPage(
-			array(
-				'title' => 'Vulcan Options',
-				'capability' => 'manage_options',
-				'slug' => 'vulcan',
-				'icon' => $this->themeUri . '/assets/media/vulcan-icon-tiny.png',
-				'position' => 2,
-				'type' => 'General'
-			),
-			array(
-				array(
-					'type' => 'General',
-					'title' => 'General Options',
-					'fields' => array(
-						'general',
-						'Test Toggle',
-						'test_toggle',
-						'Toggle',
-						'A test field to demonstrate the toggle view.'
+		add_action(
+			'admin_init',
+			function()
+			{
+				$themeOptions = new \Vulcan\models\admin\MenuPage(
+					array(
+						'title' => 'Vulcan Options',
+						'capability' => 'manage_options',
+						'slug' => 'vulcan',
+						'icon' => $this->themeUri . '/assets/media/vulcan-icon-tiny.png',
+						'position' => 2,
+						'type' => 'General'
+					),
+					array(
+						array(
+							'type' => 'General',
+							'title' => 'General Options',
+							'fields' => array(
+								array(
+									'group' => 'test_group',
+									'id' => 'test_toggle',
+									'type' => 'Toggle',
+									'description' => 'A test field to demonstrate the toggle view.'
+								)
+							)
+						)
 					)
-				)
-			)
+				);
+				add_action(
+					'admin_menu',
+					function() use( $themeOptions )
+					{
+						$themeOptions->render();
+					}
+				);
+				
+			}
 		);
-		add_action( 'admin_init', $themeOptions->render() );
 	}
 	
 	public function OLD_initAdmin()

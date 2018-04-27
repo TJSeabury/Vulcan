@@ -59,31 +59,31 @@ class MenuPage
 		
 		$this->sections = $this->add_sections( $sections );
 
-        //$this->render( $this->settings );
-
     }
 
     public function render()
     {
 		$s = $this->settings;
-        add_action( 'admin_menu', function()
-		{
-			add_menu_page(
-				$s->title,
-				$s->title,
-				$s->capability,
-				$s->slug,
-				$this->get_view( $s->type, $s ),
-				$s->icon,
-				$s->position
-			);
-		}
+		add_menu_page(
+			/*'Vulcan Options',
+			'Vulcan Options',
+			'manage_options',
+			'vulcan',
+			'',
+			2*/
+			$s->title,
+			$s->title,
+			$s->capability,
+			$s->slug,
+			$this->get_view( $s->type, $s ),
+			$s->icon,
+			$s->position
 		);
     }
 
-    private function get_view( string $type, object $s )
+    private function get_view( string $type, \stdClass $s )
     {
-        return function() use( $s )
+        return function() use( $type, $s )
         {
             // check user capabilities
             if ( ! current_user_can( $s->capability ) )
@@ -104,7 +104,7 @@ class MenuPage
         $temp = array();
         foreach ( $sections as $section )
         {
-            $temp[] = new utils\admin\MenuSection(
+            $temp[] = new \Vulcan\models\admin\MenuSection(
                 $this->settings,
 				$section['type'],
                 $section['title'],

@@ -34,28 +34,36 @@ Default value: array()
 */
 class MenuField
 {
-
+	private $settings;
     public function __construct( string $section, string $group, string $id, string $type, string $description )
     {
 		if ( 
 			! $section || ! is_string( $section ) ||
         	! $group || ! is_string( $group ) ||
-        	! $id || ! is_array( $id ) ||
-			! $fields || ! is_array( $fields ) ||
-			! $fields || ! is_array( $fields ) 
+        	! $id || ! is_string( $id ) ||
+			! $type || ! is_string( $type ) ||
+			! $description || ! is_string( $description ) 
 		)
         {
             throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
         }
 		
-        $options_group = $GLOBALS['themeName'] . '_' . $group;
-        $options_id = $GLOBALS['themeName'] . '_' . $id;
-        $display_name = ucwords( str_replace( '_', ' ', $options_name) );
-        register_setting(
+        $this->settings = (object)array(
+			'options_group' => $GLOBALS['themeName'] . '_' . $group,
+			'options_id' => $GLOBALS['themeName'] . '_' . $id,
+			'display_name' => ucwords( str_replace( '_', ' ', $id ) )
+		);
+		
+    }
+	
+	public function render()
+	{
+		$s = $this->settings;
+		\register_setting(
             $options_group,
             $options_id
         );
-        add_settings_field(
+        \add_settings_field(
             $options_id,
             $display_name,
             $this->get_view( $type, $args ),
@@ -69,7 +77,7 @@ class MenuField
                 'description' => $description
             )
         );
-    }
+	}
 
     private static function get_view( $type, $args )
     {

@@ -20,10 +20,10 @@ class MenuSection
 {
     public $fields;
 	private $settings;
-    public function __construct( object $pageSettings, string $type, string $title, array $fields )
+    public function __construct( \stdClass $pageSettings, string $type, string $title, array $fields )
     {
 		if ( 
-			! $s || ! is_object( $s ) ||
+			! $pageSettings || ! is_object( $pageSettings ) ||
          	! $title || ! is_string( $title ) ||
          	! $fields || ! is_array( $fields ) 
 		)
@@ -47,7 +47,7 @@ class MenuSection
 	public function render()
 	{
 		$s = $this->settings;
-		add_settings_section(
+		\add_settings_section(
             $s->title,
             $s->uc_title,
             $this->get_view( $s->type, $s->uc_title ),
@@ -72,8 +72,8 @@ class MenuSection
 		$temp = array();
         foreach ( $fields as $field )
         {
-            $temp[] = new utils\admin\MenuField(
-                $title,
+            $temp[] = new \Vulcan\models\admin\MenuField(
+                $this->settings->title,
 				$field['group'],
 				$field['id'],
 				$field['type'],
