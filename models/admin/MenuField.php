@@ -1,4 +1,4 @@
-<?php namespace Vulcan\utils\admin;
+<?php namespace Vulcan\models\admin;
 
 /*
 Part of the Settings API. Use this to define a settings field that will show as part of a settings section inside a settings page. The fields are shown using do_settings_fields() in do_settings-sections()
@@ -58,7 +58,7 @@ class MenuField
         add_settings_field(
             $options_id,
             $display_name,
-            self::callbackRouter( $args ),
+            $this->get_view( $type, $args ),
             $GLOBALS['themeName'],
             $section,
             array(
@@ -71,31 +71,16 @@ class MenuField
         );
     }
 
-    private static function callbackRouter( array $args )
-    {
-        $t = $args['type'];
-        switch ( $t )
-        {
-            case 'toggle':
-                return self::render_toggle( $args );
-                break;
-        }
-    }
-
-    private static function render_toggle( $args )
+    private static function get_view( $type, $args )
     {
         return function() use( $args )
         {
-            $id = $args['id'];
-            $desc = $args['description'];
-            $html = <<<HTML
-            <div class="slide_toggle">
-                <input type="checkbox" id="{$id}" name="{$id}" value="1" {${checked( '1', get_option( $id ) )}} >
-                <label for="{$id}"></label>
-            </div>
-            <p>{$desc}</p>
-HTML;
-            echo $html;
+            $data = array(
+					'id' => $args['id'],
+            		'desc' => $args['description']
+				);
+				$view = new \Vulcan\views\View( 'MenuSection' . $type . '.php', $data );
+				echo $view->render();
         };
     }
 

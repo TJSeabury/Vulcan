@@ -1,8 +1,10 @@
-<?php namespace Vulcan\utils\admin;
+<?php namespace Vulcan\models\admin;
 
 /**
- * @param (object) (Required) $s The Menu page settings.
- * 
+ * @param (object) (Required) $pageSettings The Menu page settings.
+ *
+ * @param (string) (Required) $type The type of view to use for rendering.
+ 
  * @param (string) (Required) $title The formatted title of the section. Shown as the heading for the section.
  * 
  * @param (array) (Required) $fields [
@@ -16,8 +18,9 @@
  */
 class MenuSection 
 {
-    public $fields = null;
-    public function __construct( object $s, string $title, array $fields )
+    public $fields;
+	private $settings;
+    public function __construct( object $pageSettings, string $type, string $title, array $fields )
     {
 		if ( 
 			! $s || ! is_object( $s ) ||
@@ -28,24 +31,41 @@ class MenuSection
             throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
         }
 		
-		$uc_title = ucwords( $title );
+		$this->settings = (object)array(
+			'type' => $type,
+			'title' => $title,
+			'uc_title' => ucwords( $title ),
+			'fields' => $fields			
+		);
 		
-        add_settings_section(
-            $title,
-            $uc_title,
-            function() use( $uc_title )
-            {
-                $html = <<<HTML
-                <div class="section-header">
-                    <h2>{$uc_title}</h2>
-                </div>
-HTML;
-                echo html;
-            },
-            $s->slug
-        );
-        $this->fields = $this->add_fields( $fields );
+		$this->fields = $this->add_fields( $fields );
+		
+        //$this->render();
+        
     }
+	
+	public function render()
+	{
+		$s = $this->settings;
+		add_settings_section(
+            $s->title,
+            $s->uc_title,
+            $this->get_view( $s->type, $s->uc_title ),
+            $pageSettings->slug
+        );
+	}
+	
+	private function get_view( $type, $uc_title )
+	{
+		return function() use( $type, $uc_title )
+		{
+			$data = array(
+				'title' => $uc_title,
+			);
+			$view = new \Vulcan\views\View( 'MenuSection' . $type . '.php', $data );
+			echo $view->render();
+		};
+	}
 
     private function add_fields( array $fields )
     {

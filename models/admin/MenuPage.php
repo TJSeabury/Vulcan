@@ -31,32 +31,19 @@
  */
 class MenuPage
 {
-    public $sections = null;
-    private $settings = null;
+    public $sections;
+    private $settings;
 
     public function __construct( array $settings, array $sections )
     {
-        if ( ! $settings['title'] )
-        {
-            throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
-        }
-        if ( ! $settings['capability'] )
-        {
-            throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
-        }
-        if ( ! $settings['slug'] )
-        {
-            throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
-        }
-        if ( ! ( $settings['icon'] && file_exists( $settings['icon'] ) ) )
-        {
-            throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
-        }
-        if ( ! $settings['position'] )
-        {
-            throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
-        }
-        if ( ! $settings['type'] )
+        if (
+			! $settings['title'] ||
+			! $settings['capability'] || 
+			! $settings['slug'] ||
+			! $settings['icon'] || file_exists( $settings['icon'] ) ||
+			! $settings['position'] ||
+			! $settings['type']
+		)
         {
             throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
         }
@@ -69,14 +56,16 @@ class MenuPage
             'position' => $settings['position'],
             'type' => $settings['type']
         );
+		
+		$this->sections = $this->add_sections( $sections );
 
-        $this->create_page( $this->settings );
+        //$this->render( $this->settings );
 
-        $this->sections = $this->add_sections( $sections );
     }
 
-    private function create_page( object $s )
+    public function render()
     {
+		$s = $this->settings;
         add_action( 'admin_menu', function()
 		{
 			add_menu_page(
@@ -84,7 +73,7 @@ class MenuPage
 				$s->title,
 				$s->capability,
 				$s->slug,
-				$this->callbackRouter( $s ),
+				$this->get_view( $s->type, $s ),
 				$s->icon,
 				$s->position
 			);
@@ -92,17 +81,7 @@ class MenuPage
 		);
     }
 
-    private function callbackRouter( object $s )
-    {
-        switch ( $s->type )
-        {
-            case 'standard':
-                return $this->standard_page( $s );
-                break;
-        }
-    }
-
-    private function standard_page( object $s )
+    private function get_view( string $type, object $s )
     {
         return function() use( $s )
         {
@@ -111,25 +90,12 @@ class MenuPage
             {
                 return;
             }
-            ob_start();
-            ?>
-            <div class="wrap">
-                <h1><?= esc_html( get_admin_page_title() ); ?></h1>
-                <p>Various options to toggle theme functions and components.</p>
-                <form action="options.php" method="post">
-                    <?php
-                    // output security fields for the registered setting "vulcan_options"
-                    settings_fields( 'vulcan_options' );
-                    // output setting sections and their fields
-                    // (sections are registered for "vulcan", each field is registered to a specific section)
-                    do_settings_sections( $s->slug );
-                    // output save settings button
-                    submit_button( 'Save Settings' );
-                    ?>
-                </form>
-            </div>
-            <?php
-            echo ob_get_clean();
+			$data = array(
+				'title' => 'My title',
+				'content' => 'My content'
+			);
+			$view = new \Vulcan\views\View( $type . '.php', $data );
+			echo $view->render();
         };
     }
 
@@ -140,6 +106,7 @@ class MenuPage
         {
             $temp[] = new utils\admin\MenuSection(
                 $this->settings,
+				$section['type'],
                 $section['title'],
                 $section['fields']
             );

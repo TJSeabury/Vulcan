@@ -12,22 +12,159 @@ class Vulcan
 		$this->themeUri = $themeRootUri;
 		$this->initTime = $Time;
 		$GLOBALS['themeName'] = 'vulcan';
+		/* 
+		 * Here we set the date of the first install as a DB option.
+		 */
+		if ( ! get_option( 'vulcan_first_published_year' ) )
+		{
+			update_option( 'vulcan_first_published_year', (int)date('Y') );
+		}
 	}
 	
-	public function getPath()
+	public function getBasePath()
 	{
 		return $this->themePath;
 	}
 
-	public function getUri()
+	public function getBaseUri()
 	{
 		return $this->themeUri;
 	}
 
-	/*
-	* Initializes Wordpress admin theme menu.
-	*/
+	public function get_the_copyright_years()
+	{
+		$first_published_year = get_option( 'vulcan_first_published_year' );
+		$current_year = date('Y');
+
+		if ( (int)$first_published_year === (int)$current_year )
+		{
+			return $current_year;
+		}
+		else if ( (int)$current_year - (int)$first_published_year === 1 )
+		{
+			return "$first_published_year, $current_year";
+		}
+		else
+		{
+			return "$first_published_year - $current_year";
+		}
+	}
+	
+	public function setMaxImageResolutionAndQuality( int $width, int $height, int $quality )
+	{
+		add_filter( 
+			'jpeg_quality', 
+			function( $arg ) use( $quality )
+			{
+				return $quality;
+			}
+		);
+		
+		add_image_size( 'standard', $width, $height, false );
+
+		function replace_uploaded_image($image_data) {
+			// if there is no standard image : return
+			if ( ! isset( $image_data['sizes']['standard'] ) )
+			{
+				return $image_data;
+			}
+
+			// paths to the uploaded image and the standard image
+			$upload_dir = wp_upload_dir();
+			$uploaded_image_location = $upload_dir['basedir'] . '/' .$image_data['file'];
+
+			// $standard_image_location = $upload_dir['path'] . '/'.$image_data['sizes']['standard']['file']; // ** This only works for new image uploads - fixed for older images below.
+			$current_subdir = substr($image_data['file'],0,strrpos($image_data['file'],"/"));
+			$standard_image_location = $upload_dir['basedir'] . '/'.$current_subdir.'/'.$image_data['sizes']['standard']['file'];
+
+			// delete the uploaded image
+			unlink( $uploaded_image_location );
+
+			// rename the standard image
+			rename( $standard_image_location, $uploaded_image_location );
+
+			// update image metadata and return them
+			$image_data['width'] = $image_data['sizes']['standard']['width'];
+			$image_data['height'] = $image_data['sizes']['standard']['height'];
+			unset($image_data['sizes']['standard']);
+
+			return $image_data;
+		}
+		add_filter(
+			'wp_generate_attachment_metadata',
+			'\Vulcan\replace_uploaded_image'
+		);
+	}
+	
+
+	/**
+	 * @link https://stackoverflow.com/questions/3468500/detect-overall-average-color-of-the-picture
+	 */
+	public function getImageAverageColor( $sourceURL )
+	{
+		$image = imagecreatefromjpeg( $sourceURL );
+		$scaled = imagescale( $image, 1, 1, IMG_BICUBIC );
+		$index = imagecolorat( $scaled, 0, 0 );
+		$rgb = imagecolorsforindex( $scaled, $index );
+		$red = round( round( ( $rgb['red'] / 0x33 ) ) * 0x33 );
+		$green = round( round( ( $rgb['green'] / 0x33 ) ) * 0x33 );
+		$blue = round( round( ( $rgb['blue'] / 0x33 ) ) * 0x33 );
+		return "#$red$green$blue"; 
+	}
+
+	/**
+	 * Renders the header view.
+	 * @param string $view The name of the view.
+	 * @return string The header view HTML.
+	 */
+	public function get_header_view( string $view )
+	{
+		$path = $this->themePath . '/views/header/' . $view . '.php';
+		ob_start();
+		include $path ;
+		$header = ob_get_clean();
+		return $header;
+	}
+
+
+	/**
+	 * Enqueues required view styles based upon theme options.
+	 */
+	public function set_view_styles()
+	{
+		
+	}
+
+
+	/**
+	 * Initializes Wordpress admin theme menu.
+	 */
 	public function initAdmin()
+	{
+		$themeOptions = new \Vulcan\models\admin\MenuPage(
+			array(
+				'Vulcan Options',
+				'manage_options',
+				'vulcan',
+				$this->themeUri . '/assets/media/vulcan-icon-tiny.png',
+				2,
+				'General'
+			),
+			array(
+				'General',
+				'General Options',
+				array(
+					'general',
+					'Test Toggle',
+					'test_toggle',
+					'Toggle',
+					'A test field to demonstrate the toggle view.'
+				)
+			)
+		);
+	}
+	
+	public function OLD_initAdmin()
 	{
 		add_action( 'admin_init', function()
 	    {
@@ -97,14 +234,6 @@ class Vulcan
 			/*
 			* Minify css
 			*/
-			/*utils\admin\MenuField::create_field(
-				'primary_settings',
-				'options',
-				'minify_css',
-				'toggle',
-				''
-			);*/
-
 			 register_setting(
 				'vulcan_options',
 				'vulcan_minify_css'
@@ -218,6 +347,47 @@ class Vulcan
 		);
 	}
 
+	public function initBuilderModules()
+	{
+		return function()
+		{
+			if ( class_exists( 'FLBuilder' ) ) {
+				/*
+				* Register custom modules
+				*/
+				require_once __DIR__ . '/modules/vulcan-button/vulcan-button.php';
+				
+				/*
+				* Register custom fields
+				*/
+				add_filter(
+					'fl_builder_custom_fields',
+					function( $fields )
+					{
+						$fields['vulcan-toggle'] = __DIR__ . '/modules/vulcan-fields/vulcan-toggle.php';
+						$fields['vulcan-range'] = __DIR__ . '/modules/vulcan-fields/vulcan-range.php';
+						return $fields;
+					}
+				);
+				
+				/*
+				* Enqueue custom field assets
+				*/
+				$path = $this->themeUri;
+				add_action(
+					'wp_enqueue_scripts',
+					function() use( $path )
+					{
+						if ( \FLBuilderModel::is_builder_active() ) {
+							wp_enqueue_style( 'vulcan-fields', $path . '/modules/vulcan-fields/fields.css', array(), '' );
+							wp_enqueue_script( 'vulcan-fields', $path . '/modules/vulcan-fields/fields.js', array(), '', true );
+						}
+					}
+				);
+			}
+		};
+	}
+
 	public function initWidgets( array $Widgets )
 	{
 		add_action(
@@ -264,31 +434,35 @@ class Vulcan
 		/*
 		* Custom admin footers.
 		*/
-		function remove_footer_admin () {
-			$wordpress = '<a href="http://www.wordpress.org" target="_blank">WordPress</a>';
-			$difdesign = '<a href="https://difdesign.com" target="_blank">DIF Design</a>';
-			
-			$taglines = array(
-				"Your custom $wordpress, and theme, designed and developed by $difdesign.",
-				"At $difdesign, we ensure that all $wordpress themes are raised free-range and organic.",
-				"Your custom $wordpress, sourced and crafted from local materials by $difdesign.",
-				"Gluten free $wordpress, baked with love from $difdesign.",
-				"Harder, better, faster, blogger. Your custom $wordpress by $difdesign.",
-				"\"Damn it man! I'm a $wordpress engineer, not a doctor!\" — someone at $difdesign probably.",
-				"$difdesign and the Masters of the Cyberverse: \"By the power of $wordpress! I have the power!\""
-			);
-			
-			$rn = random_int( 0, count( $taglines ) - 1 );
-			
-			ob_start();
-			?>
-			<div class="difdesign_admin_footer">
-				<p><?php echo $taglines[ $rn ]; ?></p>
-			</div>
-			<?php
-			echo ob_get_clean();
-		}
-		add_filter('admin_footer_text', 'remove_footer_admin');
+		
+		add_filter( 
+			'admin_footer_text', 
+			function()
+			{
+				$wordpress = '<a href="http://www.wordpress.org" target="_blank">WordPress</a>';
+				$difdesign = '<a href="https://difdesign.com" target="_blank">DIF Design</a>';
+
+				$taglines = array(
+					"Your custom $wordpress, and theme, designed and developed by $difdesign.",
+					"At $difdesign, we ensure that all $wordpress themes are raised free-range and organic.",
+					"Your custom $wordpress, sourced and crafted from local materials by $difdesign.",
+					"Gluten free $wordpress, baked with love from $difdesign.",
+					"Harder, better, faster, blogger. Your custom $wordpress by $difdesign.",
+					"\"Damn it man! I'm a $wordpress engineer, not a doctor!\" — someone at $difdesign probably.",
+					"$difdesign and the Masters of the Cyberverse: \"By the power of $wordpress! I have the power!\""
+				);
+
+				$rn = random_int( 0, count( $taglines ) - 1 );
+
+				ob_start();
+				?>
+				<div class="difdesign_admin_footer">
+					<p><?php echo $taglines[ $rn ]; ?></p>
+				</div>
+				<?php
+				echo ob_get_clean();
+			}
+		);
 
 		/*
 		* Adds the option to hide Gravity form field labels.
