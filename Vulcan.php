@@ -143,25 +143,28 @@ class Vulcan
 	{
 		$themeOptions = new \Vulcan\models\admin\MenuPage(
 			array(
-				'Vulcan Options',
-				'manage_options',
-				'vulcan',
-				$this->themeUri . '/assets/media/vulcan-icon-tiny.png',
-				2,
-				'General'
+				'title' => 'Vulcan Options',
+				'capability' => 'manage_options',
+				'slug' => 'vulcan',
+				'icon' => $this->themeUri . '/assets/media/vulcan-icon-tiny.png',
+				'position' => 2,
+				'type' => 'General'
 			),
 			array(
-				'General',
-				'General Options',
 				array(
-					'general',
-					'Test Toggle',
-					'test_toggle',
-					'Toggle',
-					'A test field to demonstrate the toggle view.'
+					'type' => 'General',
+					'title' => 'General Options',
+					'fields' => array(
+						'general',
+						'Test Toggle',
+						'test_toggle',
+						'Toggle',
+						'A test field to demonstrate the toggle view.'
+					)
 				)
 			)
 		);
+		add_action( 'admin_init', $themeOptions->render() );
 	}
 	
 	public function OLD_initAdmin()
