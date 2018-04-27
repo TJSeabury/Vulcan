@@ -1,71 +1,143 @@
 /*
-* Gravity Forms Normalize
+* Paceholders
 */
+.gform_body {
+	--font-size: 16px;
+	--color: white;
+	--transition: all 200ms ease;
+	--focus-color: rgba(255,255,255,0.33);
+}
 .gform_body input::-webkit-input-placeholder {
-	font-size: 16px !important;
-	color: white !important;
-	transition: all 200ms ease;
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
 }
 .gform_body input::-moz-placeholder {
-	font-size: 16px !important;
-	color: white !important;
-	transition: all 200ms ease;
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
 }
 .gform_body input:-ms-input-placeholder {
-	font-size: 16px !important;
-	color: white !important;
-	transition: all 200ms ease;
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
 }
 .gform_body input::-ms-input-placeholder {
-	font-size: 16px !important;
-	color: white !important;
-	transition: all 200ms ease;
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
 }
 .gform_body input:-moz-placeholder {
-	font-size: 16px !important;
-	color: white !important;
-	transition: all 200ms ease;
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
 }
 .gform_body input::-moz-placeholder {
-	font-size: 16px !important;
-	color: white !important;
-	transition: all 200ms ease;
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
 }
 .gform_body input:placeholder-shown {
-	font-size: 16px !important;
-	color: white !important;
-	transition: all 200ms ease;
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
 }
 .gform_body input:placeholder {
-	font-size: 16px !important;
-	color: white !important;
-	transition: all 200ms ease;
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
 }
 .gform_body input:focus::-webkit-input-placeholder {
-	color: rgba(255,255,255,0.33) !important;
+	color: var(--focus-color) !important;
 }
 .gform_body input:focus::-moz-placeholder {
-	color: rgba(255,255,255,0.33) !important;
+	color: var(--focus-color) !important;
 }
 .gform_body input:focus:-ms-input-placeholder {
-	color: rgba(255,255,255,0.33) !important;
+	color: var(--focus-color) !important;
 }
 .gform_body input:focus::-ms-input-placeholder {
-	color: rgba(255,255,255,0.33) !important;
+	color: var(--focus-color) !important;
 }
 .gform_body input:focus:-moz-placeholder {
-	color: rgba(255,255,255,0.33) !important;
+	color: var(--focus-color) !important;
 }
 .gform_body input:focus::-moz-placeholder {
-	color: rgba(255,255,255,0.33) !important;
+	color: var(--focus-color) !important;
 }
 .gform_body input:focus:placeholder-shown {
-	color: rgba(255,255,255,0.33) !important;
+	color: var(--focus-color) !important;
 }
 .gform_body input:focus:placeholder {
-	color: rgba(255,255,255,0.33) !important;
+	color: var(--focus-color) !important;
 }
-
+.gform_body textarea::-webkit-input-placeholder {
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
+}
+.gform_body textarea::-moz-placeholder {
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
+}
+.gform_body textarea:-ms-input-placeholder {
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
+}
+.gform_body textarea::-ms-input-placeholder {
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
+}
+.gform_body textarea:-moz-placeholder {
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
+}
+.gform_body textarea::-moz-placeholder {
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
+}
+.gform_body textarea:placeholder-shown {
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
+}
+.gform_body textarea:placeholder {
+	font-size: var(--font-size) !important;
+	color: var(--color) !important;
+	transition: var(--transition);
+}
+.gform_body textarea:focus::-webkit-input-placeholder {
+	color: var(--focus-color) !important;
+}
+.gform_body textarea:focus::-moz-placeholder {
+	color: var(--focus-color) !important;
+}
+.gform_body textarea:focus:-ms-input-placeholder {
+	color: var(--focus-color) !important;
+}
+.gform_body textarea:focus::-ms-input-placeholder {
+	color: var(--focus-color) !important;
+}
+.gform_body textarea:focus:-moz-placeholder {
+	color: var(--focus-color) !important;
+}
+.gform_body textarea:focus::-moz-placeholder {
+	color: var(--focus-color) !important;
+}
+.gform_body textarea:focus:placeholder-shown {
+	color: var(--focus-color) !important;
+}
+.gform_body textarea:focus:placeholder {
+	color: var(--focus-color) !important;
+}
+/*
+* Submit Button
+*/
 .gform_button[type=submit] {
 	background-color: white !important;
 	color: var(--themeTeal) !important;
@@ -74,12 +146,3 @@
 	background-color: var(--themeOrange) !important;
 	color: white !important;
 }
-
-
-
-
-
-
-
-
-
