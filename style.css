@@ -3,12 +3,12 @@ Theme Name: Vulcan
 Theme URI: http://labs.difdesign.com/vulcan/
 Author: DIF Design
 Author URI: http://difdesign.com/
-Version: 1.4.1
+Version: 0.3.0
 Description: Customizations, enhancements, and tools; designed from the ground up to forge for the modern web.
 License: GNU General Public License v2 or later
 License URI: LICENSE
-Text Domain: _s
-Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-comments, translation-ready
+Text Domain: _vulcan
+Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-comments, translation-ready, page-builder
 
 This theme, like WordPress, is licensed under the GPL.
 */
@@ -48,7 +48,7 @@ This theme, like WordPress, is licensed under the GPL.
  */
 
 html {
-	line-height: 1.15; /* 1 */
+	line-height: 1.0; /* 1 */
 	-webkit-text-size-adjust: 100%; /* 2 */
 }
 
@@ -382,6 +382,15 @@ template {
 /*--------------------------------------------------------------
 # Typography
 --------------------------------------------------------------*/
+@font-face {
+	font-family: "Roboto Regular";
+	src: url("/assets/font/Roboto/Roboto-Regular.ttf") format("ttf");
+}
+html {
+	font-family: "Roboto Regular", sans-serif;
+	font-size: 18px;
+	font-weight: 400;
+}
 body,
 button,
 input,
@@ -389,9 +398,10 @@ select,
 optgroup,
 textarea {
 	color: #404040;
-	font-family: sans-serif;
-	font-size: 16px;
+	font-family: inherit;
+	font-size: inherit;
 	font-size: 1rem;
+	font-wieght: inherit;
 	line-height: 1.5;
 }
 
@@ -603,6 +613,15 @@ textarea {
 /*--------------------------------------------------------------
 # Navigation
 --------------------------------------------------------------*/
+/*
+* Site Header
+*/
+header#masthead.site-header {
+	position: absolute;
+	display: block;
+	width: 100%;
+	z-index: 1001;
+}
 /*--------------------------------------------------------------
 ## Links
 --------------------------------------------------------------*/
@@ -836,7 +855,7 @@ a:hover, a:active {
 }
 
 .hentry {
-	margin: 0 0 1.5em;
+	/* margin: 0 0 1.5em; */
 }
 
 .updated:not(.published) {
@@ -846,13 +865,41 @@ a:hover, a:active {
 .page-content,
 .entry-content,
 .entry-summary {
-	margin: 1.5em 0 0;
+	/*margin: 1.5em 0 0;*/
 }
 
 .page-links {
 	clear: both;
 	margin: 0 0 1.5em;
 }
+
+/*-------------------------------------------------------------- 
+## Footer
+--------------------------------------------------------------*/
+#colophon.site-footer {
+	
+}
+.site-footer .sub-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px;
+	background-color: #00d7ea;
+	font-size: 18px;
+	letter-spacing: 1px;
+}
+.site-footer .sub-footer small,
+.site-footer .sub-footer a {
+	color: white;
+	opacity: 0.9;
+}
+.site-footer .sub-footer a {
+	transition: opacity 100ms ease;
+}
+.site-footer .sub-footer a:hover {
+	opacity: 0.66;
+}
+
 
 /*--------------------------------------------------------------
 ## Comments

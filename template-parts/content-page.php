@@ -4,37 +4,37 @@
  *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
- * @package _s
+ * @package _vulcan
  */
 
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-	<header class="entry-header">
+	<!--<header class="entry-header">
 		<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
-	</header><!-- .entry-header -->
+	</header>--><!-- .entry-header -->
 
-	<?php _s_post_thumbnail(); ?>
+	<!--<?php /*_vulcan_post_thumbnail();*/ ?>-->
 
 	<div class="entry-content">
 		<?php
 		the_content();
 
 		wp_link_pages( array(
-			'before' => '<div class="page-links">' . esc_html__( 'Pages:', '_s' ),
+			'before' => '<div class="page-links">' . esc_html__( 'Pages:', '_vulcan' ),
 			'after'  => '</div>',
 		) );
 		?>
 	</div><!-- .entry-content -->
 
-	<?php if ( get_edit_post_link() ) : ?>
+	<?php if ( false && get_edit_post_link() ) : ?>
 		<footer class="entry-footer">
 			<?php
 			edit_post_link(
 				sprintf(
 					wp_kses(
 						/* translators: %s: Name of current post. Only visible to screen readers */
-						__( 'Edit <span class="screen-reader-text">%s</span>', '_s' ),
+						__( 'Edit <span class="screen-reader-text">%s</span>', '_vulcan' ),
 						array(
 							'span' => array(
 								'class' => array(),

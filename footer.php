@@ -1,4 +1,4 @@
-<?php
+<?php namespace Vulcan;
 /**
  * The template for displaying the footer
  *
@@ -6,27 +6,31 @@
  *
  * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
  *
- * @package _s
+ * @package _vulcan
  */
+
+global $vulcan;
 
 ?>
 
-	</div><!-- #content -->
-
+	</main>
 	<footer id="colophon" class="site-footer">
-		<div class="site-info">
-			<a href="<?php echo esc_url( __( 'https://wordpress.org/', '_s' ) ); ?>">
-				<?php
-				/* translators: %s: CMS name, i.e. WordPress. */
-				printf( esc_html__( 'Proudly powered by %s', '_s' ), 'WordPress' );
-				?>
-			</a>
-			<span class="sep"> | </span>
-				<?php
-				/* translators: 1: Theme name, 2: Theme author. */
-				printf( esc_html__( 'Theme: %1$s by %2$s.', '_s' ), '_s', '<a href="https://automattic.com/">Automattic</a>' );
-				?>
-		</div><!-- .site-info -->
+		<?php if ( is_active_sidebar( 'footer' ) ) : ?>
+		<div id="primary-widget-area" class="widget-area" role="complementary">
+			<?php dynamic_sidebar( 'footer' ); ?>
+		</div>
+		<?php endif; ?>
+		<div class="sub-footer">
+			<div class="copyright">
+				<small>© Copyright <?php echo $vulcan->get_the_copyright_years(); ?>, <?php bloginfo( 'name' ); ?>, All rights reserved.</small>
+			</div>
+			<div class="social-media">
+				<?php /* get_social_icons() */ ?>
+			</div>
+			<div class="author">
+				<small>Designed and developed by <a href="https://difdesign.com/" target="_blank">DIF Design</a>.</small>
+			</div>
+		</div>
 	</footer><!-- #colophon -->
 </div><!-- #page -->
 
