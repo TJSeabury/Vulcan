@@ -135,12 +135,46 @@ class Vulcan
 		
 	}
 
+	public function do_settings_sections( $page ) {
+		global $wp_settings_sections, $wp_settings_fields;
 
+		if ( ! isset( $wp_settings_sections[$page] ) )
+			return;
+
+		foreach ( (array) $wp_settings_sections[$page] as $section ) {
+			echo '<section class="vulcan-options-section">';
+			if ( $section['title'] )
+				echo "<h2>{$section['title']}</h2>\n";
+
+			if ( $section['callback'] )
+				call_user_func( $section['callback'], $section );
+
+			if ( ! isset( $wp_settings_fields ) || !isset( $wp_settings_fields[$page] ) || !isset( $wp_settings_fields[$page][$section['id']] ) )
+				continue;
+			echo '<table class="form-table">';
+			do_settings_fields( $page, $section['id'] );
+			echo '</table>';
+			echo '</section>';
+		}
+	}
 	/**
 	 * Initializes Wordpress admin theme menu.
 	 */
 	public function initAdmin()
 	{
+		add_action(
+			'admin_enqueue_scripts',
+			function()
+			{
+				$path = $this->themeUri . '/assets/admin/css/admin.css';
+				wp_enqueue_style(
+					'Vulcan-Admin-Styles',
+					$path,
+					array(),
+					utils\FileTools::getVersion( $path )
+				);
+			}
+		);
 		$group = 'primary';
 		$themeOptions = new \Vulcan\models\admin\MenuPage(
 			array(
@@ -149,23 +183,23 @@ class Vulcan
 				'slug' => 'vulcan',
 				'icon' => $this->themeUri . '/assets/media/vulcan-icon-tiny.png',
 				'position' => 2,
-				'type' => 'General'
+				'type' => 'general'
 			),
 			array(
 				array(
-					'type' => 'General',
+					'type' => 'general',
 					'title' => 'General Options',
 					'fields' => array(
 						array(
 							'group' => $group,
-							'id' => 'test_toggle1',
-							'type' => 'Toggle',
-							'description' => 'A test field to demonstrate the toggle view.'
+							'id' => 'test_text_1',
+							'type' => 'text',
+							'description' => 'A test field to demonstrate the text view.'
 						),
 						array(
 							'group' => $group,
-							'id' => 'test_toggle2',
-							'type' => 'Toggle',
+							'id' => 'test_toggle_1',
+							'type' => 'toggle',
 							'description' => 'A test field to demonstrate the toggle view.'
 						)
 					)
@@ -176,25 +210,26 @@ class Vulcan
 					'fields' => array(
 						array(
 							'group' => $group,
+							'id' => 'test_text_2',
+							'type' => 'text',
+							'description' => 'A test field to demonstrate the text view.'
+						),
+						array(
+							'group' => $group,
+							'id' => 'test_toggle2',
+							'type' => 'toggle',
+							'description' => 'A test field to demonstrate the toggle view.'
+						),
+						array(
+							'group' => $group,
 							'id' => 'test_toggle3',
-							'type' => 'Toggle',
-							'description' => 'A test field to demonstrate the toggle view.'
-						),
-						array(
-							'group' => $group,
-							'id' => 'test_toggle4',
-							'type' => 'Toggle',
-							'description' => 'A test field to demonstrate the toggle view.'
-						),
-						array(
-							'group' => $group,
-							'id' => 'test_toggle5',
-							'type' => 'Toggle',
+							'type' => 'toggle',
 							'description' => 'A test field to demonstrate the toggle view.'
 						)
 					)
 				)
-			)
+			),
+			array()
 		);
 
 		$themeOptions->render();

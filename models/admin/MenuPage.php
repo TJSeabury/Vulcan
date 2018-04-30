@@ -31,10 +31,11 @@
  */
 class MenuPage
 {
+	private $settings;
     public $sections;
-    private $settings;
+	public $subPages;
 
-    public function __construct( array $settings, array $sections )
+    public function __construct( array $settings, array $sections, array $subPages )
     {
         if (
 			! $settings['title'] ||
@@ -57,7 +58,15 @@ class MenuPage
             'type' => $settings['type']
         );
 		
-		$this->sections = $this->add_sections( $sections );
+		if ( ! empty( $sections ) )
+		{
+			$this->sections = $this->add_sections( $sections );
+		}
+		
+		if ( ! empty( $subPages ) )
+		{
+			$this->subPages = $this->add_subPages( $subPages );
+		}
 
     }
 
@@ -110,7 +119,7 @@ class MenuPage
 			$data = array(
 				'title' => $s->title
 			);
-			$view = new \Vulcan\views\View( 'admin', 'MenuPage' . $type, $data );
+			$view = new \Vulcan\views\View( 'admin', 'MenuPage' . ucwords($type), $data );
 			echo $view->render();
         };
     }
