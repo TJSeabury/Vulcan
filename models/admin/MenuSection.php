@@ -20,6 +20,7 @@ class MenuSection
 {
     public $fields;
 	private $settings;
+	private $pageSettings;
     public function __construct( \stdClass $pageSettings, string $type, string $title, array $fields )
     {
 		if ( 
@@ -31,27 +32,27 @@ class MenuSection
             throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
         }
 		
+		$this->pageSettings = $pageSettings;
+		
 		$this->settings = (object)array(
 			'type' => $type,
 			'title' => $title,
-			'uc_title' => ucwords( $title ),
-			'fields' => $fields			
+			'uc_title' => ucwords( $title )
 		);
 		
 		$this->fields = $this->add_fields( $fields );
-		
-        //$this->render();
         
     }
 	
 	public function render()
 	{
 		$s = $this->settings;
+		$ps = $this->pageSettings;
 		\add_settings_section(
             $s->title,
             $s->uc_title,
             $this->get_view( $s->type, $s->uc_title ),
-            $pageSettings->slug
+            $ps->slug
         );
 	}
 	
@@ -62,7 +63,7 @@ class MenuSection
 			$data = array(
 				'title' => $uc_title,
 			);
-			$view = new \Vulcan\views\View( 'MenuSection' . $type . '.php', $data );
+			$view = new \Vulcan\views\View( 'admin', 'MenuSection' . $type, $data );
 			echo $view->render();
 		};
 	}

@@ -429,7 +429,6 @@ $vulcan->enableModulesBasedOnThemeOptions();
 
 
 
-
 /*add_action( 'wp_enqueue_scripts', 'vulcan_theme_css', 42 );
 function vulcan_theme_css() {
 	$mainCSSPath = get_stylesheet_directory_uri() . '/theme.css';

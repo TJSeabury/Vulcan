@@ -141,44 +141,64 @@ class Vulcan
 	 */
 	public function initAdmin()
 	{
-		add_action(
-			'admin_init',
-			function()
-			{
-				$themeOptions = new \Vulcan\models\admin\MenuPage(
-					array(
-						'title' => 'Vulcan Options',
-						'capability' => 'manage_options',
-						'slug' => 'vulcan',
-						'icon' => $this->themeUri . '/assets/media/vulcan-icon-tiny.png',
-						'position' => 2,
-						'type' => 'General'
-					),
-					array(
+		$group = 'primary';
+		$themeOptions = new \Vulcan\models\admin\MenuPage(
+			array(
+				'title' => 'Vulcan Options',
+				'capability' => 'manage_options',
+				'slug' => 'vulcan',
+				'icon' => $this->themeUri . '/assets/media/vulcan-icon-tiny.png',
+				'position' => 2,
+				'type' => 'General'
+			),
+			array(
+				array(
+					'type' => 'General',
+					'title' => 'General Options',
+					'fields' => array(
 						array(
-							'type' => 'General',
-							'title' => 'General Options',
-							'fields' => array(
-								array(
-									'group' => 'test_group',
-									'id' => 'test_toggle',
-									'type' => 'Toggle',
-									'description' => 'A test field to demonstrate the toggle view.'
-								)
-							)
+							'group' => $group,
+							'id' => 'test_toggle1',
+							'type' => 'Toggle',
+							'description' => 'A test field to demonstrate the toggle view.'
+						),
+						array(
+							'group' => $group,
+							'id' => 'test_toggle2',
+							'type' => 'Toggle',
+							'description' => 'A test field to demonstrate the toggle view.'
 						)
 					)
-				);
-				add_action(
-					'admin_menu',
-					function() use( $themeOptions )
-					{
-						$themeOptions->render();
-					}
-				);
-				
-			}
+				),
+				array(
+					'type' => 'General',
+					'title' => 'Special Options',
+					'fields' => array(
+						array(
+							'group' => $group,
+							'id' => 'test_toggle3',
+							'type' => 'Toggle',
+							'description' => 'A test field to demonstrate the toggle view.'
+						),
+						array(
+							'group' => $group,
+							'id' => 'test_toggle4',
+							'type' => 'Toggle',
+							'description' => 'A test field to demonstrate the toggle view.'
+						),
+						array(
+							'group' => $group,
+							'id' => 'test_toggle5',
+							'type' => 'Toggle',
+							'description' => 'A test field to demonstrate the toggle view.'
+						)
+					)
+				)
+			)
 		);
+
+		$themeOptions->render();
+		
 	}
 	
 	public function OLD_initAdmin()

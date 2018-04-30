@@ -64,21 +64,38 @@ class MenuPage
     public function render()
     {
 		$s = $this->settings;
-		add_menu_page(
-			/*'Vulcan Options',
-			'Vulcan Options',
-			'manage_options',
-			'vulcan',
-			'',
-			2*/
-			$s->title,
-			$s->title,
-			$s->capability,
-			$s->slug,
-			$this->get_view( $s->type, $s ),
-			$s->icon,
-			$s->position
+		
+		add_action(
+			'admin_menu',
+			function() use( $s )
+			{
+				add_menu_page(
+					$s->title,
+					$s->title,
+					$s->capability,
+					$s->slug,
+					$this->get_view( $s->type, $s ),
+					$s->icon,
+					$s->position
+				);
+			}
 		);
+		
+		add_action(
+			'admin_init',
+			function()
+			{
+				foreach ( $this->sections as $section )
+				{
+					$section->render();
+					foreach ( $section->fields as $field )
+					{
+						$field->render();
+					}
+				}
+			}
+		);
+		
     }
 
     private function get_view( string $type, \stdClass $s )
@@ -91,10 +108,9 @@ class MenuPage
                 return;
             }
 			$data = array(
-				'title' => 'My title',
-				'content' => 'My content'
+				'title' => $s->title
 			);
-			$view = new \Vulcan\views\View( $type . '.php', $data );
+			$view = new \Vulcan\views\View( 'admin', 'MenuPage' . $type, $data );
 			echo $view->render();
         };
     }

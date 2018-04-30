@@ -2,12 +2,21 @@
 
 class View
 {
-    protected $path, $data;
+    protected $data, $path;
 
-    public function __construct( string $path, array $data = array() )
+    public function __construct( string $group, string $type, array $data = array() )
 	{
-        $this->path = $path;
         $this->data = $data;
+		switch ( $group )
+		{
+			case 'admin':
+				$this->path = __DIR__ . '/admin/' . $type . '.php';
+				break;
+			case 'header':
+				break;
+			case 'footer':
+				break;
+		}
     }
 
     public function render()
@@ -23,7 +32,7 @@ class View
         }
 		else
 		{
-            //Throws exception
+            throw new \Vulcan\utils\VulcanException( 'View not found.' );
         }
     }
 	

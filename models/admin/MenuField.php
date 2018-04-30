@@ -51,7 +51,11 @@ class MenuField
         $this->settings = (object)array(
 			'options_group' => $GLOBALS['themeName'] . '_' . $group,
 			'options_id' => $GLOBALS['themeName'] . '_' . $id,
-			'display_name' => ucwords( str_replace( '_', ' ', $id ) )
+			'display_name' => ucwords( str_replace( '_', ' ', $id ) ),
+			'section' => $section,
+			'type' => $type,
+			'description' => $description
+			
 		);
 		
     }
@@ -60,35 +64,35 @@ class MenuField
 	{
 		$s = $this->settings;
 		\register_setting(
-            $options_group,
-            $options_id
+            $s->options_group,
+            $s->options_id
         );
         \add_settings_field(
-            $options_id,
-            $display_name,
-            $this->get_view( $type, $args ),
+            $s->options_id,
+            $s->display_name,
+            $this->get_view( $s->type, $s ),
             $GLOBALS['themeName'],
-            $section,
+            $s->section,
             array(
-                'section' => $section,
-                'group' => $options_group,
-                'id' => $options_id,
-                'type' => $type,
-                'description' => $description
+                'section' => $s->section,
+                'group' => $s->options_group,
+                'id' => $s->options_id,
+                'type' => $s->type,
+                'description' => $s->description
             )
         );
 	}
 
-    private static function get_view( $type, $args )
+    private static function get_view( $type, $s )
     {
-        return function() use( $args )
+        return function() use( $type, $s )
         {
             $data = array(
-					'id' => $args['id'],
-            		'desc' => $args['description']
-				);
-				$view = new \Vulcan\views\View( 'MenuSection' . $type . '.php', $data );
-				echo $view->render();
+				'id' => $s->options_id,
+				'desc' => $s->description
+			);
+			$view = new \Vulcan\views\View( 'admin', 'MenuField' . $type, $data );
+			echo $view->render();
         };
     }
 
