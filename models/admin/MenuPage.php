@@ -29,13 +29,37 @@
  * ]
  *
  */
+/**
+ * Class MenuPage
+ *
+ * @package Vulcan\models\admin
+ */
 class MenuPage
 {
+
+	/**
+	 * @var object
+	 */
 	private $settings;
-    public $sections;
+	/**
+	 * @var array
+	 */
+	public $sections;
+	/**
+	 * @var
+	 */
 	public $subPages;
 
-    public function __construct( array $settings, array $sections, array $subPages )
+	/**
+	 * MenuPage constructor.
+	 *
+	 * @param array $settings
+	 * @param array $sections
+	 * @param array $subPages
+	 *
+	 * @throws \Vulcan\utils\VulcanException
+	 */
+	public function __construct( array $settings, array $sections, array $subPages )
     {
         if (
 			! $settings['title'] ||
@@ -70,7 +94,10 @@ class MenuPage
 
     }
 
-    public function render()
+	/**
+	 *
+	 */
+	public function render()
     {
 		$s = $this->settings;
 		
@@ -107,7 +134,13 @@ class MenuPage
 		
     }
 
-    private function get_view( string $type, \stdClass $s )
+	/**
+	 * @param string    $type
+	 * @param \stdClass $s
+	 *
+	 * @return \Closure
+	 */
+	private function get_view( string $type, \stdClass $s )
     {
         return function() use( $type, $s )
         {
@@ -124,12 +157,18 @@ class MenuPage
         };
     }
 
-    public function add_sections( array $sections )
+	/**
+	 * @param array $sections
+	 *
+	 * @return array
+	 * @throws \Vulcan\utils\VulcanException
+	 */
+	public function add_sections( array $sections )
     {
         $temp = array();
         foreach ( $sections as $section )
         {
-            $temp[] = new \Vulcan\models\admin\MenuSection(
+            $temp[] = new MenuSection(
                 $this->settings,
 				$section['type'],
                 $section['title'],

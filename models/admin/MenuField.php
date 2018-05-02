@@ -32,10 +32,31 @@ $args
 Default value: array()
 
 */
+/**
+ * Class MenuField
+ *
+ * @package Vulcan\models\admin
+ */
 class MenuField
 {
+
+	/**
+	 * @var object
+	 */
 	private $settings;
-    public function __construct( string $section, string $group, string $id, string $type, string $description )
+
+	/**
+	 * MenuField constructor.
+	 *
+	 * @param string $section
+	 * @param string $group
+	 * @param string $id
+	 * @param string $type
+	 * @param string $description
+	 *
+	 * @throws \Vulcan\utils\VulcanException
+	 */
+	public function __construct( string $section, string $group, string $id, string $type, string $description )
     {
 		if ( 
 			! $section || ! is_string( $section ) ||
@@ -59,7 +80,10 @@ class MenuField
 		);
 		
     }
-	
+
+	/**
+	 *
+	 */
 	public function render()
 	{
 		$s = $this->settings;
@@ -83,7 +107,13 @@ class MenuField
         );
 	}
 
-    private static function get_view( $type, $s )
+	/**
+	 * @param $type
+	 * @param $s
+	 *
+	 * @return \Closure
+	 */
+	private static function get_view( $type, $s )
     {
         return function() use( $type, $s )
         {

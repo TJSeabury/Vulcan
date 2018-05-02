@@ -16,12 +16,38 @@
  * ]
  * 
  */
-class MenuSection 
+/**
+ * Class MenuSection
+ *
+ * @package Vulcan\models\admin
+ */
+class MenuSection
 {
-    public $fields;
+
+	/**
+	 * @var array
+	 */
+	public $fields;
+	/**
+	 * @var object
+	 */
 	private $settings;
+	/**
+	 * @var \stdClass
+	 */
 	private $pageSettings;
-    public function __construct( \stdClass $pageSettings, string $type, string $title, array $fields )
+
+	/**
+	 * MenuSection constructor.
+	 *
+	 * @param \stdClass $pageSettings
+	 * @param string    $type
+	 * @param string    $title
+	 * @param array     $fields
+	 *
+	 * @throws \Vulcan\utils\VulcanException
+	 */
+	public function __construct( \stdClass $pageSettings, string $type, string $title, array $fields )
     {
 		if ( 
 			! $pageSettings || ! is_object( $pageSettings ) ||
@@ -43,7 +69,10 @@ class MenuSection
 		$this->fields = $this->add_fields( $fields );
         
     }
-	
+
+	/**
+	 *
+	 */
 	public function render()
 	{
 		$s = $this->settings;
@@ -55,7 +84,13 @@ class MenuSection
             $ps->slug
         );
 	}
-	
+
+	/**
+	 * @param $type
+	 * @param $uc_title
+	 *
+	 * @return \Closure
+	 */
 	private function get_view( $type, $uc_title )
 	{
 		return function() use( $type, $uc_title )
@@ -68,12 +103,18 @@ class MenuSection
 		};
 	}
 
-    private function add_fields( array $fields )
+	/**
+	 * @param array $fields
+	 *
+	 * @return array
+	 * @throws \Vulcan\utils\VulcanException
+	 */
+	private function add_fields( array $fields )
     {
 		$temp = array();
         foreach ( $fields as $field )
         {
-            $temp[] = new \Vulcan\models\admin\MenuField(
+            $temp[] = new MenuField(
                 $this->settings->title,
 				$field['group'],
 				$field['id'],

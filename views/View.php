@@ -1,10 +1,35 @@
 <?php namespace Vulcan\views;
 
+/**
+ * Class View
+ *
+ * @package Vulcan\views
+ */
+/**
+ * Class View
+ *
+ * @package Vulcan\views
+ */
 class View
 {
-    protected $data, $path;
 
-    public function __construct( string $group, string $type, array $data = array() )
+	/**
+	 * @var array
+	 */
+	protected $data;
+	/**
+	 * @var string
+	 */
+	protected $path;
+
+	/**
+	 * View constructor.
+	 *
+	 * @param string $group
+	 * @param string $type
+	 * @param array  $data
+	 */
+	public function __construct( string $group, string $type, array $data = array() )
 	{
         $this->data = $data;
 		switch ( $group )
@@ -19,7 +44,11 @@ class View
 		}
     }
 
-    public function render()
+	/**
+	 * @return string
+	 * @throws \Vulcan\utils\VulcanException
+	 */
+	public function render()
 	{
         if ( file_exists( $this->path ) )
 		{
