@@ -176,63 +176,71 @@ class Vulcan
 			}
 		);
 		$group = 'primary';
-		$themeOptions = new \Vulcan\models\admin\MenuPage(
-			array(
-				'title' => 'Vulcan Options',
-				'capability' => 'manage_options',
-				'slug' => 'vulcan',
-				'icon' => $this->themeUri . '/assets/media/vulcan-icon-tiny.png',
-				'position' => 2,
-				'type' => 'general'
-			),
-			array(
-				array(
-					'type' => 'general',
-					'title' => 'General Options',
-					'fields' => array(
-						array(
-							'group' => $group,
-							'id' => 'test_text_1',
-							'type' => 'text',
-							'description' => 'A test field to demonstrate the text view.'
-						),
-						array(
-							'group' => $group,
-							'id' => 'test_toggle_1',
-							'type' => 'toggle',
-							'description' => 'A test field to demonstrate the toggle view.'
-						)
-					)
-				),
-				array(
-					'type' => 'General',
-					'title' => 'Special Options',
-					'fields' => array(
-						array(
-							'group' => $group,
-							'id' => 'test_text_2',
-							'type' => 'text',
-							'description' => 'A test field to demonstrate the text view.'
-						),
-						array(
-							'group' => $group,
-							'id' => 'test_toggle2',
-							'type' => 'toggle',
-							'description' => 'A test field to demonstrate the toggle view.'
-						),
-						array(
-							'group' => $group,
-							'id' => 'test_toggle3',
-							'type' => 'toggle',
-							'description' => 'A test field to demonstrate the toggle view.'
-						)
-					)
-				)
-			),
-			array()
-		);
+		try
+        {
+	        $themeOptions = new models\admin\MenuPage(
+		        array(
+			        'title' => 'Vulcan Options',
+			        'capability' => 'manage_options',
+			        'slug' => 'vulcan',
+			        'icon' => $this->themeUri . '/assets/media/vulcan-icon-tiny.png',
+			        'position' => 2,
+			        'type' => 'general'
+		        ),
+		        array(
+			        array(
+				        'type' => 'general',
+				        'title' => 'General Options',
+				        'fields' => array(
+					        array(
+						        'group' => $group,
+						        'id' => 'test_text_1',
+						        'type' => 'text',
+						        'description' => 'A test field to demonstrate the text view.'
+					        ),
+					        array(
+						        'group' => $group,
+						        'id' => 'test_toggle_1',
+						        'type' => 'toggle',
+						        'description' => 'A test field to demonstrate the toggle view.'
+					        )
+				        )
+			        ),
+			        array(
+				        'type' => 'General',
+				        'title' => 'Special Options',
+				        'fields' => array(
+					        array(
+						        'group' => $group,
+						        'id' => 'test_text_2',
+						        'type' => 'text',
+						        'description' => 'A test field to demonstrate the text view.'
+					        ),
+					        array(
+						        'group' => $group,
+						        'id' => 'test_toggle2',
+						        'type' => 'toggle',
+						        'description' => 'A test field to demonstrate the toggle view.'
+					        ),
+					        array(
+						        'group' => $group,
+						        'id' => 'test_toggle3',
+						        'type' => 'toggle',
+						        'description' => 'A test field to demonstrate the toggle view.'
+					        )
+				        )
+			        )
+		        ),
+		        array()
+	        );
 
-		$themeOptions->render();
+	        $themeOptions->render();
+        }
+        catch ( utils\VulcanException $e )
+        {
+            echo $e;
+        }
+
 		
 	}
 	
@@ -345,7 +353,7 @@ class Vulcan
 					<label for="<?php echo $args['id']; ?>">
 						<input type="checkbox" id="<?php echo $args['id']; ?>" name="<?php echo $args['id']; ?>" value="1" <?php checked( '1', get_option('vulcan_interface_ajax_shortcodes') ); ?> />
 						Enable
-					</labe>
+					</label>
 				<?php
 				},
 				'vulcan',
