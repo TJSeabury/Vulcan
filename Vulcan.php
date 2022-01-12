@@ -411,12 +411,10 @@ class Vulcan
 	/*
 	* Initializes theme styles.
 	*/
-	public function initStyles( string $readPath, string $writePath, string $filename )
-	{
+	public function initStyles( string $readPath, string $writePath, string $filename ) {
 		add_action(
 			'after_setup_theme',
-			function() use( $readPath, $writePath, $filename )
-			{
+			function() use( $readPath, $writePath, $filename ) {
 				$currentCss = $this->themePath . $writePath . $filename;
 				
 				$cssModulePaths = utils\FileTools::getFiles(
@@ -425,17 +423,13 @@ class Vulcan
 					true
 				);
 				
-				if ( file_exists( $currentCss ) )
-				{
+				if ( file_exists( $currentCss ) ) {
 					$areNewFiles = utils\FileTools::comparator( $currentCss, $cssModulePaths );
-				}
-				else
-				{
+				} else {
 					$areNewFiles = true;
 				}
 				
-				if ( $areNewFiles )
-				{
+				if ( $areNewFiles ) {
 					$css = utils\FileTools::agg(
 						utils\FileTools::getFiles(
 							$this->themePath . $readPath,
@@ -443,8 +437,7 @@ class Vulcan
 							false
 						)
 					);
-					if ( (bool)get_option('vulcan_minify_css') )
-					{
+					if ( (bool)get_option('vulcan_minify_css') ) {
 						$css = utils\FileTools::minify( $css );
 					}
 					utils\FileTools::write(
@@ -458,8 +451,7 @@ class Vulcan
 		
 		add_action(
 			'update_option_' . 'vulcan_minify_css',
-			function() use( $readPath, $writePath, $filename )
-			{
+			function() use( $readPath, $writePath, $filename ) {
 				$css = utils\FileTools::agg(
 					utils\FileTools::getFiles(
 						$this->themePath . $readPath,
@@ -467,8 +459,7 @@ class Vulcan
 						false
 					)
 				);
-				if ( (bool)get_option('vulcan_minify_css') )
-				{
+				if ( (bool)get_option('vulcan_minify_css') ) {
 					$css = utils\FileTools::minify( $css );
 				}
 				utils\FileTools::write(
@@ -481,8 +472,7 @@ class Vulcan
 		
 		add_action(
 			'wp_enqueue_scripts',
-			function() use( $writePath, $filename )
-			{
+			function() use( $writePath, $filename ) {
 				wp_enqueue_style(
 					'vulcan-aggregate-minified-styles',
 					$this->themeUri . $writePath . $filename
@@ -494,13 +484,11 @@ class Vulcan
 	}
 
 
-	public function expose_mk_options()
-	{
+	public function expose_mk_options() {
 		$path = __DIR__ . '/assets/css/mk-options.css';
 		add_action(
 			'init',
-			function() use( $path )
-			{
+			function() use( $path ) {
 				$timestamp = 0;
 				if ( file_exists( $path ) ) {
 					try {
@@ -511,8 +499,7 @@ class Vulcan
 						$timestamp = 0;
 					}
 				}
-				if ( (int)get_option('global_assets_timestamp') > $timestamp )
-				{
+				if ( (int)get_option('global_assets_timestamp') > $timestamp ) {
 					$mko = get_option('Jupiter_options');
 					ob_start();
 					?>
@@ -530,14 +517,9 @@ class Vulcan
 	--mk-responsive-header-height: <?php echo $mko['res_header_height']; ?>px;
 	--mk-sticky-header-height: <?php echo $mko['header_scroll_height']; ?>px;
 	--mk-logo: url("<?php echo $mko['logo']; ?>");
-	<?php
-	for ( $f = 0; $f < count( $mko['fonts'] ); ++$f )
-	{
-	?>
+	<?php for ( $f = 0; $f < count( $mko['fonts'] ); ++$f ) { ?>
 	--mk-font-<?php echo $f; ?>: <?php echo $mko['fonts'][$f]['fontFamily']; ?>;
-	<?php
-	}
-	?>
+	<?php } ?>
 }
 					<?php
 					$css = ob_get_clean();
@@ -565,17 +547,14 @@ class Vulcan
 	/*
 	* Initialize theme scripts
 	*/
-	public function initScripts( array $paths )
-	{
-		foreach( $paths as $path )
-		{
+	public function initScripts( array $paths ) {
+		foreach( $paths as $path ) {
 			$filePaths = utils\FileTools::getFiles(
 				$this->themePath . $path,
 				array( 'js' ),
 				true
 			);
-			foreach( $filePaths as $fpath )
-			{
+			foreach( $filePaths as $fpath ) {
 				$name = null;
 				$priority = 10;
 				$metaHeader = get_file_data(
@@ -585,27 +564,21 @@ class Vulcan
 						'Priority' => 'Priority'
 						)
 				);
-				if ( $metaHeader['Name'] )
-				{
+				if ( $metaHeader['Name'] ) {
 					$name = $metaHeader['Name'];
-				}
-				else
-				{
+				} else {
 					$fn = pathinfo( $fpath );
-					if ( $fn )
-					{
+					if ( $fn ) {
 						$name = $fn['filename'];
 					}
 				}
-				if ( $metaHeader['Priority'] )
-				{
+				if ( $metaHeader['Priority'] ) {
 					$priority = $metaHeader['Priority'];
 				}
 				$fpath = utils\FileTools::get_url_from_path( $this, $fpath );
 				add_action(
 					'wp_enqueue_scripts',
-					function() use( $name, $fpath )
-					{
+					function() use( $name, $fpath ) {
 						wp_enqueue_script(
 							$name,
 							$fpath,

@@ -1,31 +1,24 @@
 <?php namespace Vulcan\utils;
 
-class FileTools
-{
+class FileTools {
 	/*
 	* Retrieves the files contents as if outputting to a client,
 	* i.e., server side script files are first processed.
 	* @param string $readPath - The absolute path to the folder.
 	* @return array
 	*/
-	public static function getFiles( string $readPath, array $extensions, bool $pathOnly )
-	{
+	public static function getFiles( string $readPath, array $extensions, bool $pathOnly ) {
 		$r = array();
-		foreach( array_filter( glob( $readPath . '/*.*' ), 'is_file' ) as $file )
-			{
-				$fn = pathinfo( $file );
-				if ( in_array( $fn['extension'], $extensions, true ) && $fn['filename'] !== 'index' )
-				{
-					if ( $pathOnly )
-					{
-						$r[] = $fn['dirname'] . '/' . $fn['basename'];
-					}
-					else
-					{
-						$r[] = self::get_file_output( $file );
-					}
-				}
-			}
+		foreach( array_filter( glob( $readPath . '*.*' ), 'is_file' ) as $file ) {
+            $fn = pathinfo( $file );
+            if ( in_array( $fn['extension'], $extensions, true ) && $fn['filename'] !== 'index' ) {
+                if ( $pathOnly ) {
+                    $r[] = $fn['dirname'] . '/' . $fn['basename'];
+                } else {
+                    $r[] = self::get_file_output( $file );
+                }
+            }
+        }
 		return $r;
 	}
 	
@@ -36,10 +29,8 @@ class FileTools
 	* @param string $filename - The name of the file.
 	* @return void
 	*/
-	public static function write( string $c, string $writePath, string $filename )
-	{
-		if ( is_writeable( $writePath ) )
-		{
+	public static function write( string $c, string $writePath, string $filename ) {
+		if ( is_writeable( $writePath ) ) {
 			$f = fopen( $writePath . $filename, 'wb' );
 			fwrite( $f, $c );
 			fclose( $f );
@@ -51,8 +42,7 @@ class FileTools
 	* @param array $files - The css files content.
 	* @return string
 	*/
-	public static function agg( array $files )
-	{
+	public static function agg( array $files ) {
 		return implode( "\n\n", $files );
 	}
 	
@@ -61,8 +51,7 @@ class FileTools
 	* @param string $c - An array of strings from files, assumed to be css.
 	* @return string
 	*/
-	public static function minify( string $c )
-	{
+	public static function minify( string $c ) {
 		return str_replace( 
 			array( ' {', ': ', ', ', ' >', '> ', ' > ', ' !', '( ', ' )' ), 
 			array( '{', ':', ',', '>', '>', '>', '!', '(', ')' ), 
@@ -83,8 +72,7 @@ class FileTools
 	* @param string $file - The path to the file.
 	* @return string
 	*/
-	private function get_file_output( string $file )
-	{
+	private static function get_file_output( string $file ) {
 		ob_start();
 		include( $file );
 		return ob_get_clean();
@@ -94,8 +82,7 @@ class FileTools
 	* @param string $url The full file url.
 	* @return int
 	*/
-	public static function getVersion( string $url )
-	{
+	public static function getVersion( string $url ) {
 		$content_url = content_url();
 		$filepath    = str_replace( $content_url, WP_CONTENT_DIR, $url );
 		$filepath    = explode( '?', $filepath );
@@ -122,11 +109,8 @@ class FileTools
 	public static function comparator( string $r1, array $r2 )
 	{
 		$r1 = filemtime( $r1 );
-		foreach ( $r2 as $r )
-		{
-			$rTime = filemtime( $r );
-			if ( $r1 <= filemtime( $r ) )
-			{
+		foreach ( $r2 as $r ) {
+			if ( $r1 <= filemtime( $r ) ) {
 				return true;
 			}
 		}
@@ -135,8 +119,8 @@ class FileTools
 
 	public static function get_url_from_path( \Vulcan\Vulcan $theme, string $path )
 	{
-		$themePath = $theme->getPath();
-		$themeUri = $theme->getUri();
+		$themePath = $theme->getBasePath();
+		$themeUri = $theme->getBaseUri();
 		$url = str_replace( $themePath, $themeUri, $path );
 		$url = str_replace( '\\', '/', $url );
 		return $url;
