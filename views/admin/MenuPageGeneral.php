@@ -7,7 +7,7 @@
 	<form action="options.php" method="post">
 		<?php
 		// output security fields for the registered setting "vulcan_options"
-		settings_fields( 'vulcan_test_group' );
+		settings_fields( $slug );
 		// output setting sections and their fields
 		// (sections are registered for "vulcan", each field is registered to a specific section)
 		?>

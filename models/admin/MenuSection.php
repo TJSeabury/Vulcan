@@ -52,7 +52,7 @@ class MenuSection
 		if ( 
 			! $pageSettings || ! is_object( $pageSettings ) ||
          	! $title || ! is_string( $title ) ||
-         	! $fields || ! is_array( $fields ) 
+         	! isset( $fields ) || ! is_array( $fields ) 
 		)
         {
             throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
@@ -115,6 +115,7 @@ class MenuSection
         foreach ( $fields as $field )
         {
             $temp[] = new MenuField(
+                $this->pageSettings,
                 $this->settings->title,
 				$field['group'],
 				$field['id'],

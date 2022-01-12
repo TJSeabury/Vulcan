@@ -68,8 +68,7 @@ class MenuPage
 			! $settings['icon'] || file_exists( $settings['icon'] ) ||
 			! $settings['position'] ||
 			! $settings['type']
-		)
-        {
+		) {
             throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
         }
 
@@ -82,13 +81,11 @@ class MenuPage
             'type' => $settings['type']
         );
 		
-		if ( ! empty( $sections ) )
-		{
+		if ( ! empty( $sections ) ) {
 			$this->sections = $this->add_sections( $sections );
 		}
 		
-		if ( ! empty( $subPages ) )
-		{
+		if ( ! empty( $subPages ) ) {
 			$this->subPages = $this->add_subPages( $subPages );
 		}
 
@@ -119,13 +116,10 @@ class MenuPage
 		
 		add_action(
 			'admin_init',
-			function()
-			{
-				foreach ( $this->sections as $section )
-				{
+			function() {
+				foreach ( $this->sections as $section ) {
 					$section->render();
-					foreach ( $section->fields as $field )
-					{
+					foreach ( $section->fields as $field ) {
 						$field->render();
 					}
 				}
@@ -140,17 +134,15 @@ class MenuPage
 	 *
 	 * @return \Closure
 	 */
-	private function get_view( string $type, \stdClass $s )
-    {
-        return function() use( $type, $s )
-        {
+	private function get_view( string $type, \stdClass $s ) {
+        return function() use( $type, $s ) {
             // check user capabilities
-            if ( ! current_user_can( $s->capability ) )
-            {
+            if ( ! current_user_can( $s->capability ) ) {
                 return;
             }
 			$data = array(
-				'title' => $s->title
+				'title' => $s->title,
+                'slug' => $this->settings->slug
 			);
 			$view = new \Vulcan\views\View( 'admin', 'MenuPage' . ucwords($type), $data );
 			echo $view->render();
@@ -163,11 +155,9 @@ class MenuPage
 	 * @return array
 	 * @throws \Vulcan\utils\VulcanException
 	 */
-	public function add_sections( array $sections )
-    {
+	public function add_sections( array $sections ) {
         $temp = array();
-        foreach ( $sections as $section )
-        {
+        foreach ( $sections as $section ) {
             $temp[] = new MenuSection(
                 $this->settings,
 				$section['type'],

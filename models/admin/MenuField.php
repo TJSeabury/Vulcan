@@ -56,7 +56,7 @@ class MenuField
 	 *
 	 * @throws \Vulcan\utils\VulcanException
 	 */
-	public function __construct( string $section, string $group, string $id, string $type, string $description )
+	public function __construct( object $pageSettings, string $section, string $group, string $id, string $type, string $description )
     {
 		if ( 
 			! $section || ! is_string( $section ) ||
@@ -70,6 +70,7 @@ class MenuField
         }
 		
         $this->settings = (object)array(
+            'pageSettings' => $pageSettings,
 			'options_group' => $GLOBALS['themeName'] . '_' . $group,
 			'options_id' => $GLOBALS['themeName'] . '_' . $id,
 			'display_name' => ucwords( str_replace( '_', ' ', $id ) ),
@@ -78,6 +79,11 @@ class MenuField
 			'description' => $description
 			
 		);
+
+		\register_setting(
+            $this->settings->pageSettings->slug,
+            $this->settings->options_id
+        );
 		
     }
 
@@ -87,15 +93,11 @@ class MenuField
 	public function render()
 	{
 		$s = $this->settings;
-		\register_setting(
-            $s->options_group,
-            $s->options_id
-        );
         \add_settings_field(
             $s->options_id,
             $s->display_name,
             $this->get_view( $s->type, $s ),
-            $GLOBALS['themeName'],
+            $this->settings->pageSettings->slug,
             $s->section,
             array(
                 'section' => $s->section,
