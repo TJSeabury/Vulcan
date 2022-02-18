@@ -42,11 +42,11 @@ $vulcan->initStyles(
 );
 
 $vulcan->initScripts(
-	array(
+	[
 		'/assets/js/',
 		'/vendor/js/',
 		'/admin/js/'
-	)
+    ]
 );
 
 $vulcan->initFilters();
