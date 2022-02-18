@@ -21,9 +21,7 @@
  *
  * @package Vulcan\models\admin
  */
-class MenuSection
-{
-
+class MenuSection {
 	/**
 	 * @var array
 	 */
@@ -47,14 +45,12 @@ class MenuSection
 	 *
 	 * @throws \Vulcan\utils\VulcanException
 	 */
-	public function __construct( \stdClass $pageSettings, string $type, string $title, array $fields )
-    {
+	public function __construct( \stdClass $pageSettings, string $type, string $title, array $fields ) {
 		if ( 
 			! $pageSettings || ! is_object( $pageSettings ) ||
          	! $title || ! is_string( $title ) ||
          	! isset( $fields ) || ! is_array( $fields ) 
-		)
-        {
+		) {
             throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
         }
 		
@@ -73,8 +69,7 @@ class MenuSection
 	/**
 	 *
 	 */
-	public function render()
-	{
+	public function render() {
 		$s = $this->settings;
 		$ps = $this->pageSettings;
 		\add_settings_section(
@@ -91,10 +86,8 @@ class MenuSection
 	 *
 	 * @return \Closure
 	 */
-	private function get_view( $type, $uc_title )
-	{
-		return function() use( $type, $uc_title )
-		{
+	private function get_view( $type, $uc_title ) {
+		return function() use( $type, $uc_title ) {
 			$data = array(
 				'title' => $uc_title,
 			);
@@ -109,11 +102,9 @@ class MenuSection
 	 * @return array
 	 * @throws \Vulcan\utils\VulcanException
 	 */
-	private function add_fields( array $fields )
-    {
+	private function add_fields( array $fields ) {
 		$temp = array();
-        foreach ( $fields as $field )
-        {
+        foreach ( $fields as $field ) {
             $temp[] = new MenuField(
                 $this->pageSettings,
                 $this->settings->title,
