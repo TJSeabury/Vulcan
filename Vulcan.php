@@ -250,6 +250,18 @@ class Vulcan
                         'fields' => [
 
                         ]
+                    ],
+                    [
+                        'type' => 'general',
+                        'title' => 'Theme JSON',
+                        'fields' => [
+                            [
+                                'group' => $group,
+                                'id' => 'theme_json_test',
+                                'type' => 'json',
+                                'description' => 'JSON test.'
+                            ]
+                        ]
                     ]
                 ],
 		        []
@@ -468,7 +480,7 @@ class Vulcan
 					$filename
 				);
 			}
-		); 
+		);
 		
 		add_action(
 			'wp_enqueue_scripts',
