@@ -28,7 +28,7 @@ global $vulcan;
 				<?php /* get_social_icons() */ ?>
 			</div>
 			<div class="author">
-				<small>Designed and developed by <a href="https://difdesign.com/" target="_blank">DIF Design</a>.</small>
+				<small>Designed and developed by <a href="https://marketmentors.com/" target="_blank">DIF Design</a>.</small>
 			</div>
 		</div>
 	</footer><!-- #colophon -->

@@ -108,7 +108,7 @@ class vcVulcanHeroSlider extends WPBakeryShortCode
 		
 		ob_start();
 		?>
-		<figure id="difdesign-hero-slider" class="HeroSlider" data-dhs-slides='<?php echo json_encode( $images ); ?>' ></figure>
+		<figure id="marketmentors-hero-slider" class="HeroSlider" data-dhs-slides='<?php echo json_encode( $images ); ?>' ></figure>
 		<?php
 		return ob_get_clean();
 		

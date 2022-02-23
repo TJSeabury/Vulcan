@@ -299,7 +299,7 @@ window.addEventListener(
 	() =>
 	{
 		'use strict';
-		const slider = document.getElementById('difdesign-hero-slider');
+		const slider = document.getElementById('marketmentors-hero-slider');
 		if ( ! slider )
 		{
 			return;

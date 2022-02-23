@@ -272,7 +272,7 @@ class VcYogaSlider extends WPBakeryShortcode
 
         ob_start();
         ?>
-        <figure id="difdesign-yoga-slider" class="YogaSlider" data-dhs-slides='<?php echo json_encode( $slides ); ?>'></figure>
+        <figure id="marketmentors-yoga-slider" class="YogaSlider" data-dhs-slides='<?php echo json_encode( $slides ); ?>'></figure>
         <?php
         return ob_get_clean();
     }
