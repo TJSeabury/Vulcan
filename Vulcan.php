@@ -398,15 +398,15 @@ class Vulcan
 					"Your custom $wordpress, sourced and crafted from local materials by $author.",
 					"Gluten free $wordpress, baked with love from $author.",
 					"Harder, better, faster, blogger. Your custom $wordpress by $author.",
-					"\"Damn it man! I'm a $wordpress engineer, not a doctor!\" — someone at $author probably.",
-					"$author and the Masters of the Cyberverse: \"By the power of $wordpress! I have the power!\""
+					"\"Damn it man! I'm a $wordpress engineer, not a doctor!\" — someo-ne at $author probably.",
+					"$author and the Masters of the Cyberverse: \"By the will of $wordpress, I have the power!\""
 				);
 
 				$rn = random_int( 0, count( $taglines ) - 1 );
 
 				ob_start();
 				?>
-				<div class="difdesign_admin_footer">
+				<div class="marketmentors_admin_footer">
 					<p><?php echo $taglines[ $rn ]; ?></p>
 				</div>
 				<?php
@@ -645,9 +645,8 @@ class Vulcan
             * Array of plugin arrays. Required keys are name and slug.
             * If the source is NOT from the .org repo, then source is also required.
             */
-            $plugins = array(
-
-                array(
+            $plugins = [
+                /* [
                     'name'               => 'Beaver Builder', // The plugin name.
                     'slug'               => 'bb-plugin', // The plugin slug (typically the folder name).
                     'source'             => get_template_directory() . '/vendor/bb-plugin.zip', // The plugin source.
@@ -657,15 +656,37 @@ class Vulcan
                     'force_deactivation' => true, // If true, plugin is deactivated upon theme switch, useful for theme-specific plugins.
                     'external_url'       => '', // If set, overrides default API URL and points to an external URL.
                     'is_callable'        => '', // If set, this callable will be be checked for availability to determine if a plugin is active.
-                ),
+                ], */
+                [
+                    'name' => 'Imsanity',
+                    'slug' => 'imsanity',
+                    'required' => true,
+                    'force_activation'   => true,
+                    'force_deactivation' => true,
+                ],
+                [
+                    'name' => 'Webp Express',
+                    'slug' => 'webp-express',
+                    'required' => true,
+                    'force_activation'   => true,
+                    'force_deactivation' => true,
+                ],
+                [
+                    'name' => 'Disable Comments',
+                    'slug' => 'disable-comments',
+                    'required' => true,
+                    'force_activation'   => true,
+                    'force_deactivation' => true,
+                ],
+                [
+                    'name' => 'Yoast SEO',
+                    'slug' => 'wordpress-seo',
+                    'required' => true,
+                    'force_activation'   => true,
+                    'force_deactivation' => true,
+                ],
 
-                /* array(
-                    'name'      => 'Beaver Builder',
-                    'slug'      => 'beaver-builder-lite-version',
-                    'required'  => true,
-                ), */
-
-            );
+            ];
 
             /*
             * Array of configuration settings. Amend each line as needed.
@@ -677,58 +698,56 @@ class Vulcan
             * Only uncomment the strings in the config array if you want to customize the strings.
             */
             $config = array(
-                'id'           => '_vulcan',                 // Unique ID for hashing notices for multiple instances of TGMPA.
+                'id'           => '_vulcan',               // Unique ID for hashing notices for multiple instances of TGMPA.
                 'default_path' => '',                      // Default absolute path to bundled plugins.
                 'menu'         => 'tgmpa-install-plugins', // Menu slug.
                 'parent_slug'  => 'themes.php',            // Parent menu slug.
                 'capability'   => 'edit_theme_options',    // Capability needed to view plugin install page, should be a capability associated with the parent menu used.
                 'has_notices'  => true,                    // Show admin notices or not.
-                'dismissable'  => false,                    // If false, a user cannot dismiss the nag message.
+                'dismissable'  => false,                   // If false, a user cannot dismiss the nag message.
                 'dismiss_msg'  => '',                      // If 'dismissable' is false, this message will be output at top of nag.
-                'is_automatic' => true,                   // Automatically activate plugins after installation or not.
+                'is_automatic' => true,                    // Automatically activate plugins after installation or not.
                 'message'      => '',                      // Message to output right before the plugins table.
-
-                /*
                 'strings'      => array(
                     'page_title'                      => __( 'Install Required Plugins', '_vulcan' ),
                     'menu_title'                      => __( 'Install Plugins', '_vulcan' ),
-                    /* translators: %s: plugin name. * /
+                    /* translators: %s: plugin name. */
                     'installing'                      => __( 'Installing Plugin: %s', '_vulcan' ),
-                    /* translators: %s: plugin name. * /
+                    /* translators: %s: plugin name. */
                     'updating'                        => __( 'Updating Plugin: %s', '_vulcan' ),
                     'oops'                            => __( 'Something went wrong with the plugin API.', '_vulcan' ),
                     'notice_can_install_required'     => _n_noop(
-                        /* translators: 1: plugin name(s). * /
+                        /* translators: 1: plugin name(s). */
                         'This theme requires the following plugin: %1$s.',
                         'This theme requires the following plugins: %1$s.',
                         '_vulcan'
                     ),
                     'notice_can_install_recommended'  => _n_noop(
-                        /* translators: 1: plugin name(s). * /
+                        /* translators: 1: plugin name(s). */
                         'This theme recommends the following plugin: %1$s.',
                         'This theme recommends the following plugins: %1$s.',
                         '_vulcan'
                     ),
                     'notice_ask_to_update'            => _n_noop(
-                        /* translators: 1: plugin name(s). * /
+                        /* translators: 1: plugin name(s). */
                         'The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s.',
                         'The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s.',
                         '_vulcan'
                     ),
                     'notice_ask_to_update_maybe'      => _n_noop(
-                        /* translators: 1: plugin name(s). * /
+                        /* translators: 1: plugin name(s). */
                         'There is an update available for: %1$s.',
                         'There are updates available for the following plugins: %1$s.',
                         '_vulcan'
                     ),
                     'notice_can_activate_required'    => _n_noop(
-                        /* translators: 1: plugin name(s). * /
+                        /* translators: 1: plugin name(s). */
                         'The following required plugin is currently inactive: %1$s.',
                         'The following required plugins are currently inactive: %1$s.',
                         '_vulcan'
                     ),
                     'notice_can_activate_recommended' => _n_noop(
-                        /* translators: 1: plugin name(s). * /
+                        /* translators: 1: plugin name(s). */
                         'The following recommended plugin is currently inactive: %1$s.',
                         'The following recommended plugins are currently inactive: %1$s.',
                         '_vulcan'
@@ -751,11 +770,11 @@ class Vulcan
                     'return'                          => __( 'Return to Required Plugins Installer', '_vulcan' ),
                     'plugin_activated'                => __( 'Plugin activated successfully.', '_vulcan' ),
                     'activated_successfully'          => __( 'The following plugin was activated successfully:', '_vulcan' ),
-                    /* translators: 1: plugin name. * /
+                    /* translators: 1: plugin name. */
                     'plugin_already_active'           => __( 'No action taken. Plugin %1$s was already active.', '_vulcan' ),
-                    /* translators: 1: plugin name. * /
+                    /* translators: 1: plugin name. */
                     'plugin_needs_higher_version'     => __( 'Plugin not activated. A higher version of %s is needed for this theme. Please update the plugin.', '_vulcan' ),
-                    /* translators: 1: dashboard link. * /
+                    /* translators: 1: dashboard link. */
                     'complete'                        => __( 'All plugins installed and activated successfully. %1$s', '_vulcan' ),
                     'dismiss'                         => __( 'Dismiss this notice', '_vulcan' ),
                     'notice_cannot_install_activate'  => __( 'There are one or more required or recommended plugins to install, update or activate.', '_vulcan' ),
@@ -763,7 +782,7 @@ class Vulcan
 
                     'nag_type'                        => '', // Determines admin notice type - can only be one of the typical WP notice classes, such as 'updated', 'update-nag', 'notice-warning', 'notice-info' or 'error'. Some of which may not work as expected in older WP versions.
                 ),
-                */
+               
             );
 
             tgmpa( $plugins, $config );
