@@ -1,11 +1,23 @@
 <?php namespace Vulcan;
 
+/**
+ * Disallow direct access with prejudice.
+ */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/**
+ * VULCANTHEMEROOT is the base url of the theme.
+ */
 define( 'VULCANTHEMEROOT', get_stylesheet_directory_uri() );
 
-require_once( 'autoloader.php' );
+/**
+ * Initializes PSR-4 autoloading handled by composer.
+ */
+require_once( 'vendor/autoload.php' );
 
+/**
+ * Ok, now let's setup the theme.
+ */
 global $vulcan;
 $vulcan = new Vulcan(
 	__DIR__,
@@ -52,3 +64,4 @@ $vulcan->initScripts(
 $vulcan->initFilters();
 
 $vulcan->enableModulesBasedOnThemeOptions();
+

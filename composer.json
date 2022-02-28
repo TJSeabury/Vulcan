@@ -1,0 +1,30 @@
+{
+    "name": "marketmentors/vulcan",
+    "description": "Forge logically.",
+    "type": "wordpress-theme",
+    "keywords": [
+        "WordPress",
+        "Themes"
+    ],
+    "homepage": "https://github.com/TJSeabury/Vulcan",
+    "license": "GPL-2.0",
+    "autoload": {
+        "psr-4": {
+            "Vulcan\\": ""
+        }
+    },
+    "authors": [
+        {
+            "name": "Tyler Seabury",
+            "email": "tylerseabury@protonmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.3",
+        "illuminate/container": "^8.0",
+        "illuminate/contracts": "^8.0",
+        "illuminate/events": "^8.0",
+        "illuminate/filesystem": "^8.0",
+        "illuminate/view": "^8.0"
+    }
+}
