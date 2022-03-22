@@ -100,8 +100,7 @@ class Vulcan
 	/**
 	 * @link https://stackoverflow.com/questions/3468500/detect-overall-average-color-of-the-picture
 	 */
-	public function getImageAverageColor( $sourceURL )
-	{
+	public function getImageAverageColor( $sourceURL ) {
 		$image = imagecreatefromjpeg( $sourceURL );
 		$scaled = imagescale( $image, 1, 1, IMG_BICUBIC );
 		$index = imagecolorat( $scaled, 0, 0 );
@@ -117,8 +116,7 @@ class Vulcan
 	 * @param string $view The name of the view.
 	 * @return string The header view HTML.
 	 */
-	public function get_header_view( string $view )
-	{
+	public function get_header_view( string $view ) {
 		$path = $this->themePath . '/views/header/' . $view . '.php';
 		ob_start();
 		include $path ;
@@ -130,8 +128,7 @@ class Vulcan
 	/**
 	 * Enqueues required view styles based upon theme options.
 	 */
-	public function set_view_styles()
-	{
+	public function set_view_styles() {
 		
 	}
 
@@ -162,8 +159,7 @@ class Vulcan
 	/**
 	 * Initializes Wordpress admin theme menu.
 	 */
-	public function initAdmin()
-	{
+	public function initAdmin() {
 		add_action(
 			'admin_enqueue_scripts',
 			function()
@@ -277,8 +273,7 @@ class Vulcan
 		
 	}
 
-	public function initVCElements( array $filenames )
-	{
+	public function initVCElements( array $filenames ) {
 		add_action(
 			'vc_before_init',
 			function() use( $filenames )
@@ -298,8 +293,7 @@ class Vulcan
 		);
 	}
 
-	public function initBuilderModules()
-	{
+	public function initBuilderModules() {
 		return function()
 		{
 			if ( class_exists( 'FLBuilder' ) ) {
@@ -339,8 +333,7 @@ class Vulcan
 		};
 	}
 
-	public function initWidgets( array $Widgets )
-	{
+	public function initWidgets( array $Widgets ) {
 		add_action(
 			'widgets_init',
 			function() use( $Widgets ) {
@@ -361,16 +354,14 @@ class Vulcan
 		
 	}
 
-	public function enableModulesBasedOnThemeOptions()
-	{
+	public function enableModulesBasedOnThemeOptions() {
 		if ( (bool)get_option('vulcan_interface_ajax_shortcodes') )
 		{
 			interfaces\ajax\AjaxShortcodes::enable();
 		}
 	}
 
-	public function registerTaxonomies()
-	{
+	public function registerTaxonomies() {
 		add_action( 'init', 'add_taxonomies_to_pages' );
 		function add_taxonomies_to_pages()
 		{
@@ -379,8 +370,7 @@ class Vulcan
 		}
 	}
 
-	public function initFilters()
-	{
+	public function initFilters() {
 
 		/*
 		* Custom admin footers.
