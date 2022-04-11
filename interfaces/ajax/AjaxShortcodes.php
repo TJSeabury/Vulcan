@@ -1,4 +1,6 @@
-<?php namespace Vulcan\interfaces\ajax;
+<?php 
+
+namespace Vulcan\interfaces\ajax;
 
 /*
 * Enables ajax for requesting shortcode processing on the clientside.

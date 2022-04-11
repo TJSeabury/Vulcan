@@ -1,4 +1,6 @@
-<?php namespace Vulcan\lib\models\admin;
+<?php 
+
+namespace Vulcan\lib\models\admin;
 
 /**
  * @param (array) (required) $settings [
@@ -57,7 +59,7 @@ class MenuPage
 	 * @param array $sections
 	 * @param array $subPages
 	 *
-	 * @throws \Vulcan\utils\VulcanException
+	 * @throws \Vulcan\lib\utils\VulcanException
 	 */
 	public function __construct( array $settings, array $sections, array $subPages )
     {
@@ -69,7 +71,7 @@ class MenuPage
 			! $settings['position'] ||
 			! $settings['type']
 		) {
-            throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
+            throw new \Vulcan\lib\utils\VulcanException( 'invalid_arguement' );
         }
 
         $this->settings = (object)array(
@@ -153,7 +155,7 @@ class MenuPage
 	 * @param array $sections
 	 *
 	 * @return array
-	 * @throws \Vulcan\utils\VulcanException
+	 * @throws \Vulcan\lib\utils\VulcanException
 	 */
 	public function add_sections( array $sections ) {
         $temp = array();

@@ -2,7 +2,7 @@
  * MarketMentors Core frontend library
  * © Copyright 2017-2018, Tyler Seabury, All Rights reserved.
  * @author Tyler Seabury, tylerseabury@gmail.com
- * @author DIF Design
+ * @author Market Mentors
  * @authorURL https://github.com/TJSeabury/
  * @version 0.7.0
  */
@@ -1017,7 +1017,7 @@ function MarketMentorsCOREUTILITIES () {
      */
     this.announceReady = function () {
         window._MarketMentorsCoreReady = new CustomEvent( 'MarketMentorsCoreReady', { bubbles: true } );
-        console.log( 'DIF Design CoreUtilities > Ready' );
+        console.log( 'Market Mentors CoreUtilities > Ready' );
         window.dispatchEvent( window._MarketMentorsCoreReady );
         window.dispatchEvent( new Event( 'resize' ) );
     };

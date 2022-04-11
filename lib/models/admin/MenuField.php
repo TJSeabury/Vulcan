@@ -1,4 +1,6 @@
-<?php namespace Vulcan\lib\models\admin;
+<?php 
+
+namespace Vulcan\lib\models\admin;
 
 /*
 Part of the Settings API. Use this to define a settings field that will show as part of a settings section inside a settings page. The fields are shown using do_settings_fields() in do_settings-sections()
@@ -54,7 +56,7 @@ class MenuField
 	 * @param string $type
 	 * @param string $description
 	 *
-	 * @throws \Vulcan\utils\VulcanException
+	 * @throws \Vulcan\lib\utils\VulcanException
 	 */
 	public function __construct( object $pageSettings, string $section, string $group, string $id, string $type, string $description )
     {
@@ -66,7 +68,7 @@ class MenuField
 			! $description || ! is_string( $description ) 
 		)
         {
-            throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
+            throw new \Vulcan\lib\utils\VulcanException( 'invalid_arguement' );
         }
 		
         $this->settings = (object)array(
@@ -123,7 +125,11 @@ class MenuField
 				'id' => $s->options_id,
 				'desc' => $s->description
 			);
-			$view = new \Vulcan\views\View( 'admin', 'MenuField' . ucwords($type), $data );
+			$view = new \Vulcan\views\View(
+                'admin',
+                'MenuField' . ucwords($type),
+                $data
+            );
 			echo $view->render();
         };
     }

@@ -1,4 +1,6 @@
-<?php namespace Vulcan;
+<?php 
+
+namespace Vulcan;
 
 /*
 * Lazy load classes for brevity.

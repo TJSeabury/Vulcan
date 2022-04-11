@@ -1,4 +1,6 @@
-<?php namespace Vulcan\lib;
+<?php 
+
+namespace Vulcan\lib;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 

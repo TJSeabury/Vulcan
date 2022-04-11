@@ -1,4 +1,6 @@
-<?php namespace Vulcan\lib\models\api;
+<?php 
+
+namespace Vulcan\lib\models\api;
 
 class Config {
     public static $defaults = [

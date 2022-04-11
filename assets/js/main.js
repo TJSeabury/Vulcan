@@ -1,8 +1,8 @@
 /*
 * Main scripts
-* © Copyright 2017-2018, DIF Design, All Rights reserved.
+* © Copyright 2017-2018, Market Mentors, All Rights reserved.
 * @author Tyler Seabury, tylerseabury@gmail.com
-* @author DIF Design
+* @author Market Mentors
 * @authorURL https://github.com/TJSeabury/
 * @authorURL http://marketmentors.com/
 * @version 1.0

@@ -1,4 +1,6 @@
-<?php namespace Vulcan;
+<?php 
+
+namespace Vulcan;
 /**
  * The template for displaying the footer
  *
@@ -28,7 +30,7 @@ global $vulcan;
 				<?php /* get_social_icons() */ ?>
 			</div>
 			<div class="author">
-				<small>Designed and developed by <a href="https://marketmentors.com/" target="_blank">DIF Design</a>.</small>
+				<small>Designed and developed by <a href="https://marketmentors.com/" target="_blank">Market Mentors</a>.</small>
 			</div>
 		</div>
 	</footer><!-- #colophon -->

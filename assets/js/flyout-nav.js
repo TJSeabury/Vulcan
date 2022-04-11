@@ -2,7 +2,7 @@
  * Flyout Navigation
  * © Copyright 2017-2018, Tyler Seabury, All Rights reserved.
  * @author Tyler Seabury, tylerseabury@gmail.com
- * @author DIF Design
+ * @author Market Mentors
  * @authorURL https://github.com/TJSeabury/
  * @version 0.9.0
  * 

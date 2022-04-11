@@ -1,4 +1,6 @@
-<?php namespace Vulcan\views;
+<?php 
+
+namespace Vulcan\views;
 
 /**
  * Class View
@@ -31,6 +33,8 @@ class View
 	 */
 	public function __construct( string $group, string $type, array $data = array() )
 	{
+        $this->group = $group;
+        $this->type = $type;
         $this->data = $data;
 		switch ( $group )
 		{
@@ -46,7 +50,7 @@ class View
 
 	/**
 	 * @return string
-	 * @throws \Vulcan\utils\VulcanException
+	 * @throws \Vulcan\lib\utils\VulcanException
 	 */
 	public function render()
 	{
@@ -61,7 +65,7 @@ class View
         }
 		else
 		{
-            throw new \Vulcan\utils\VulcanException( 'View not found.' );
+            throw new \Vulcan\lib\utils\VulcanException( "{$this->type} view not found in group {$this->group}" );
         }
     }
 	

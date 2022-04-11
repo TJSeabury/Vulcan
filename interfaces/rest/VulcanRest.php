@@ -1,4 +1,6 @@
-<?php namespace Vulcan\interfaces\rest;
+<?php 
+
+namespace Vulcan\interfaces\rest;
 
 /*
 * TODO: Abstract worpress builtin restful api

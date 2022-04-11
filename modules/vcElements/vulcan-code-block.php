@@ -1,4 +1,6 @@
-<?php namespace Vulcan\vcElements;
+<?php 
+
+namespace Vulcan\vcElements;
 
 /*
 * Vulcan Code Block.

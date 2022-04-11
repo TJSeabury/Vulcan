@@ -1,4 +1,6 @@
-<?php namespace Vulcan;
+<?php 
+
+namespace Vulcan;
 
 /**
  * Disallow direct access with prejudice.
@@ -30,7 +32,7 @@ $vulcan->forcePlugins();
 /**
  * @todo fix this
  */
-//$vulcan->checkUpdates();
+$vulcan->checkUpdates();
 
 $vulcan->setup();
 
@@ -63,5 +65,6 @@ $vulcan->initScripts(
 
 $vulcan->initFilters();
 
+// nah this need to be hnadled internally
 $vulcan->enableModulesBasedOnThemeOptions();
 

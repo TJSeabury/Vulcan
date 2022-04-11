@@ -1,4 +1,6 @@
-<?php namespace Vulcan\lib;
+<?php 
+
+namespace Vulcan\lib\types;
 
 /**
  * @see: https://stackoverflow.com/questions/1818765/extend-abstract-singleton-class

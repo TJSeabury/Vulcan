@@ -1,4 +1,6 @@
-<?php namespace Vulcan\lib\utils;
+<?php 
+
+namespace Vulcan\lib\utils;
 
 class VulcanException extends \Exception
 {

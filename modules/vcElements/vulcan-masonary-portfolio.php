@@ -141,7 +141,7 @@ class VcYogaSlider extends WPBakeryShortcode
                 'name' => __('Yoga Slider', 'text-domain'),
                 'base' => 'vc_yoga_slider',
                 'description' => __('Custom slider for the Yoga Shop.', 'text-domain'),
-                'category' => __('DIF Design', 'text-domain'),
+                'category' => __('Market Mentors', 'text-domain'),
                 'icon' => 'https://theyogashop.us/wp-content/uploads/2017/11/hover-copy-1.png',
                 'params' => array(
 					array(

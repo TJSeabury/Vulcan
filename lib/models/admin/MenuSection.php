@@ -1,4 +1,6 @@
-<?php namespace Vulcan\lib\models\admin;
+<?php 
+
+namespace Vulcan\lib\models\admin;
 
 /**
  * @param (object) (Required) $pageSettings The Menu page settings.
@@ -43,7 +45,7 @@ class MenuSection {
 	 * @param string    $title
 	 * @param array     $fields
 	 *
-	 * @throws \Vulcan\utils\VulcanException
+	 * @throws \Vulcan\lib\utils\VulcanException
 	 */
 	public function __construct( \stdClass $pageSettings, string $type, string $title, array $fields ) {
 		if ( 
@@ -51,7 +53,7 @@ class MenuSection {
          	! $title || ! is_string( $title ) ||
          	! isset( $fields ) || ! is_array( $fields ) 
 		) {
-            throw new \Vulcan\utils\VulcanException( 'invalid_arguement' );
+            throw new \Vulcan\lib\utils\VulcanException( 'invalid_arguement' );
         }
 		
 		$this->pageSettings = $pageSettings;
@@ -100,7 +102,7 @@ class MenuSection {
 	 * @param array $fields
 	 *
 	 * @return array
-	 * @throws \Vulcan\utils\VulcanException
+	 * @throws \Vulcan\lib\utils\VulcanException
 	 */
 	private function add_fields( array $fields ) {
 		$temp = array();
