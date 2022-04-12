@@ -58,8 +58,14 @@ class MenuField
 	 *
 	 * @throws \Vulcan\lib\utils\VulcanException
 	 */
-	public function __construct( object $pageSettings, string $section, string $group, string $id, string $type, string $description )
-    {
+	public function __construct(
+        object $pageSettings,
+        string $section,
+        string $group,
+        string $id,
+        string $type,
+        string $description
+    ) {
 		if ( 
 			! $section || ! is_string( $section ) ||
         	! $group || ! is_string( $group ) ||

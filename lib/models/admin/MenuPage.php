@@ -61,8 +61,11 @@ class MenuPage
 	 *
 	 * @throws \Vulcan\lib\utils\VulcanException
 	 */
-	public function __construct( array $settings, array $sections, array $subPages )
-    {
+	public function __construct(
+        array $settings,
+        array $sections,
+        array $subPages
+    ) {
         if (
 			! $settings['title'] ||
 			! $settings['capability'] || 

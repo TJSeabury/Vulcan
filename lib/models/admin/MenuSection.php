@@ -47,7 +47,12 @@ class MenuSection {
 	 *
 	 * @throws \Vulcan\lib\utils\VulcanException
 	 */
-	public function __construct( \stdClass $pageSettings, string $type, string $title, array $fields ) {
+	public function __construct(
+        \stdClass $pageSettings,
+        string $type,
+        string $title,
+        array $fields
+    ) {
 		if ( 
 			! $pageSettings || ! is_object( $pageSettings ) ||
          	! $title || ! is_string( $title ) ||
