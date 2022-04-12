@@ -93,7 +93,7 @@ class MenuSection {
 			$data = array(
 				'title' => $uc_title,
 			);
-			$view = new \Vulcan\views\View( 'admin', 'MenuSection' . ucwords($type), $data );
+			$view = new \Vulcan\lib\views\View( 'admin', 'MenuSection' . ucwords($type), $data );
 			echo $view->render();
 		};
 	}

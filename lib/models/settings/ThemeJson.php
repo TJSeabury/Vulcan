@@ -2,6 +2,7 @@
 
 namespace Vulcan\lib\models\settings;
 
+use \Vulcan\lib\settings\color\ColorGroup;
 use \Vulcan\lib\utils\Object as obj;
 
 $settingsTemplate = obj([
@@ -10,7 +11,7 @@ $settingsTemplate = obj([
         "border"=> obj([
             "customRadius"=> false,
         ]),
-        "color"=> Color(),
+        "color"=> ColorGroup(),
         "custom"=> obj([]),
         "layout"=> obj([
             "contentSize"=> "800px",

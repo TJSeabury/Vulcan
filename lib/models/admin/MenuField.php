@@ -125,7 +125,7 @@ class MenuField
 				'id' => $s->options_id,
 				'desc' => $s->description
 			);
-			$view = new \Vulcan\views\View(
+			$view = new \Vulcan\lib\views\View(
                 'admin',
                 'MenuField' . ucwords($type),
                 $data

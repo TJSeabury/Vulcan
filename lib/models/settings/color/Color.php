@@ -2,10 +2,12 @@
 
 namespace Vulcan\lib\models\settings\color;
 
-class Color {
+use OzdemirBurak\Iris\BaseColor;
+
+final class Color {
     public function __constructor(
         string $name,
-        string $color,
+        BaseColor $color,
         string $slug = null
     ) {
         $this->name = $name;

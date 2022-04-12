@@ -175,7 +175,9 @@ class Vulcan
                 );
             }
         );
+
         $group = 'primary';
+        
         try
         {
             $themeOptions = new lib\models\admin\MenuPage(

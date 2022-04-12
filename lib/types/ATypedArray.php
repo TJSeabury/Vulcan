@@ -2,7 +2,7 @@
 
 namespace Vulcan\lib\types;
 
-
+use \Collections\TypeValidator;
 
 /**
  * Class TypedArray
@@ -13,7 +13,7 @@ namespace Vulcan\lib\types;
  */
 abstract class AbstractTypedArray extends ArrayObject
 {
-    use TypeValidator;
+    use TypeValidator; //This is probably going to to error hard... resolve lib conflicts.
 
     /**
      * Define the class that will be used for all items in the array.

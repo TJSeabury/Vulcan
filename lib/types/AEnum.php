@@ -2,6 +2,11 @@
 
 namespace Vulcan\lib\types;
 
+/**
+ * This is a work-around because we are still on php7.4 
+ * and Enums are not available until php8.1. :c
+ * This can probably be removed when(if) we switch to php8.1.
+ */
 abstract class AEnum {
     private static $constCacheArray = NULL;
 

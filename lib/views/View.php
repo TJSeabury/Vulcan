@@ -1,6 +1,6 @@
 <?php 
 
-namespace Vulcan\views;
+namespace Vulcan\lib\views;
 
 /**
  * Class View

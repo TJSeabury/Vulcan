@@ -2,11 +2,12 @@
 
 namespace Vulcan\lib\models\settings\color;
 
+use \Vulcan\lib\types\ColorCollection;
+use \Vulcan\lib\types\DuotoneCollection;
+use \Vulcan\lib\types\GradientCollection;
+
 $template = obj([
-    "link"=> false,
-    "custom"=> true,
-    "customDuotone"=> true,
-    "customGradient"=> true,
+    
     "duotone"=> [
         obj([
             "colors"=> [ "#000", "#FFF" ],
@@ -41,5 +42,25 @@ $template = obj([
 ]);
 
 class ColorGroup {
+    public $link = false;
+    public $custom = true;
+    public $customDuotone = true;
+    public $customGradient = true;
+
+    public ColorCollection $palette;
+    public DuotoneCollection $duotones;
+    public GradientCollection $gradients;
+    
+    public function __construct(
+        array $settings,
+        ColorCollection $palette,
+        DuotoneCollection $duotones,
+        GradientCollection $gradients
+    ) {
+        $this->settings = $settings;
+        $this->palette = $palette;
+        $this->duotones = $duotones;
+        $this->gradients = $gradients;
+    }
     
 }

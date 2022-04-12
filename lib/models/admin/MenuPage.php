@@ -146,7 +146,7 @@ class MenuPage
 				'title' => $s->title,
                 'slug' => $this->settings->slug
 			);
-			$view = new \Vulcan\views\View( 'admin', 'MenuPage' . ucwords($type), $data );
+			$view = new \Vulcan\lib\views\View( 'admin', 'MenuPage' . ucwords($type), $data );
 			echo $view->render();
         };
     }
