@@ -1,8 +1,9 @@
-<?php 
+<?php
 
 namespace Vulcan\lib\types;
 
 use \Collections\TypeValidator;
+use \Collections\Exceptions\InvalidArgumentException;
 
 /**
  * Class TypedArray
@@ -41,8 +42,11 @@ abstract class AbstractTypedArray extends ArrayObject
      *
      * @throws InvalidArgumentException
      */
-    public function __construct($input = [], $flags = 0, $iteratorClass = ArrayIterator::class)
-    {
+    public function __construct(
+        $input = [],
+        $flags = 0,
+        $iteratorClass = ArrayIterator::class
+    ) {
         // ARRAY_TYPE must be defined.
         if (empty(static::ARRAY_TYPE)) {
             throw new \RuntimeException(

@@ -1,7 +1,8 @@
-<?php 
+<?php
 
 namespace Vulcan\lib\utils;
 
-function Object( array $props ): object {
+function obj(array $props): object
+{
     return (object)$props;
 }

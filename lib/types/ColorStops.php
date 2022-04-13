@@ -1,18 +1,21 @@
-<?php 
+<?php
 
 namespace Vulcan\lib\types;
 
-class ColorStops {
-    public function __construct( ColorStopCollection $colorStops ) {
-        $this->stops = $colorStops;
+class ColorStops extends ColorStopCollection
+{
+    public function __construct(array $colorStops)
+    {
+        parent::__construct($colorStops);
     }
 
-    protected function print(): string {
-        $last = count( $this->$stops ) - 1;
+    public function print(): string
+    {
+        $last = count($this->stops) - 1;
         $i = 0;
-        return array_reduce(
+        return $this->reduce(
             $this->stops,
-            function( $acum, $stop ) {
+            function ($acum, $stop) use ($last, $i) {
                 return $acum . $stop->print() . $i++ != $last ? ", " : "";
             },
             ""

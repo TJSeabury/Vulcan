@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Vulcan\lib\types;
 
@@ -215,7 +215,7 @@ class ArrayObject extends \ArrayObject
         $exists = $this->indexExists($index);
 
         if (!$exists) {
-            throw new OutOfRangeException('Index out of bounds of collection');
+            throw new \OutOfRangeException('Index out of bounds of collection');
         }
     }
 
@@ -232,7 +232,7 @@ class ArrayObject extends \ArrayObject
     public function indexExists(int $index)
     {
         if ($index < 0) {
-            throw new InvalidArgumentException('Index must be a non-negative integer');
+            throw new \InvalidArgumentException('Index must be a non-negative integer');
         }
 
         return $index < $this->count();
