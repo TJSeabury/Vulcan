@@ -251,7 +251,7 @@ class Vulcan
                             [
                                 'group' => $group,
                                 'id' => 'theme_json_test',
-                                'type' => 'text',
+                                'type' => 'themeJson',
                                 'description' => 'JSON test.'
                             ]
                         ]
