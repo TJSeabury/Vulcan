@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Vulcan;
 
@@ -7,8 +7,8 @@ class Vulcan
     private $themePath = '';
     private $themeUri = '';
     private $initTime = 0;
-    
-    public function __construct( string $themeRootPath, string $themeRootUri, $Time )
+
+    public function __construct(string $themeRootPath, string $themeRootUri, $Time)
     {
         $this->themePath = $themeRootPath;
         $this->themeUri = $themeRootUri;
@@ -17,12 +17,11 @@ class Vulcan
         /* 
          * Here we set the date of the first install as a DB option.
          */
-        if ( ! get_option( 'vulcan_first_published_year' ) )
-        {
-            update_option( 'vulcan_first_published_year', (int)date('Y') );
+        if (!get_option('vulcan_first_published_year')) {
+            update_option('vulcan_first_published_year', (int)date('Y'));
         }
     }
-    
+
     public function getBasePath()
     {
         return $this->themePath;
@@ -35,55 +34,49 @@ class Vulcan
 
     public function get_the_copyright_years()
     {
-        $first_published_year = get_option( 'vulcan_first_published_year' );
+        $first_published_year = get_option('vulcan_first_published_year');
         $current_year = date('Y');
 
-        if ( (int)$first_published_year === (int)$current_year )
-        {
+        if ((int)$first_published_year === (int)$current_year) {
             return $current_year;
-        }
-        else if ( (int)$current_year - (int)$first_published_year === 1 )
-        {
+        } else if ((int)$current_year - (int)$first_published_year === 1) {
             return "$first_published_year, $current_year";
-        }
-        else
-        {
+        } else {
             return "$first_published_year - $current_year";
         }
     }
-    
-    public function setMaxImageResolutionAndQuality( int $width, int $height, int $quality )
+
+    public function setMaxImageResolutionAndQuality(int $width, int $height, int $quality)
     {
-        add_filter( 
-            'jpeg_quality', 
-            function( $arg ) use( $quality )
-            {
+        add_filter(
+            'jpeg_quality',
+            function ($arg) use ($quality) {
                 return $quality;
             }
         );
-        
-        add_image_size( 'standard', $width, $height, false );
 
-        function replace_uploaded_image($image_data) {
+        add_image_size('standard', $width, $height, false);
+
+        function replace_uploaded_image($image_data)
+        {
             // if there is no standard image : return
-            if ( ! isset( $image_data['sizes']['standard'] ) )
-            {
+            if (!isset($image_data['sizes']['standard'])) {
                 return $image_data;
             }
 
             // paths to the uploaded image and the standard image
             $upload_dir = wp_upload_dir();
-            $uploaded_image_location = $upload_dir['basedir'] . '/' .$image_data['file'];
+            $uploaded_image_location = $upload_dir['basedir'] . '/' . $image_data['file'];
 
             // $standard_image_location = $upload_dir['path'] . '/'.$image_data['sizes']['standard']['file']; // ** This only works for new image uploads - fixed for older images below.
-            $current_subdir = substr($image_data['file'],0,strrpos($image_data['file'],"/"));
-            $standard_image_location = $upload_dir['basedir'] . '/'.$current_subdir.'/'.$image_data['sizes']['standard']['file'];
+            $current_subdir = substr($image_data['file'], 0, strrpos($image_data['file'], "/"));
+            $standard_image_location = $upload_dir['basedir'] . '/' . $current_subdir . '/' . $image_data['sizes']['standard']['file'];
 
             // delete the uploaded image
-            unlink( $uploaded_image_location );
+            unlink($uploaded_image_location);
 
             // rename the standard image
-            rename( $standard_image_location, $uploaded_image_location );
+            rename($standard_image_location, $uploaded_image_location);
 
             // update image metadata and return them
             $image_data['width'] = $image_data['sizes']['standard']['width'];
@@ -97,20 +90,21 @@ class Vulcan
             '\Vulcan\replace_uploaded_image'
         );
     }
-    
+
 
     /**
      * @link https://stackoverflow.com/questions/3468500/detect-overall-average-color-of-the-picture
      */
-    public function getImageAverageColor( $sourceURL ) {
-        $image = imagecreatefromjpeg( $sourceURL );
-        $scaled = imagescale( $image, 1, 1, IMG_BICUBIC );
-        $index = imagecolorat( $scaled, 0, 0 );
-        $rgb = imagecolorsforindex( $scaled, $index );
-        $red = round( round( ( $rgb['red'] / 0x33 ) ) * 0x33 );
-        $green = round( round( ( $rgb['green'] / 0x33 ) ) * 0x33 );
-        $blue = round( round( ( $rgb['blue'] / 0x33 ) ) * 0x33 );
-        return "#$red$green$blue"; 
+    public function getImageAverageColor($sourceURL)
+    {
+        $image = imagecreatefromjpeg($sourceURL);
+        $scaled = imagescale($image, 1, 1, IMG_BICUBIC);
+        $index = imagecolorat($scaled, 0, 0);
+        $rgb = imagecolorsforindex($scaled, $index);
+        $red = round(round(($rgb['red'] / 0x33)) * 0x33);
+        $green = round(round(($rgb['green'] / 0x33)) * 0x33);
+        $blue = round(round(($rgb['blue'] / 0x33)) * 0x33);
+        return "#$red$green$blue";
     }
 
     /**
@@ -118,10 +112,11 @@ class Vulcan
      * @param string $view The name of the view.
      * @return string The header view HTML.
      */
-    public function get_header_view( string $view ) {
+    public function get_header_view(string $view)
+    {
         $path = $this->themePath . '/views/header/' . $view . '.php';
         ob_start();
-        include $path ;
+        include $path;
         $header = ob_get_clean();
         return $header;
     }
@@ -130,28 +125,29 @@ class Vulcan
     /**
      * Enqueues required view styles based upon theme options.
      */
-    public function set_view_styles() {
-        
+    public function set_view_styles()
+    {
     }
 
-    public function do_settings_sections( $page ) {
+    public function do_settings_sections($page)
+    {
         global $wp_settings_sections, $wp_settings_fields;
 
-        if ( ! isset( $wp_settings_sections[$page] ) )
+        if (!isset($wp_settings_sections[$page]))
             return;
 
-        foreach ( (array) $wp_settings_sections[$page] as $section ) {
+        foreach ((array) $wp_settings_sections[$page] as $section) {
             echo '<section class="vulcan-options-section">';
-            if ( $section['title'] )
+            if ($section['title'])
                 echo "<h2>{$section['title']}</h2>\n";
 
-            if ( $section['callback'] )
-                call_user_func( $section['callback'], $section );
+            if ($section['callback'])
+                call_user_func($section['callback'], $section);
 
-            if ( ! isset( $wp_settings_fields ) || !isset( $wp_settings_fields[$page] ) || !isset( $wp_settings_fields[$page][$section['id']] ) )
+            if (!isset($wp_settings_fields) || !isset($wp_settings_fields[$page]) || !isset($wp_settings_fields[$page][$section['id']]))
                 continue;
             echo '<table class="form-table">';
-            do_settings_fields( $page, $section['id'] );
+            \do_settings_fields($page, $section['id']);
             echo '</table>';
             echo '</section>';
         }
@@ -161,25 +157,24 @@ class Vulcan
     /**
      * Initializes Wordpress admin theme menu.
      */
-    public function initAdmin() {
+    public function initAdmin()
+    {
         add_action(
             'admin_enqueue_scripts',
-            function()
-            {
+            function () {
                 $path = $this->themeUri . '/assets/admin/css/admin.css';
                 wp_enqueue_style(
                     'Vulcan-Admin-Styles',
                     $path,
                     array(),
-                    lib\utils\FileTools::getVersion( $path )
+                    lib\utils\FileTools::getVersion($path)
                 );
             }
         );
 
         $group = 'primary';
-        
-        try
-        {
+
+        try {
             $themeOptions = new lib\models\admin\MenuPage(
                 [
                     'title' => 'Vulcan Options',
@@ -247,9 +242,7 @@ class Vulcan
                     [
                         'type' => 'general',
                         'title' => 'Theme Modules',
-                        'fields' => [
-
-                        ]
+                        'fields' => []
                     ],
                     [
                         'type' => 'general',
@@ -268,101 +261,54 @@ class Vulcan
             );
 
             $themeOptions->render();
-        }
-        catch ( utils\VulcanException $e )
-        {
+        } catch (lib\utils\VulcanException $e) {
             echo $e;
         }
-
-        
     }
 
-    public function initBuilderModules() {
-        return function()
-        {
-            if ( class_exists( 'FLBuilder' ) ) {
-                /*
-                * Register custom modules
-                */
-                require_once __DIR__ . '/modules/vulcan-button/vulcan-button.php';
-                
-                /*
-                * Register custom fields
-                */
-                add_filter(
-                    'fl_builder_custom_fields',
-                    function( $fields )
-                    {
-                        $fields['vulcan-toggle'] = __DIR__ . '/modules/vulcan-fields/vulcan-toggle.php';
-                        $fields['vulcan-range'] = __DIR__ . '/modules/vulcan-fields/vulcan-range.php';
-                        return $fields;
-                    }
-                );
-                
-                /*
-                * Enqueue custom field assets
-                */
-                $path = $this->themeUri;
-                add_action(
-                    'wp_enqueue_scripts',
-                    function() use( $path )
-                    {
-                        if ( \FLBuilderModel::is_builder_active() ) {
-                            wp_enqueue_style( 'vulcan-fields', $path . '/modules/vulcan-fields/fields.css', array(), '' );
-                            wp_enqueue_script( 'vulcan-fields', $path . '/modules/vulcan-fields/fields.js', array(), '', true );
-                        }
-                    }
-                );
-            }
-        };
-    }
-
-    public function initWidgets( array $Widgets ) {
+    public function initWidgets(array $Widgets)
+    {
         add_action(
             'widgets_init',
-            function() use( $Widgets ) {
-                foreach ( $Widgets as $Widget )
-                {
-                    try
-                    {
-                        require_once( __DIR__ . '/vulcan-widgets/' . $Widget . '.php' );
-                        register_widget( $Widget );
-                    }
-                    catch ( \Exception $e )
-                    {
+            function () use ($Widgets) {
+                foreach ($Widgets as $Widget) {
+                    try {
+                        require_once(__DIR__ . '/vulcan-widgets/' . $Widget . '.php');
+                        register_widget($Widget);
+                    } catch (\Exception $e) {
                         throw $e;
                     }
                 }
             }
         );
-        
     }
 
-    public function enableModulesBasedOnThemeOptions() {
-        if ( (bool)get_option('vulcan_interface_ajax_shortcodes') )
-        {
+    public function enableModulesBasedOnThemeOptions()
+    {
+        if ((bool)get_option('vulcan_interface_ajax_shortcodes')) {
             interfaces\ajax\AjaxShortcodes::enable();
         }
     }
 
-    public function registerTaxonomies() {
-        add_action( 'init', 'add_taxonomies_to_pages' );
+    public function registerTaxonomies()
+    {
+        add_action('init', 'add_taxonomies_to_pages');
         function add_taxonomies_to_pages()
         {
-            register_taxonomy_for_object_type( 'post_tag', 'page' );
-            register_taxonomy_for_object_type( 'category', 'page' );
+            register_taxonomy_for_object_type('post_tag', 'page');
+            register_taxonomy_for_object_type('category', 'page');
         }
     }
 
-    public function initFilters() {
+    public function initFilters()
+    {
 
         /*
         * Custom admin footers.
         */
-        add_filter( 
-            'admin_footer_text', 
-            function()
-            {
+        add_filter(
+            'admin_footer_text',
+            function () {
                 $wordpress = '<a href="http://www.wordpress.org" target="_blank">WordPress</a>';
                 $author = '<a href="https://marketmentors.com" target="_blank">Market Mentors</a>';
 
@@ -376,14 +322,14 @@ class Vulcan
                     "$author and the Masters of the Cyberverse: \"By the will of $wordpress, I have the power!\""
                 );
 
-                $rn = random_int( 0, count( $taglines ) - 1 );
+                $rn = random_int(0, count($taglines) - 1);
 
                 ob_start();
-                ?>
-                <div class="marketmentors_admin_footer">
-                    <p><?php echo $taglines[ $rn ]; ?></p>
-                </div>
-                <?php
+?>
+            <div class="marketmentors_admin_footer">
+                <p><?php echo $taglines[$rn]; ?></p>
+            </div>
+            <?php
                 echo ob_get_clean();
             }
         );
@@ -391,40 +337,41 @@ class Vulcan
         /*
         * Adds the option to hide Gravity Forms field labels.
         */
-        add_filter( 'gform_enable_field_label_visibility_settings', '__return_true' );
+        add_filter('gform_enable_field_label_visibility_settings', '__return_true');
     }
-    
+
     /*
     * Initializes theme styles.
     */
-    public function initStyles( string $readPath, string $writePath, string $filename ) {
+    public function initStyles(string $readPath, string $writePath, string $filename)
+    {
         add_action(
             'after_setup_theme',
-            function() use( $readPath, $writePath, $filename ) {
+            function () use ($readPath, $writePath, $filename) {
                 $currentCss = $this->themePath . $writePath . $filename;
-                
+
                 $cssModulePaths = lib\utils\FileTools::getFiles(
                     $this->themePath . $readPath,
-                    array( 'php', 'css' ),
+                    array('php', 'css'),
                     true
                 );
-                
-                if ( file_exists( $currentCss ) ) {
-                    $areNewFiles = lib\utils\FileTools::comparator( $currentCss, $cssModulePaths );
+
+                if (file_exists($currentCss)) {
+                    $areNewFiles = lib\utils\FileTools::comparator($currentCss, $cssModulePaths);
                 } else {
                     $areNewFiles = true;
                 }
-                
-                if ( $areNewFiles ) {
+
+                if ($areNewFiles) {
                     $css = lib\utils\FileTools::agg(
                         lib\utils\FileTools::getFiles(
                             $this->themePath . $readPath,
-                            array( 'php', 'css' ),
+                            array('php', 'css'),
                             false
                         )
                     );
-                    if ( (bool)get_option('vulcan_minify_css') ) {
-                        $css = lib\utils\FileTools::minify( $css );
+                    if ((bool)get_option('vulcan_minify_css')) {
+                        $css = lib\utils\FileTools::minify($css);
                     }
                     lib\utils\FileTools::write(
                         $css,
@@ -434,19 +381,19 @@ class Vulcan
                 }
             }
         );
-        
+
         add_action(
             'update_option_' . 'vulcan_minify_css',
-            function() use( $readPath, $writePath, $filename ) {
+            function () use ($readPath, $writePath, $filename) {
                 $css = lib\utils\FileTools::agg(
                     lib\utils\FileTools::getFiles(
                         $this->themePath . $readPath,
-                        array( 'php', 'css' ),
+                        array('php', 'css'),
                         false
                     )
                 );
-                if ( (bool)get_option('vulcan_minify_css') ) {
-                    $css = lib\utils\FileTools::minify( $css );
+                if ((bool)get_option('vulcan_minify_css')) {
+                    $css = lib\utils\FileTools::minify($css);
                 }
                 lib\utils\FileTools::write(
                     $css,
@@ -455,10 +402,10 @@ class Vulcan
                 );
             }
         );
-        
+
         add_action(
             'wp_enqueue_scripts',
-            function() use( $writePath, $filename ) {
+            function () use ($writePath, $filename) {
                 wp_enqueue_style(
                     'vulcan-aggregate-minified-styles',
                     $this->themeUri . $writePath . $filename
@@ -466,61 +413,59 @@ class Vulcan
             },
             3
         );
-        
     }
 
 
-    public function expose_mk_options() {
+    public function expose_mk_options()
+    {
         $path = __DIR__ . '/assets/css/mk-options.css';
         add_action(
             'init',
-            function() use( $path ) {
+            function () use ($path) {
                 $timestamp = 0;
-                if ( file_exists( $path ) ) {
+                if (file_exists($path)) {
                     try {
-                        $timestamp = filemtime( $path );
-                    }
-                    finally
-                    {
+                        $timestamp = filemtime($path);
+                    } finally {
                         $timestamp = 0;
                     }
                 }
-                if ( (int)get_option('global_assets_timestamp') > $timestamp ) {
+                if ((int)get_option('global_assets_timestamp') > $timestamp) {
                     $mko = get_option('Jupiter_options');
                     ob_start();
-                    ?>
-/* 
-* This file is dynamically generated.
-* Last updated on: <?php echo date(DATE_RFC2822) . "\n"; ?>
-*/
-:root {
-    --mk-skin-color: <?php echo $mko['skin_color']; ?>;
-    --mk-link-color: <?php echo $mko['a_color']; ?>;
-    --mk-link-hover-color: <?php echo $mko['a_color_hover']; ?>;
-    --mk-strong-color: <?php echo $mko['strong_color']; ?>;
-    --mk-grid-width: <?php echo $mko['grid_width']; ?>px;
-    --mk-header-height: <?php echo $mko['header_height']; ?>px;
-    --mk-responsive-header-height: <?php echo $mko['res_header_height']; ?>px;
-    --mk-sticky-header-height: <?php echo $mko['header_scroll_height']; ?>px;
-    --mk-logo: url("<?php echo $mko['logo']; ?>");
-    <?php for ( $f = 0; $f < count( $mko['fonts'] ); ++$f ) { ?>
-    --mk-font-<?php echo $f; ?>: <?php echo $mko['fonts'][$f]['fontFamily']; ?>;
-    <?php } ?>
-}
-                    <?php
-                    $css = ob_get_clean();
-                    $f = fopen( $path, 'wb' );
-                    fwrite( $f, $css );
-                    fclose( $f );
+            ?>
+                /*
+                * This file is dynamically generated.
+                * Last updated on: <?php echo date(DATE_RFC2822) . "\n"; ?>
+                */
+                :root {
+                --mk-skin-color: <?php echo $mko['skin_color']; ?>;
+                --mk-link-color: <?php echo $mko['a_color']; ?>;
+                --mk-link-hover-color: <?php echo $mko['a_color_hover']; ?>;
+                --mk-strong-color: <?php echo $mko['strong_color']; ?>;
+                --mk-grid-width: <?php echo $mko['grid_width']; ?>px;
+                --mk-header-height: <?php echo $mko['header_height']; ?>px;
+                --mk-responsive-header-height: <?php echo $mko['res_header_height']; ?>px;
+                --mk-sticky-header-height: <?php echo $mko['header_scroll_height']; ?>px;
+                --mk-logo: url("<?php echo $mko['logo']; ?>");
+                <?php for ($f = 0; $f < count($mko['fonts']); ++$f) { ?>
+                    --mk-font-<?php echo $f; ?>: <?php echo $mko['fonts'][$f]['fontFamily']; ?>;
+                <?php } ?>
                 }
-                add_action( 'wp_enqueue_scripts',
-                    function() use( $path )
-                    {
+<?php
+                    $css = ob_get_clean();
+                    $f = fopen($path, 'wb');
+                    fwrite($f, $css);
+                    fclose($f);
+                }
+                add_action(
+                    'wp_enqueue_scripts',
+                    function () use ($path) {
                         wp_enqueue_style(
                             'MK-Options-Exposed',
                             $path,
                             array(),
-                            lib\utils\FileTools::getVersion( $path )
+                            lib\utils\FileTools::getVersion($path)
                         );
                     },
                     32
@@ -528,48 +473,49 @@ class Vulcan
             }
         );
     }
-        
-    
+
+
     /*
     * Initialize theme scripts
     */
-    public function initScripts( array $paths ) {
-        foreach( $paths as $path ) {
+    public function initScripts(array $paths)
+    {
+        foreach ($paths as $path) {
             $filePaths = lib\utils\FileTools::getFiles(
                 $this->themePath . $path,
-                array( 'js' ),
+                array('js'),
                 true
             );
-            foreach( $filePaths as $fpath ) {
+            foreach ($filePaths as $fpath) {
                 $name = null;
                 $priority = 10;
-                $metaHeader = get_file_data(
+                $metaHeader = \get_file_data(
                     $fpath,
                     array(
                         'Name' => 'Name',
                         'Priority' => 'Priority'
-                        )
+                    )
                 );
-                if ( $metaHeader['Name'] ) {
+                if ($metaHeader['Name']) {
                     $name = $metaHeader['Name'];
                 } else {
-                    $fn = pathinfo( $fpath );
-                    if ( $fn ) {
+                    $fn = pathinfo($fpath);
+                    if ($fn) {
                         $name = $fn['filename'];
                     }
                 }
-                if ( $metaHeader['Priority'] ) {
+                if ($metaHeader['Priority']) {
                     $priority = $metaHeader['Priority'];
                 }
-                $fpath = lib\utils\FileTools::get_url_from_path( $this, $fpath );
+                $fpath = lib\utils\FileTools::get_url_from_path($this, $fpath);
                 add_action(
                     'wp_enqueue_scripts',
-                    function() use( $name, $fpath ) {
+                    function () use ($name, $fpath) {
                         wp_enqueue_script(
                             $name,
                             $fpath,
                             array(),
-                            lib\utils\FileTools::getVersion( $fpath ),
+                            lib\utils\FileTools::getVersion($fpath),
                             true
                         );
                     },
@@ -577,10 +523,10 @@ class Vulcan
                 );
             }
         }
-        
     }
 
-    public function forcePlugins() {
+    public function forcePlugins()
+    {
         /**
          * Include the TGM_Plugin_Activation class.
          *
@@ -596,7 +542,7 @@ class Vulcan
          * require_once dirname( __FILE__ ) . '/path/to/class-tgm-plugin-activation.php';
          */
         require_once get_template_directory() . '/vendor/TGM-Plugin-Activation-2.6.1/class-tgm-plugin-activation.php';
-        add_action( 'tgmpa_register', '\Vulcan\_vulcan_register_required_plugins' );
+        add_action('tgmpa_register', '\Vulcan\_vulcan_register_required_plugins');
         /**
          * Register the required plugins for this theme.
          *
@@ -614,7 +560,8 @@ class Vulcan
          *
          * This function is hooked into `tgmpa_register`, which is fired on the WP `init` action on priority 10.
          */
-        function _vulcan_register_required_plugins() {
+        function _vulcan_register_required_plugins()
+        {
             /*
             * Array of plugin arrays. Required keys are name and slug.
             * If the source is NOT from the .org repo, then source is also required.
@@ -739,13 +686,13 @@ class Vulcan
                 'is_automatic' => true,                    // Automatically activate plugins after installation or not.
                 'message'      => '',                      // Message to output right before the plugins table.
                 'strings'      => array(
-                    'page_title'                      => __( 'Install Required Plugins', '_vulcan' ),
-                    'menu_title'                      => __( 'Install Plugins', '_vulcan' ),
+                    'page_title'                      => __('Install Required Plugins', '_vulcan'),
+                    'menu_title'                      => __('Install Plugins', '_vulcan'),
                     /* translators: %s: plugin name. */
-                    'installing'                      => __( 'Installing Plugin: %s', '_vulcan' ),
+                    'installing'                      => __('Installing Plugin: %s', '_vulcan'),
                     /* translators: %s: plugin name. */
-                    'updating'                        => __( 'Updating Plugin: %s', '_vulcan' ),
-                    'oops'                            => __( 'Something went wrong with the plugin API.', '_vulcan' ),
+                    'updating'                        => __('Updating Plugin: %s', '_vulcan'),
+                    'oops'                            => __('Something went wrong with the plugin API.', '_vulcan'),
                     'notice_can_install_required'     => _n_noop(
                         /* translators: 1: plugin name(s). */
                         'This theme requires the following plugin: %1$s.',
@@ -787,7 +734,7 @@ class Vulcan
                         'Begin installing plugins',
                         '_vulcan'
                     ),
-                    'update_link' 					  => _n_noop(
+                    'update_link'                       => _n_noop(
                         'Begin updating plugin',
                         'Begin updating plugins',
                         '_vulcan'
@@ -797,33 +744,33 @@ class Vulcan
                         'Begin activating plugins',
                         '_vulcan'
                     ),
-                    'return'                          => __( 'Return to Required Plugins Installer', '_vulcan' ),
-                    'plugin_activated'                => __( 'Plugin activated successfully.', '_vulcan' ),
-                    'activated_successfully'          => __( 'The following plugin was activated successfully:', '_vulcan' ),
+                    'return'                          => __('Return to Required Plugins Installer', '_vulcan'),
+                    'plugin_activated'                => __('Plugin activated successfully.', '_vulcan'),
+                    'activated_successfully'          => __('The following plugin was activated successfully:', '_vulcan'),
                     /* translators: 1: plugin name. */
-                    'plugin_already_active'           => __( 'No action taken. Plugin %1$s was already active.', '_vulcan' ),
+                    'plugin_already_active'           => __('No action taken. Plugin %1$s was already active.', '_vulcan'),
                     /* translators: 1: plugin name. */
-                    'plugin_needs_higher_version'     => __( 'Plugin not activated. A higher version of %s is needed for this theme. Please update the plugin.', '_vulcan' ),
+                    'plugin_needs_higher_version'     => __('Plugin not activated. A higher version of %s is needed for this theme. Please update the plugin.', '_vulcan'),
                     /* translators: 1: dashboard link. */
-                    'complete'                        => __( 'All plugins installed and activated successfully. %1$s', '_vulcan' ),
-                    'dismiss'                         => __( 'Dismiss this notice', '_vulcan' ),
-                    'notice_cannot_install_activate'  => __( 'There are one or more required or recommended plugins to install, update or activate.', '_vulcan' ),
-                    'contact_admin'                   => __( 'Please contact the administrator of this site for help.', '_vulcan' ),
+                    'complete'                        => __('All plugins installed and activated successfully. %1$s', '_vulcan'),
+                    'dismiss'                         => __('Dismiss this notice', '_vulcan'),
+                    'notice_cannot_install_activate'  => __('There are one or more required or recommended plugins to install, update or activate.', '_vulcan'),
+                    'contact_admin'                   => __('Please contact the administrator of this site for help.', '_vulcan'),
 
                     'nag_type'                        => '', // Determines admin notice type - can only be one of the typical WP notice classes, such as 'updated', 'update-nag', 'notice-warning', 'notice-info' or 'error'. Some of which may not work as expected in older WP versions.
                 ),
-               
+
             );
 
-            tgmpa( $plugins, $config );
+            tgmpa($plugins, $config);
         }
     }
 
-    public function checkUpdates() {
+    public function checkUpdates()
+    {
         add_action(
             'init',
-            function()
-            {
+            function () {
                 if (is_admin()) {
                     // Load the access token.
                     /* $githubToken = null;
@@ -847,7 +794,7 @@ class Vulcan
                         'readme' => 'README.md', // which file to use as the readme for the version number
                         'access_token' => '' // Access private repositories by authorizing under Appearance > GitHub Updates
                     );
-                    new \Vulcan\lib\utils\WP_GitHub_Updater( $config );
+                    new \Vulcan\lib\utils\WP_GitHub_Updater($config);
                 }
             }
         );
@@ -860,18 +807,19 @@ class Vulcan
      * runs before the init hook. The init hook is too late for some features, such
      * as indicating support for post thumbnails.
      */
-    public function setup() {
+    public function setup()
+    {
         add_action(
             'after_setup_theme',
-            function() {
+            function () {
                 /*
                 * Make theme available for translation.
                 * Translations can be filed in the /languages/ directory.
                 */
-                load_theme_textdomain( '_vulcan', get_template_directory() . '/languages' );
+                load_theme_textdomain('_vulcan', get_template_directory() . '/languages');
 
                 // Add default posts and comments RSS feed links to head.
-                add_theme_support( 'automatic-feed-links' );
+                add_theme_support('automatic-feed-links');
 
                 /*
                 * Let WordPress manage the document title.
@@ -879,55 +827,54 @@ class Vulcan
                 * hard-coded <title> tag in the document head, and expect WordPress to
                 * provide it for us.
                 */
-                add_theme_support( 'title-tag' );
+                add_theme_support('title-tag');
 
                 /*
                 * Enable support for Post Thumbnails on posts and pages.
                 *
                 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
                 */
-                add_theme_support( 'post-thumbnails' );
+                add_theme_support('post-thumbnails');
 
                 // This theme uses wp_nav_menu() in one location.
-                register_nav_menus( array(
-                    'menu-1' => esc_html__( 'Primary', '_vulcan' ),
-                ) );
+                register_nav_menus(array(
+                    'menu-1' => esc_html__('Primary', '_vulcan'),
+                ));
 
                 /*
                 * Switch default core markup for search form, comment form, and comments
                 * to output valid HTML5.
                 */
-                add_theme_support( 'html5', array(
+                add_theme_support('html5', array(
                     'search-form',
                     'comment-form',
                     'comment-list',
                     'gallery',
                     'caption',
-                ) );
+                ));
 
                 // Set up the WordPress core custom background feature.
-                add_theme_support( 'custom-background', apply_filters( '_vulcan_custom_background_args', array(
+                add_theme_support('custom-background', apply_filters('_vulcan_custom_background_args', array(
                     'default-color' => 'ffffff',
                     'default-image' => '',
-                ) ) );
+                )));
 
                 // Add theme support for selective refresh for widgets.
-                add_theme_support( 'customize-selective-refresh-widgets' );
+                add_theme_support('customize-selective-refresh-widgets');
 
                 /**
                  * Add support for core custom logo.
                  *
                  * @link https://codex.wordpress.org/Theme_Logo
                  */
-                add_theme_support( 'custom-logo', array(
+                add_theme_support('custom-logo', array(
                     'height'      => 250,
                     'width'       => 250,
                     'flex-width'  => true,
                     'flex-height' => true,
-                ) );
+                ));
             }
         );
-            
     }
 
     /**
@@ -935,30 +882,30 @@ class Vulcan
      *
      * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
      */
-    public function initSidebars() {
+    public function initSidebars()
+    {
         add_action(
             'widgets_init',
-            function() {
-                register_sidebar( array(
-                    'name'          => esc_html__( 'Sidebar', '_vulcan' ),
+            function () {
+                register_sidebar(array(
+                    'name'          => esc_html__('Sidebar', '_vulcan'),
                     'id'            => 'sidebar',
-                    'description'   => esc_html__( 'Add widgets here.', '_vulcan' ),
+                    'description'   => esc_html__('Add widgets here.', '_vulcan'),
                     'before_widget' => '<section id="%1$s" class="widget %2$s">',
                     'after_widget'  => '</section>',
                     'before_title'  => '<h2 class="widget-title">',
                     'after_title'   => '</h2>',
-                ) );
-                register_sidebar( array(
-                    'name'          => esc_html__( 'Footer', '_vulcan' ),
+                ));
+                register_sidebar(array(
+                    'name'          => esc_html__('Footer', '_vulcan'),
                     'id'            => 'footer',
-                    'description'   => esc_html__( 'Add widgets here.', '_vulcan' ),
+                    'description'   => esc_html__('Add widgets here.', '_vulcan'),
                     'before_widget' => '<section id="%1$s" class="widget %2$s">',
                     'after_widget'  => '</section>',
                     'before_title'  => '<h2 class="widget-title">',
                     'after_title'   => '</h2>',
-                ) );
+                ));
             }
         );
     }
-    
 }
