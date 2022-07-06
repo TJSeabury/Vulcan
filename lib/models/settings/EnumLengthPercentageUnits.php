@@ -2,7 +2,7 @@
 
 namespace Vulcan\lib\models\settings;
 
-use \Vulcan\lib\types\AEnum as Enum;
+use \Vulcan\lib\types\AbstractEnum as Enum;
 
 /**
  * This is a work-around because we are still on php7.4 

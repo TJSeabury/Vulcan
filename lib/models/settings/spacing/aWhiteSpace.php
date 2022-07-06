@@ -2,7 +2,7 @@
 
 namespace Vulcan\lib\models\settings\spacing;
 
-abstract class aWhiteSpace
+abstract class AbstractWhiteSpace
 {
     public WhiteSpaceValue $top;
     public WhiteSpaceValue $right;

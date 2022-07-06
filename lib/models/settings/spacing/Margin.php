@@ -2,7 +2,7 @@
 
 namespace Vulcan\lib\models\settings\spacing;
 
-class Margin extends aWhiteSpace
+class Margin extends AbstractWhiteSpace
 {
     public function __construct(
         float $top,
