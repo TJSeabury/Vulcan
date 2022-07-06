@@ -908,4 +908,39 @@ class Vulcan
             }
         );
     }
+
+
+  public function initAPI()
+  {
+    $api = \Vulcan\lib\models\api\API::getInstance();
+
+    $api->registerRoutes([
+      new \Vulcan\lib\models\api\Route(
+        'menu',
+        [
+          new \Vulcan\lib\models\api\Method(
+            ['get'],
+            function () {
+              return wp_get_nav_menu_items('primary');
+            }
+          )
+        ]
+      ),
+      new \Vulcan\lib\models\api\Route(
+        'lipsum',
+        [
+          new \Vulcan\lib\models\api\Method(
+            ['get'],
+            function ($words) {
+              $response = \wp_remote_get("https://www.lipsum.com/feed/json?what=words&amount=$words&start=false");
+              $response = json_decode($response['body']);
+              return $response->feed->lipsum;
+            }
+          )
+        ]
+      ),
+    ]);
+
+    $api->init();
+  }
 }
