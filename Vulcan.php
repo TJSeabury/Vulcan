@@ -110,9 +110,7 @@ class Vulcan
   /**
    * Enqueues required view styles based upon theme options.
    */
-  public function set_view_styles()
-  {
-  }
+  public function set_view_styles() {}
 
   public function do_settings_sections($page)
   {
@@ -572,13 +570,6 @@ class Vulcan
         [
           'name' => 'Wordfence',
           'slug' => 'wordfence',
-          'required' => true,
-          'force_activation'   => true,
-          'force_deactivation' => true,
-        ],
-        [
-          'name' => 'Limit Login Attempts Reloaded',
-          'slug' => 'limit-login-attempts-reloaded',
           'required' => true,
           'force_activation'   => true,
           'force_deactivation' => true,
